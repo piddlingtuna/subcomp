@@ -27,7 +27,10 @@ pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
     rocket::ignite()
         .attach(options)
         .manage(database::init_pool(database_url))
-        .mount("/", routes![files::index])
+        .mount("/", routes![
+            files::index,
+            files::all,
+        ])
         .mount("/api", routes![
             api::projects,
             api::user,
