@@ -2,7 +2,7 @@ import { CSHandler } from 'react-central-state';
 import axios from 'axios';
 
 const handler = new CSHandler();
-const domain = 'http://localhost:8000';
+const domain = 'https://csesoc.tech';
 
 const getComic = () => {
   return axios.get('http://xkcd-imgs.herokuapp.com/')
