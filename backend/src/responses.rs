@@ -94,13 +94,6 @@ pub fn forbidden() -> APIResponse {
     }
 }
 
-pub fn not_found() -> APIResponse {
-    APIResponse {
-        data: json!({"message": "Not Found"}),
-        status: Status::NotFound,
-    }
-}
-
 pub fn method_not_allowed() -> APIResponse {
     APIResponse {
         data: json!({"message": "Method Not Allowed"}),
