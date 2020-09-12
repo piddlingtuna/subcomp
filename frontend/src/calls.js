@@ -2,7 +2,6 @@ import { CSHandler } from 'react-central-state';
 import axios from 'axios';
 
 const handler = new CSHandler();
-const domain = 'https://csesoc.tech';
 
 const getComic = () => {
   return axios.get('http://xkcd-imgs.herokuapp.com/')
@@ -19,7 +18,7 @@ const getComic = () => {
 }
 
 const getDeadlines = () => {
-  axios.get(`${domain}/api/deadlines`)
+  axios.get('/api/deadlines')
   .then(response => {
     handler.setCentralState({
       projectDeadline: response.data.project_deadline,
@@ -35,7 +34,7 @@ const getDeadlines = () => {
 }
 
 const getProjects = () => {
-  axios.get(`${domain}/api/projects`)
+  axios.get('/api/projects')
   .then(response => {
     handler.setCentralState({
       projects: response.data.projects,
@@ -50,7 +49,7 @@ const getProjects = () => {
 
 const getUser = () => {
   if (localStorage.getItem('token')) {
-    axios.get(`${domain}/api/user`, {
+    axios.get('/api/user', {
       headers: {
         Authorization: localStorage.getItem('token'),
       },
@@ -72,7 +71,7 @@ const getUser = () => {
 }
 
 const generateVerification = (zID, fullName, password) => {
-  axios.post(`${domain}/api/generate_verification`, {
+  axios.post('/api/generate_verification', {
     zid: zID,
     full_name: fullName,
     password: password,
@@ -82,7 +81,7 @@ const generateVerification = (zID, fullName, password) => {
 }
 
 const useVerification = (token) => {
-  return axios.post(`${domain}/api/use_verification`, {
+  return axios.post('/api/use_verification', {
     token: token,
   }).then(response => {
     localStorage.setItem('token', response.data.token)
@@ -97,7 +96,7 @@ const useVerification = (token) => {
 }
 
 const logIn = (zID, password) => {
-  axios.post(`${domain}/api/login`, {
+  axios.post('/api/login', {
     zid: zID,
     password: password,
   }).then(response => {
@@ -111,7 +110,7 @@ const logIn = (zID, password) => {
 }
 
 const logOut = () => {
-  axios.get(`${domain}/api/logout`, {
+  axios.get('/api/logout', {
     headers: {
       Authorization: localStorage.getItem('token'),
     },
@@ -126,7 +125,7 @@ const logOut = () => {
 }
 
 const changeFullName = (fullName) => {
-  axios.post(`${domain}/api/change_full_name`, {
+  axios.post('/api/change_full_name', {
     full_name: fullName,
   }, {
     headers: {
@@ -147,7 +146,7 @@ const changeFullName = (fullName) => {
 }
 
 const changePassword = (password) => {
-  axios.post(`${domain}/api/change_password`, {
+  axios.post('/api/change_password', {
     password: password,
   }, {
     headers: {
@@ -159,7 +158,7 @@ const changePassword = (password) => {
 }
 
 const generateReset = (zID) => {
-  axios.post(`${domain}/api/generate_reset`, {
+  axios.post('/api/generate_reset', {
     zid: zID,
   }).catch(error => {
     alert(error.response.data.message);
@@ -167,7 +166,7 @@ const generateReset = (zID) => {
 }
 
 const useReset = (token, password) => {
-  return axios.post(`${domain}/api/use_reset`, {
+  return axios.post('/api/use_reset', {
     token: token,
     password: password,
   }).then(response => {
@@ -183,7 +182,7 @@ const useReset = (token, password) => {
 }
 
 const vote = (project_id) => {
-  axios.post(`${domain}/api/vote`, {
+  axios.post('/api/vote', {
     project_id: project_id,
   }, {
     headers: {
@@ -204,7 +203,7 @@ const vote = (project_id) => {
 }
 
 const unvote = (project_id) => {
-  axios.post(`${domain}/api/unvote`, {
+  axios.post('/api/unvote', {
     project_id: project_id,
   }, {
     headers: {
@@ -225,7 +224,7 @@ const unvote = (project_id) => {
 }
 
 const checkZID = (zID) => {
-  return axios.post(`${domain}/api/check_zid`, {
+  return axios.post('/api/check_zid', {
     zid: zID,
   }, {
     headers: {
@@ -243,7 +242,7 @@ const checkZID = (zID) => {
 }
 
 const submitProject = (title, summary, link, repo, first_year, postgraduate, team_zids) => {
-  axios.post(`${domain}/api/submit_project`, {
+  axios.post('/api/submit_project', {
     title: title,
     summary: summary,
     link: link,
@@ -272,7 +271,7 @@ const submitProject = (title, summary, link, repo, first_year, postgraduate, tea
 
 const editProject = (title, summary, link, repo, first_year, postgraduate, team_zids) => {
   const id = handler.centralState.user.project;
-  axios.post(`${domain}/api/edit_project`, {
+  axios.post('/api/edit_project', {
     title: title,
     summary: summary,
     link: link,
@@ -295,7 +294,7 @@ const editProject = (title, summary, link, repo, first_year, postgraduate, team_
 
 const deleteProject = () => {
   const id = handler.centralState.user.project;
-  axios.get(`${domain}/api/delete_project`, {
+  axios.get('/api/delete_project', {
     headers: {
       Authorization: localStorage.getItem('token'),
     },
