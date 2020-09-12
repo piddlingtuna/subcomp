@@ -156,6 +156,15 @@ impl User {
         self.password_hash == argon2i_simple(password, &login_salt).to_vec()
     }
 
+    pub fn exists_by_zid(zid: &str, conn: &PgConnection) -> bool {
+        match all_users
+            .filter(users::zid.eq(zid))
+            .first::<User>(conn) {
+                Ok(_) => true,
+                Err(_) => false,
+            }
+    }
+
     pub fn get_by_id(id: &Uuid, conn: &PgConnection) -> Option<User> {
         match all_users
             .find(id)
