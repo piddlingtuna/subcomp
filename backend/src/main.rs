@@ -24,8 +24,6 @@ pub mod schema;
 /// This function takes care of attaching all routes and handlers of the application.
 pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
     let options = CorsOptions::default()
-        .allowed_origins(AllowedOrigins::some_exact(&["https://csesoc.tech", "https://www.csesoc.tech"]))
-        .allowed_methods(["Get", "Post"].iter().map(|s| FromStr::from_str(s).unwrap()).collect())
         .to_cors()
         .unwrap();
 
