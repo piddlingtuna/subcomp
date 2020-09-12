@@ -7,6 +7,11 @@ pub fn index() -> Option<NamedFile> {
 }
 
 #[get("/<file..>", rank = 2)]
-pub fn all(file: PathBuf) -> Option<NamedFile> {
+pub fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("public/").join(file)).ok()
+}
+
+#[get("/*", rank = 3)]
+pub fn redirect() -> Option<NamedFile> {
+    NamedFile::open("public/index.html").ok()
 }
