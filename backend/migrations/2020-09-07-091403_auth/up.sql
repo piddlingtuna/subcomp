@@ -43,7 +43,7 @@ CREATE TABLE verifications (
     created_at TIMESTAMP DEFAULT current_timestamp NOT NULL,
     updated_at TIMESTAMP DEFAULT current_timestamp NOT NULL,
     token CHAR(32) UNIQUE NOT NULL,
-    zid CHAR(8) UNIQUE NOT NULL,
+    zid CHAR(8) NOT NULL,
     full_name TEXT NOT NULL,
     password_hash BYTEA NOT NULL
 );
