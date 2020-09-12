@@ -73,9 +73,13 @@ pub fn generate_verification(
         return bad_request().message("Password must be at least 8 characters.");
     }
 
+    if User::exists_by_zid(&data.zid, &conn) {
+        return bad_request().message("There is already an account with this zID.");
+    }
+
     let verification = match Verification::insert(&data.zid, &data.full_name, &data.password, &conn) {
         Some(verification) => verification,
-        None => return bad_request().message("zID is already used. You may want to reset your password."),
+        None => return internal_server_error(),
     };
 
     let unsw_email = format!("<{}@unsw.edu.au>", &data.zid);
