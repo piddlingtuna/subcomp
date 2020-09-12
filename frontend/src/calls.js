@@ -4,7 +4,7 @@ import axios from 'axios';
 const handler = new CSHandler();
 
 const getComic = () => {
-  return axios.get('http://xkcd-imgs.herokuapp.com/')
+  return axios.get('https://xkcd-imgs.herokuapp.com/')
   .then(response => {
     return {
       title: response.data.title,
