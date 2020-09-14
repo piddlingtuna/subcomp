@@ -17,7 +17,7 @@ class ProjectsNotice extends React.Component {
         {
           this.centralState.user !== null &&
           this.centralState.user.votes.length < 3 &&
-          <Alert className="m-3" variant="success">You have {3 - this.centralState.user.votes.length} vote{this.centralState.user.votes.length === 2 && 's'} remaining. Voting closes on {this.centralState.projectDeadline}.</Alert>
+          <Alert className="m-3" variant="success">You have {3 - this.centralState.user.votes.length} vote{this.centralState.user.votes.length !== 2 && 's'} remaining. Voting closes on {this.centralState.projectDeadline}.</Alert>
         }
         {
           this.centralState.user !== null &&
