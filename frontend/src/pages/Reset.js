@@ -66,7 +66,6 @@ class Reset extends React.Component {
               }              
             </div>
           </div>
-          <div className="my-5" />
          </>
        }
       </>

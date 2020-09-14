@@ -198,7 +198,7 @@ const vote = (project_id) => {
         votes: handler.centralState.user.votes.concat(project_id),
         project: handler.centralState.user.project,
       },
-      projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project).sort((a, b) => a.id - b.id),
+      projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project).sort((a, b) => a.id > b.id),
     });
   }).catch(error => {
     alert(error.response.data.message);

@@ -21,7 +21,6 @@ class Projects extends React.Component {
               this.centralState.projects.map(project =><ProjectCard key={project.id} project={project} />)
             }
           </div>
-          <div className="my-5" />
         </div>
       </>
     );

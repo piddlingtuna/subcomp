@@ -17,7 +17,6 @@ class Leaderboard extends React.Component {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <LeaderboardTable />
           </div>
-          <div className="my-5" />
         </div>
       </>
     );
