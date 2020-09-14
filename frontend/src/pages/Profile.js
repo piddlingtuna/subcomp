@@ -117,7 +117,6 @@ class Profile extends React.Component {
           </div>
          </>
        }
-       <div className="my-5" />
       </>
     );
   }

@@ -24,7 +24,6 @@ class Submission extends React.Component {
                 Submission
               </h1>
               <SubmissionForm />
-              <div className="my-5" />
             </div>
           </>
         }
