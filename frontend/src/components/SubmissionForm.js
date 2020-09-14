@@ -238,7 +238,7 @@ class SubmissionForm extends React.Component {
             }
             {
               this.centralState.user.project !== null &&
-              <>
+              <div className="mb-3">
                 <Button className="mx-2" variant="success" onClick={this.edit}>
                   Save
                 </Button>
@@ -246,7 +246,7 @@ class SubmissionForm extends React.Component {
                   Delete
                 </Button>
                 <DeleteProject show={this.state.deleteShow} handleClose={this.deleteClose} reset={this.deleteReset} />
-              </>
+              </div>
             }
           </div>
         </Form>
