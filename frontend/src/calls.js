@@ -189,7 +189,7 @@ const vote = (project_id) => {
       Authorization: localStorage.getItem('token'),
     },
   }).then(() => {
-    const project = handler.centralState.projects.filter(project => project.id !== project_id)[0];
+    const project = handler.centralState.projects.filter(project => project.id === project_id)[0];
     project.votes++;
     handler.setCentralState({
       user: {
@@ -213,7 +213,7 @@ const unvote = (project_id) => {
       Authorization: localStorage.getItem('token'),
     },
   }).then(() => {
-    const project = handler.centralState.projects.filter(project => project.id !== project_id)[0];
+    const project = handler.centralState.projects.filter(project => project.id === project_id)[0];
     project.votes--;
     handler.setCentralState({
       user: {
