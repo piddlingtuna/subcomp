@@ -198,7 +198,7 @@ const vote = (project_id) => {
         votes: handler.centralState.user.votes.concat(project_id),
         project: handler.centralState.user.project,
       },
-      projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project),
+      projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project).sort((a, b) => a.id - b.id),
     });
   }).catch(error => {
     alert(error.response.data.message);
@@ -222,7 +222,7 @@ const unvote = (project_id) => {
         votes: handler.centralState.user.votes.filter(id => id !== project_id),
         project: handler.centralState.user.project,
       },
-       projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project),
+       projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project).sort((a, b) => a.id - b.id),
     });
   }).catch(error => {
     alert(error.response.data.message);
@@ -268,7 +268,7 @@ const submitProject = (title, summary, link, repo, first_year, postgraduate, tea
         votes: handler.centralState.user.votes,
         project: response.data.project.id,
       },
-      projects: handler.centralState.projects.concat(response.data.project),
+      projects: handler.centralState.projects.concat(response.data.project).sort((a, b) => a.id - b.id),
     });
   }).catch(error => {
     alert(error.response.data.message);
@@ -291,7 +291,7 @@ const editProject = (title, summary, link, repo, first_year, postgraduate, team_
     },
   }).then(response => {
     handler.setCentralState({
-      projects: handler.centralState.projects.filter(project => project.id !== id).concat(response.data.project),
+      projects: handler.centralState.projects.filter(project => project.id !== id).concat(response.data.project).sort((a, b) => a.id - b.id),
     });
   }).catch(error => {
     alert(error.response.data.message);

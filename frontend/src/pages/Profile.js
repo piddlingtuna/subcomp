@@ -106,7 +106,7 @@ class Profile extends React.Component {
               <h5>
                 Votes:
               </h5>
-                <div className="d-flex align-content-start flex-wrap" style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="d-flex align-content-start flex-wrap" style={{ display: 'flex', justifyContent: 'center' }}>
                 {
                   this.centralState.projects
                     .filter(project => this.centralState.user.votes.includes(project.id))
@@ -115,9 +115,9 @@ class Profile extends React.Component {
               </div>
             </div>
           </div>
-          <div className="my-5" />
          </>
        }
+       <div className="my-5" />
       </>
     );
   }
