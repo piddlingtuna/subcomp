@@ -18,7 +18,7 @@ class Projects extends React.Component {
           <ProjectsNotice />
           <div className="d-flex align-content-start flex-wrap" style={{ display: 'flex', justifyContent: 'center' }}>
             {
-              this.centralState.projects
+              this.centralState.projects.sort((a, b) => a.id - b.id)
               .map(project =><ProjectCard key={project.id} project={project} />)
             }
           </div>

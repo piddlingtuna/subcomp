@@ -120,7 +120,7 @@ class LeaderboardTable extends React.Component {
             <td onClick={() => this.sortProjectsByVotes(this.centralState.projects)}> Votes </td>
           </tr>
           {
-            this.state.ranking !== [] ?
+            this.state.ranking === [] ?
             this.rankDefault(this.centralState.projects).map(project => <LeaderboardRow key={project.id} rank={project.rank} project={project} />) :
             this.state.ranking.map(project => <LeaderboardRow key={project.id} rank={project.rank} project={project} />)
           }
