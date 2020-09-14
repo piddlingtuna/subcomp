@@ -189,6 +189,8 @@ const vote = (project_id) => {
       Authorization: localStorage.getItem('token'),
     },
   }).then(() => {
+    const project = handler.centralState.projects.filter(project => project.id !== project_id)[0];
+    project.votes++;
     handler.setCentralState({
       user: {
         zID: handler.centralState.user.zID,
@@ -196,6 +198,7 @@ const vote = (project_id) => {
         votes: handler.centralState.user.votes.concat(project_id),
         project: handler.centralState.user.project,
       },
+      projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project),
     });
   }).catch(error => {
     alert(error.response.data.message);
@@ -210,6 +213,8 @@ const unvote = (project_id) => {
       Authorization: localStorage.getItem('token'),
     },
   }).then(() => {
+    const project = handler.centralState.projects.filter(project => project.id !== project_id)[0];
+    project.votes--;
     handler.setCentralState({
       user: {
         zID: handler.centralState.user.zID,
@@ -217,6 +222,7 @@ const unvote = (project_id) => {
         votes: handler.centralState.user.votes.filter(id => id !== project_id),
         project: handler.centralState.user.project,
       },
+       projects: handler.centralState.projects.filter(project => project.id !== project_id).concat(project),
     });
   }).catch(error => {
     alert(error.response.data.message);
