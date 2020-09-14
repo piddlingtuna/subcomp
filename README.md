@@ -1,8 +1,8 @@
 # subcomp
 A project submission system for competitions.
 
-Originally used for the CSESoc Personal Projects Competition.
+Originally used for the CSESoc Personal Projects Competition at [csesoc.tech]
 
-# Instructions
+# Deployment
 
-TODO
+TODO (lol like im ever gonna write this up)
