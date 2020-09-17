@@ -11,7 +11,7 @@ use regex::Regex;
 use crate::database::Conn;
 use crate::responses::{bad_request, internal_server_error, ok, unauthorized, APIResponse};
 
-use crate::models::{Project, User, Verification, Reset, Token};
+use crate::models::{Project, User, Verification, Reset, Token, Vote};
 
 #[get("/projects")]
 pub fn projects(
@@ -355,6 +355,10 @@ pub fn vote(
         return bad_request().message("You already have 3 votes.");
     }
 
+    if !Vote::exists(&user.id, &data.project_id, &conn) {
+        return bad_request().message("You have already voted for this project.");
+    }
+
     match user.vote(&data.project_id, &conn) {
         true => ok(),
         false => internal_server_error().message("Looks like our code is buggy :("),
@@ -377,6 +381,10 @@ pub fn unvote(
 
     if end < Utc::now() {
         return bad_request().message("Vote deadline is over.");
+    }
+
+    if Vote::exists(&user.id, &data.project_id, &conn) {
+        return bad_request().message("You have not voted for this project.");
     }
 
     match user.unvote(&data.project_id, &conn) {
