@@ -355,7 +355,7 @@ pub fn vote(
         return bad_request().message("You already have 3 votes.");
     }
 
-    if !Vote::exists(&user.id, &data.project_id, &conn) {
+    if Vote::exists(&user.id, &data.project_id, &conn) {
         return bad_request().message("You have already voted for this project.");
     }
 
@@ -383,7 +383,7 @@ pub fn unvote(
         return bad_request().message("Vote deadline is over.");
     }
 
-    if Vote::exists(&user.id, &data.project_id, &conn) {
+    if !Vote::exists(&user.id, &data.project_id, &conn) {
         return bad_request().message("You have not voted for this project.");
     }
 
