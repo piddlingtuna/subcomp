@@ -545,3 +545,14 @@ pub struct NewVote {
     pub user_id: Uuid,
     pub project_id: Uuid,
 }
+
+impl Vote {
+    pub fn exists(user_id: &Uuid, project_id: &Uuid, conn: &PgConnection) -> bool {
+        all_votes
+            .filter(votes::user_id.eq(user_id))
+            .filter(votes::project_id.eq(project_id))
+            .count()
+            .get_result(conn)
+            .unwrap_or_else(|_| 0) > 0
+    }
+}
