@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 
 import Header from '../components/Header';
-import { useVerification } from '../calls';
+import { verification } from '../calls';
 
 class Verification extends React.Component {
   constructor() {
@@ -11,7 +11,7 @@ class Verification extends React.Component {
   }
   
   componentDidMount() {
-    useVerification(this.props.match.params.id)
+    verification(this.props.match.params.id)
     .then(verified => {
       this.setState({
         verified: verified,
