@@ -80,7 +80,7 @@ const generateVerification = (zID, fullName, password) => {
   });
 }
 
-const useVerification = (token) => {
+const verification = (token) => {
   return axios.post('/api/use_verification/', {
     token: token,
   }).then(response => {
@@ -165,7 +165,7 @@ const generateReset = (zID) => {
   });
 }
 
-const useReset = (token, password) => {
+const reset = (token, password) => {
   return axios.post('/api/use_reset/', {
     token: token,
     password: password,
@@ -319,4 +319,4 @@ const deleteProject = () => {
   });
 }
 
-export { getComic, getDeadlines, getProjects, getUser, generateVerification, useVerification, logIn, logOut, changeFullName, changePassword, generateReset, useReset, vote, unvote, checkZID, submitProject, editProject, deleteProject };
+export { getComic, getDeadlines, getProjects, getUser, generateVerification, verification, logIn, logOut, changeFullName, changePassword, generateReset, reset, vote, unvote, checkZID, submitProject, editProject, deleteProject };

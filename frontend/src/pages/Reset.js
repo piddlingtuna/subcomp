@@ -3,7 +3,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
 
 import Header from '../components/Header';
-import { useReset } from '../calls';
+import { reset } from '../calls';
 
 class Reset extends React.Component {
   constructor() {
@@ -15,7 +15,7 @@ class Reset extends React.Component {
   }
 
   handleReset() {
-    useReset(this.props.match.params.id, this.state.password)
+    reset(this.props.match.params.id, this.state.password)
       .then(reset => {
         this.setState({
           reset: reset,

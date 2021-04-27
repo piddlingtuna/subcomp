@@ -90,7 +90,7 @@ pub fn generate_verification(
         .from("CSESoc <noreply@csesoc.org.au>".parse().unwrap())
         .to(unsw_email.parse().unwrap())
         .subject("Verify your account - DO NOT REPLY")
-        .body(&body)
+        .body(body)
         .unwrap();
 
     let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set in .env");
@@ -261,7 +261,7 @@ pub fn generate_reset(
         .from("CSESoc <noreply@csesoc.org.au>".parse().unwrap())
         .to(unsw_email.parse().unwrap())
         .subject("Reset your password - DO NOT REPLY")
-        .body(&body)
+        .body(body)
         .unwrap();
 
     let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set in .env");
