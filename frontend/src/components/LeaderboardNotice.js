@@ -10,7 +10,7 @@ class LeaderboardNotice extends React.Component {
   render() {
     return (
       <Alert className="m-3" variant="info">
-        First place wins the Hitchhiker's Prize ($42)! Voting closes on {this.centralState.voteDeadline}.
+        First place wins the Hitchhiker's Prize!{this.centralState.voteDeadline && ` Voting closes on ${this.centralState.voteDeadline}.`}
       </Alert>
     );
   }
