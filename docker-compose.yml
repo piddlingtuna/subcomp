@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+      - 8000
+    depends_on:
+      - db
+    environment:
+    - DATABASE_URL=postgres://postgres:postgres@db/backend
+    - LOGIN_SALT=3471029385748ouiwrekjhdfiu38948325y34iu5kj3wh43578234oiuerwga
+    - DOMAIN=https://csesoc.tech
+    - SMTP_USERNAME=noreply@csesoc.org.au
+        SMTP_PASSWORD=85*d4EeT>r
+        PROJECT_END=2021-09-12T23:59:59+10:00
+        VOTE_END=2021-09-26T23:59:59+10:00
+        
+  frontend:
+    build: ./frontend
+    ports:
+      - "5000:5000"
+      - 5000
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+        - POSTGRES_DB=backend
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
