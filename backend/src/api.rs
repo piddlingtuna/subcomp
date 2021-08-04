@@ -83,7 +83,7 @@ pub fn generate_verification(
     };
 
     let unsw_email = format!("<{}@unsw.edu.au>", &data.zid);
-    let domain = env::var("DOMAIN").expect("DOMAIN must be set in .env");
+    let domain = env::var("DOMAIN").expect("DOMAIN must be set in env");
     let body = format!("Go to the following link to verify your account for the CSESoc Personal Projects Competition. It will be valid for 1 hour.\n\n{}/verification/{}\n", &domain, &verification.token);
 
     let email = Message::builder()
@@ -93,8 +93,8 @@ pub fn generate_verification(
         .body(body)
         .unwrap();
 
-    let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set in .env");
-    let smtp_password = env::var("SMTP_PASSWORD").expect("SMTP_PASSWORD must be set in .env");
+    let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set in env");
+    let smtp_password = env::var("SMTP_PASSWORD").expect("SMTP_PASSWORD must be set in env");
     let creds = Credentials::new(smtp_username, smtp_password);
 
     // Open a remote connection to gmail
@@ -254,7 +254,7 @@ pub fn generate_reset(
     };
 
     let unsw_email = format!("<{}@unsw.edu.au>", &data.zid);
-    let domain = env::var("DOMAIN").expect("DOMAIN must be set in .env");
+    let domain = env::var("DOMAIN").expect("DOMAIN must be set in env");
     let body = format!("Go to the following link to reset your password for the CSESoc Personal Projects Competition. It will be valid for 1 hour.\n\n{}/reset/{}\n", &domain, &reset.token);
 
     let email = Message::builder()
@@ -264,8 +264,8 @@ pub fn generate_reset(
         .body(body)
         .unwrap();
 
-    let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set in .env");
-    let smtp_password = env::var("SMTP_PASSWORD").expect("SMTP_PASSWORD must be set in .env");
+    let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set in env");
+    let smtp_password = env::var("SMTP_PASSWORD").expect("SMTP_PASSWORD must be set in env");
     let creds = Credentials::new(smtp_username, smtp_password);
 
     // Open a remote connection to gmail
@@ -344,7 +344,7 @@ pub fn vote(
     data: Json<VoteData>,
     conn: Conn,
 ) -> APIResponse {
-    let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in .env");
+    let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&vote_end).expect("VOTE_END uses rfc3339 format.");
 
     if end < Utc::now() {
@@ -376,7 +376,7 @@ pub fn unvote(
     data: Json<UnvoteData>,
     conn: Conn,
 ) -> APIResponse {
-    let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in .env");
+    let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&vote_end).expect("VOTE_END uses rfc3339 format.");
 
     if end < Utc::now() {
@@ -435,7 +435,7 @@ pub fn submit_project(
     project_data: Json<SubmitProjectData>,
     conn: Conn,
 ) -> APIResponse {
-    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in .env");
+    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&project_end).expect("PROJECT_END uses rfc3339 format.");
 
     if end < Utc::now() {
@@ -506,7 +506,7 @@ pub fn edit_project(
     project_data: Json<EditProjectData>,
     conn: Conn,
 ) -> APIResponse {
-    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in .env");
+    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&project_end).expect("PROJECT_END uses rfc3339 format.");
 
     if end < Utc::now() {
@@ -577,7 +577,7 @@ pub fn delete_project(
     user: User,
     conn: Conn,
 ) -> APIResponse {
-    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in .env");
+    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&project_end).expect("PROJECT_END uses rfc3339 format.");
 
     if end < Utc::now() {
@@ -604,8 +604,8 @@ pub fn delete_project(
 #[get("/deadlines")]
 pub fn deadlines(
 ) -> APIResponse {
-    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in .env");
-    let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in .env");
+    let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in env");
+    let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in env");
 
     ok().data(json!({
         "project_deadline": project_end,
