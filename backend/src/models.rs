@@ -146,13 +146,13 @@ impl User {
     /// Hash `password` using argon2 and return it.
     /// TODO change loginsalt
     fn generate_password_hash(password: &str) -> Vec<u8> {
-        let login_salt = env::var("LOGIN_SALT").expect("LOGIN_SALT must be set in .env");
+        let login_salt = env::var("LOGIN_SALT").expect("LOGIN_SALT must be set in env");
         argon2i_simple(password, &login_salt).to_vec()
     }
     
     /// Verify that `candidate_password` matches the stored password.
     pub fn verify_password(&self, password: &str) -> bool {
-        let login_salt = env::var("LOGIN_SALT").expect("LOGIN_SALT must be set in .env");
+        let login_salt = env::var("LOGIN_SALT").expect("LOGIN_SALT must be set in env");
         self.password_hash == argon2i_simple(password, &login_salt).to_vec()
     }
 
