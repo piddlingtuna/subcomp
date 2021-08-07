@@ -63,7 +63,7 @@ fn main() {
     // PROJECT_END
     // VOTE_END
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set in .env");
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set in env");
     rocket_factory(&database_url)
         .launch();
 }

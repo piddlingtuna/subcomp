@@ -1,24 +1,21 @@
 version: "3.9"
 services:
-  backend:
+  subcomp-backend:
     build: ./backend
     ports:
       - "8000:8000"
       - 8000
     depends_on:
-      - db
-  frontend:
+      - subcomp-data
+  subcomp-frontend:
     build: ./frontend
     ports:
       - "5000:5000"
       - 5000
-  db:
-    image: postgres:latest
+  subcomp-data:
+    build: ./data
     ports:
       - "5432:5432"
     expose:
       - 5432
-    environment:
-        - POSTGRES_DB=backend
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
+
