@@ -173,7 +173,7 @@ class SubmissionForm extends React.Component {
           <Form.Check
             className="mt-3"
             type="checkbox"
-            label="Did all team members commence as Undergraduate students in 2020?"
+            label="Did all team members commence as Undergraduate students in 2021?"
             onChange={event => {
               this.setState({
                 firstYear: event.target.value === "on",
