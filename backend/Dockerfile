@@ -5,5 +5,4 @@ COPY . .
 RUN rustup default nightly
 RUN cargo build --release
 RUN cargo install diesel_cli --no-default-features --features postgres
-CMD diesel setup
-CMD ./target/release/backend
+CMD diesel setup && diesel migration run && ./target/release/backend

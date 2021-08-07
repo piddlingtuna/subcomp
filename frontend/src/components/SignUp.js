@@ -53,7 +53,7 @@ class SignUp extends React.Component {
             </InputGroup.Prepend>
             <FormControl
               type="text"
-              placeholder="Thomas Kunc"
+              placeholder="Jashank Shepherd"
               aria-label="full name"
               onChange={event => {
                   this.setState({

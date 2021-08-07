@@ -34,7 +34,7 @@ class ChangeFullName extends React.Component {
             </InputGroup.Prepend>
             <FormControl
               type="text"
-              placeholder="Andrew Taylor"
+              placeholder="John Jeremy"
               aria-label="full name"
               onChange={event => {
                   this.setState({

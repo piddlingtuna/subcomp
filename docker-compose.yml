@@ -7,11 +7,6 @@ services:
       - 8000
     depends_on:
       - subcomp-data
-  subcomp-frontend:
-    build: ./frontend
-    ports:
-      - "5000:5000"
-      - 5000
   subcomp-data:
     build: ./data
     ports:
