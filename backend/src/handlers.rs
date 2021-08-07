@@ -1,6 +1,7 @@
 use rocket::catch;
+use rocket::response::NamedFile;
 
-use crate::responses::{bad_request, forbidden, internal_server_error, not_found, service_unavailable, unauthorized, APIResponse};
+use crate::responses::{bad_request, forbidden, internal_server_error, service_unavailable, unauthorized, APIResponse};
 
 #[catch(400)]
 pub fn bad_request_handler() -> APIResponse {
@@ -18,8 +19,8 @@ pub fn forbidden_handler() -> APIResponse {
 }
 
 #[catch(404)]
-pub fn not_found_handler() -> APIResponse {
-    not_found()
+pub fn not_found_handler() -> Option<NamedFile> {
+    NamedFile::open("public/index.html").ok()
 }
 
 #[catch(500)]
