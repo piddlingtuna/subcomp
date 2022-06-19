@@ -15,7 +15,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
     "react-truncate": "^2.4.0",
-    "serve": "^12.0.0"
+    "serve": "^13.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
