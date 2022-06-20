@@ -7,8 +7,8 @@ class ChangePassword extends React.Component {
   constructor() {
     super();
     this.state = {
-      password: ''
-    }
+      password: '',
+    };
     this.handleChangePassword = this.handleChangePassword.bind(this);
   }
 
@@ -19,37 +19,44 @@ class ChangePassword extends React.Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.handleClose} animation={false}>
+      <Modal
+        show={this.props.show}
+        onHide={this.props.handleClose}
+        animation={false}
+      >
         <Modal.Header closeButton>
-          <Modal.Title>
-            Logout
-          </Modal.Title>
+          <Modal.Title>Logout</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
-            Your password must be at least 8 characters long.
-          </p>
+          <p>Your password must be at least 8 characters long.</p>
           <InputGroup className="mb-3">
-              <InputGroup.Text>
-                Password
-              </InputGroup.Text>
+            <InputGroup.Text>Password</InputGroup.Text>
             <FormControl
               type="password"
               placeholder="*******"
               aria-label="password"
-              onChange={event => {
-                  this.setState({
-                    password: event.target.value,
-                  })
-                }}
+              onChange={(event) => {
+                this.setState({
+                  password: event.target.value,
+                });
+              }}
             />
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="danger" className="mx-2" onClick={this.props.handleClose}>
+          <Button
+            variant="danger"
+            className="mx-2"
+            onClick={this.props.handleClose}
+          >
             Close
           </Button>
-          <Button variant="success" className="mx-2" onClick={this.handleChangePassword} disabled={this.state.password.length < 8}>
+          <Button
+            variant="success"
+            className="mx-2"
+            onClick={this.handleChangePassword}
+            disabled={this.state.password.length < 8}
+          >
             Change
           </Button>
         </Modal.Footer>

@@ -11,7 +11,10 @@ class Leaderboard extends React.Component {
         <Header />
         <div>
           <LeaderboardNotice />
-          <h1 className="m-3" style={{ display: 'flex', justifyContent: 'center' }}>
+          <h1
+            className="m-3"
+            style={{ display: 'flex', justifyContent: 'center' }}
+          >
             Leaderboard
           </h1>
           <div style={{ display: 'flex', justifyContent: 'center' }}>

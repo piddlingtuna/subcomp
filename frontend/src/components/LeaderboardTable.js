@@ -22,42 +22,38 @@ class LeaderboardTable extends React.Component {
   componentDidMount() {
     const ranking = this.centralState.projects;
     ranking.sort(this.compareVotes).reverse();
-    ranking.map((project, index) => project.rank = index + 1);
+    ranking.map((project, index) => (project.rank = index + 1));
     this.setState({ ranking: ranking });
   }
 
   rank() {
     const ranking = this.centralState.projects;
     ranking.sort(this.compareVotes).reverse();
-    ranking.map((project, index) => project.rank = index + 1);
+    ranking.map((project, index) => (project.rank = index + 1));
     return ranking;
   }
 
   rankDefault(ranking) {
     ranking.sort(this.compareVotes).reverse();
-    ranking.map((project, index) => project.rank = index + 1);
+    ranking.map((project, index) => (project.rank = index + 1));
     return ranking;
   }
 
-  compareVotes(a,b) {
-    if (a.votes < b.votes)
-      return -1;
-    if (a.votes > b.votes)
-      return 1;
+  compareVotes(a, b) {
+    if (a.votes < b.votes) return -1;
+    if (a.votes > b.votes) return 1;
     return 0;
   }
 
-  compareTitle(a,b) {
-    if (a.title < b.title)
-      return -1;
-    if (a.title > b.title)
-      return 1;
+  compareTitle(a, b) {
+    if (a.title < b.title) return -1;
+    if (a.title > b.title) return 1;
     return 0;
   }
 
   sortProjectsByVotes(projects) {
     const ranking = this.rank(projects);
-    if(this.state.asc === true) {
+    if (this.state.asc === true) {
       ranking.sort(this.compareVotes).reverse();
       this.setState({ ranking: ranking });
       this.setState({ asc: false });
@@ -72,7 +68,7 @@ class LeaderboardTable extends React.Component {
 
   sortProjectsByTitle(projects) {
     const ranking = this.rank(projects);
-    if(this.state.alph === true) {
+    if (this.state.alph === true) {
       ranking.sort(this.compareTitle).reverse();
       this.setState({ ranking: ranking });
       this.setState({ alph: false });
@@ -88,10 +84,10 @@ class LeaderboardTable extends React.Component {
   filterRank(e, projects) {
     const ranking = this.rank(projects);
     const newRanking = [];
-    const inputLength = e.target.value.length
-    for(var i = 0; i < ranking.length; i++) {
+    const inputLength = e.target.value.length;
+    for (var i = 0; i < ranking.length; i++) {
       const str = ranking[i].title.slice(0, inputLength).toLowerCase();
-      if(str === e.target.value.toLowerCase()) {
+      if (str === e.target.value.toLowerCase()) {
         newRanking.push(ranking[i]);
       }
     }
@@ -105,25 +101,61 @@ class LeaderboardTable extends React.Component {
 
   render() {
     return (
-      <Table className="m-3" style={{ width: '50%'}}>
+      <Table className="m-3" style={{ width: '50%' }}>
         <tbody>
           <tr>
             <td colSpan="3">
               <InputGroup>
-                <FormControl placeholder="Search" onChange={e => this.filterRank(e, this.centralState.projects)} />
+                <FormControl
+                  placeholder="Search"
+                  onChange={(e) =>
+                    this.filterRank(e, this.centralState.projects)
+                  }
+                />
               </InputGroup>
             </td>
           </tr>
           <tr style={{ cursor: 'pointer' }}>
-            <td onClick={() => this.sortProjectsByVotes(this.centralState.projects)}> Rank </td>
-            <td onClick={() => this.sortProjectsByTitle(this.centralState.projects)}> Title </td>
-            <td onClick={() => this.sortProjectsByVotes(this.centralState.projects)}> Votes </td>
+            <td
+              onClick={() =>
+                this.sortProjectsByVotes(this.centralState.projects)
+              }
+            >
+              {' '}
+              Rank{' '}
+            </td>
+            <td
+              onClick={() =>
+                this.sortProjectsByTitle(this.centralState.projects)
+              }
+            >
+              {' '}
+              Title{' '}
+            </td>
+            <td
+              onClick={() =>
+                this.sortProjectsByVotes(this.centralState.projects)
+              }
+            >
+              {' '}
+              Votes{' '}
+            </td>
           </tr>
-          {
-            this.state.ranking === [] ?
-            this.rankDefault(this.centralState.projects).map(project => <LeaderboardRow key={project.id} rank={project.rank} project={project} />) :
-            this.state.ranking.map(project => <LeaderboardRow key={project.id} rank={project.rank} project={project} />)
-          }
+          {this.state.ranking === []
+            ? this.rankDefault(this.centralState.projects).map((project) => (
+                <LeaderboardRow
+                  key={project.id}
+                  rank={project.rank}
+                  project={project}
+                />
+              ))
+            : this.state.ranking.map((project) => (
+                <LeaderboardRow
+                  key={project.id}
+                  rank={project.rank}
+                  project={project}
+                />
+              ))}
         </tbody>
       </Table>
     );

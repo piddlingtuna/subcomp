@@ -15,7 +15,7 @@ class Header extends React.Component {
       signUpShow: false,
       logInShow: false,
       logOutShow: false,
-    }
+    };
     this.signUpOpen = this.signUpOpen.bind(this);
     this.signUpClose = this.signUpClose.bind(this);
     this.logInOpen = this.logInOpen.bind(this);
@@ -27,37 +27,37 @@ class Header extends React.Component {
   signUpOpen() {
     this.setState({
       signUpShow: true,
-    })
+    });
   }
 
   signUpClose() {
     this.setState({
       signUpShow: false,
-    })
+    });
   }
 
   logInOpen() {
     this.setState({
       logInShow: true,
-    })
+    });
   }
 
   logInClose() {
     this.setState({
       logInShow: false,
-    })
+    });
   }
 
   logOutOpen() {
     this.setState({
       logOutShow: true,
-    })
+    });
   }
 
   logOutClose() {
     this.setState({
       logOutShow: false,
-    })
+    });
   }
 
   updateWith() {
@@ -81,25 +81,22 @@ class Header extends React.Component {
               Leaderboard
             </Link>
           </Navbar.Text>
-          {
-            this.centralState.user !== null &&
+          {this.centralState.user !== null && (
             <Navbar.Text className="mx-1">
               <Link to="submission" style={{ color: 'white' }}>
                 Submission
               </Link>
             </Navbar.Text>
-          }
-          {
-            this.centralState.user !== null &&
+          )}
+          {this.centralState.user !== null && (
             <Navbar.Text className="mx-1">
               <Link to="profile" style={{ color: 'white' }}>
                 Profile
               </Link>
             </Navbar.Text>
-          }
+          )}
         </Nav>
-        {
-          this.centralState.user === null &&
+        {this.centralState.user === null && (
           <Navbar.Collapse className="justify-content-end">
             <Navbar.Text className="mx-2">
               <Button variant="outline-light" onClick={this.signUpOpen}>
@@ -111,24 +108,32 @@ class Header extends React.Component {
                 Login
               </Button>
             </Navbar.Text>
-            <SignUp show={this.state.signUpShow} handleClose={this.signUpClose} />
+            <SignUp
+              show={this.state.signUpShow}
+              handleClose={this.signUpClose}
+            />
             <LogIn show={this.state.logInShow} handleClose={this.logInClose} />
           </Navbar.Collapse>
-        }
-        {
-          this.centralState.user !== null &&
+        )}
+        {this.centralState.user !== null && (
           <Navbar.Collapse className="justify-content-end">
             <Navbar.Text className="mx-2">
-              Signed in as: <span style={{color: 'white'}}>{this.centralState.user.fullName}</span>
+              Signed in as:{' '}
+              <span style={{ color: 'white' }}>
+                {this.centralState.user.fullName}
+              </span>
             </Navbar.Text>
             <Navbar.Text className="mx-2">
               <Button variant="danger" onClick={this.logOutOpen}>
                 Logout
               </Button>
             </Navbar.Text>
-            <LogOut show={this.state.logOutShow} handleClose={this.logOutClose} />
+            <LogOut
+              show={this.state.logOutShow}
+              handleClose={this.logOutClose}
+            />
           </Navbar.Collapse>
-        }
+        )}
       </Navbar>
     );
   }

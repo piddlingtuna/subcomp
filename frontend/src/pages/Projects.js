@@ -16,10 +16,13 @@ class Projects extends React.Component {
         <Header />
         <div>
           <ProjectsNotice />
-          <div className="d-flex align-content-start flex-wrap" style={{ display: 'flex', justifyContent: 'center' }}>
-            {
-              this.centralState.projects.map(project =><ProjectCard key={project.id} project={project} />)
-            }
+          <div
+            className="d-flex align-content-start flex-wrap"
+            style={{ display: 'flex', justifyContent: 'center' }}
+          >
+            {this.centralState.projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
           </div>
         </div>
       </>

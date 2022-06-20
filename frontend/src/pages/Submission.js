@@ -14,19 +14,23 @@ class Submission extends React.Component {
   render() {
     return (
       <>
-        {
-          this.centralState.user === null ? <Navigate to="" /> :
+        {this.centralState.user === null ? (
+          <Navigate to="" />
+        ) : (
           <>
             <Header />
             <div>
               <SubmissionNotice />
-              <h1 className="m-3" style={{ display: 'flex', justifyContent: 'center' }}>
+              <h1
+                className="m-3"
+                style={{ display: 'flex', justifyContent: 'center' }}
+              >
                 Submission
               </h1>
               <SubmissionForm />
             </div>
           </>
-        }
+        )}
       </>
     );
   }

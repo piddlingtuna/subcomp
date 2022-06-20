@@ -8,7 +8,7 @@ import Projects from './pages/Projects';
 import Leaderboard from './pages/Leaderboard';
 import Submission from './pages/Submission';
 import Profile from './pages/Profile';
-import Verification from './pages/Verification'
+import Verification from './pages/Verification';
 import Reset from './pages/Reset';
 import NotFound from './pages/NotFound';
 
@@ -18,7 +18,7 @@ class App extends React.Component {
     this.setCentralState({
       projects: [],
       user: null,
-    })
+    });
     getDeadlines();
     getProjects();
     getUser();
@@ -32,7 +32,7 @@ class App extends React.Component {
     return (
       <BrowserRouter history={history}>
         <Routes>
-          <Route exact path="/" element={<Projects />}/>
+          <Route exact path="/" element={<Projects />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/submission" element={<Submission />} />
           <Route path="/profile" element={<Profile />} />
