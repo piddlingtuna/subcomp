@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { CSComponent } from 'react-central-state';
 
 import Header from '../components/Header';
@@ -15,7 +15,7 @@ class Submission extends React.Component {
     return (
       <>
         {
-          this.centralState.user === null ? <Redirect to="" /> :
+          this.centralState.user === null ? <Navigate to="" /> :
           <>
             <Header />
             <div>

@@ -1,33 +1,29 @@
-import React from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
 
 import Header from '../components/Header';
 import { reset } from '../calls';
 
-class Reset extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      password: '',
-    };
-    this.handleReset = this.handleReset.bind(this);
-  }
+function Reset() {
+  const [state, setState] = useState({
+    password: '',
+  })
+  let { id } = useParams()
 
-  handleReset() {
-    reset(this.props.match.params.id, this.state.password)
+  const handleReset = () => {
+    reset(id, state.password)
       .then(reset => {
-        this.setState({
+        setState({
           reset: reset,
         });
       });
   }
 
-  render() {
     return (
       <>
        {
-         this.state.reset ? <Redirect to="" /> :
+         state.reset ? <Navigate to="" /> :
          <>
           <Header />
           <div style={{ width: '75%', margin: '0 auto' }}>
@@ -36,7 +32,7 @@ class Reset extends React.Component {
             </h1>
             <div className="m-5">
               {
-                this.state.reset === undefined ?
+                state.reset === undefined ?
                 <div>
                   <p>
                     Please enter in your new password (make sure to remember it this time lol)
@@ -47,13 +43,13 @@ class Reset extends React.Component {
                       placeholder="password"
                       aria-label="password"
                       onChange={event => {
-                        this.setState({
+                        setState({
                           password: event.target.value,
                         })
                       }}
                     />
                     <InputGroup.Append>
-                      <Button variant="outline-primary" disabled={this.state.password.length < 8} onClick={this.handleReset}>
+                      <Button variant="outline-primary" disabled={state.password.length < 8} onClick={handleReset}>
                         Reset
                       </Button>
                     </InputGroup.Append>
@@ -70,7 +66,6 @@ class Reset extends React.Component {
        }
       </>
     );
-  }
 }
 
-export default withRouter(Reset);
+export default Reset;

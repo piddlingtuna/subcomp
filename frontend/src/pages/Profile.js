@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { CSComponent } from 'react-central-state';
 import { Button, Container, Col, Row } from 'react-bootstrap';
 
@@ -53,7 +53,7 @@ class Profile extends React.Component {
     return (
       <>
        {
-         this.centralState.user === null ? <Redirect to="" /> :
+         this.centralState.user === null ? <Navigate to="" /> :
          <>
           <Header />
           <div style={{ width: '75%', margin: '0 auto' }}>

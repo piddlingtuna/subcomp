@@ -1,29 +1,25 @@
-import React from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 
 import Header from '../components/Header';
 import { verification } from '../calls';
 
-class Verification extends React.Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
-  
-  componentDidMount() {
-    verification(this.props.match.params.id)
-    .then(verified => {
-      this.setState({
-        verified: verified,
-      });
-    });
-  }
+function Verification() {
+  const [state, setState] = useState({})
+  let { id } = useParams()
 
-  render() {
+    useEffect(() => {
+      verification(id)
+      .then(verified => {
+        setState({
+          verified: verified,
+        });
+      });
+    }, [id])
     return (
       <>
        {
-         this.state.verified ? <Redirect to="" /> :
+         state.verified ? <Navigate to="" /> :
          <>
           <Header />
           <div style={{ width: '75%', margin: '0 auto' }}>
@@ -32,7 +28,7 @@ class Verification extends React.Component {
             </h1>
             <div className="m-5">
               {
-                this.state.verified === undefined ?
+                state.verified === undefined ?
                 <p>
                   We're just verifying your account...
                 </p>
@@ -47,7 +43,6 @@ class Verification extends React.Component {
        }
       </>
     );
-  }
 }
 
-export default withRouter(Verification);
+export default Verification;

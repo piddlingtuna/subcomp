@@ -1,6 +1,6 @@
 import React from 'react';
 import { CSComponent } from 'react-central-state';
-import { Router, Switch, Route } from 'react-router-dom';
+import { Router, Routes, Route } from 'react-router-dom';
 
 import history from './history';
 import { getDeadlines, getProjects, getUser } from './calls';
@@ -12,7 +12,7 @@ import Verification from './pages/Verification'
 import Reset from './pages/Reset';
 import NotFound from './pages/NotFound';
 
-class Routes extends React.Component {
+class App extends React.Component {
   constructor() {
     super();
     this.setCentralState({
@@ -31,7 +31,7 @@ class Routes extends React.Component {
   render() {
     return (
       <Router history={history}>
-        <Switch>
+        <Routes>
           <Route exact path="/" component={Projects}/>
           <Route path="/leaderboard" component={Leaderboard} />
           <Route path="/submission" component={Submission} />
@@ -39,10 +39,10 @@ class Routes extends React.Component {
           <Route path="/verification/:id" component={Verification} />
           <Route path="/reset/:id" component={Reset} />
           <Route component={NotFound} />
-        </Switch>
+        </Routes>
       </Router>
     );
   }
 }
 
-export default CSComponent(Routes);
+export default CSComponent(App);
