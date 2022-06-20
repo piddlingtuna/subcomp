@@ -29,11 +29,9 @@ class SignUp extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
               <InputGroup.Text>
                 zID
               </InputGroup.Text>
-            </InputGroup.Prepend>
             <FormControl
               type="text"
               placeholder="z1234567"
@@ -46,11 +44,9 @@ class SignUp extends React.Component {
             />
           </InputGroup>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
               <InputGroup.Text>
                 Full Name
               </InputGroup.Text>
-            </InputGroup.Prepend>
             <FormControl
               type="text"
               placeholder="Jashank Shepherd"
@@ -66,11 +62,9 @@ class SignUp extends React.Component {
             Your password must be at least 8 characters long.
           </p>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
               <InputGroup.Text>
                 Password
               </InputGroup.Text>
-            </InputGroup.Prepend>
             <FormControl
               type="password"
               placeholder="*******"

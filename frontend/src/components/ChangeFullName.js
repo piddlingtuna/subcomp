@@ -27,11 +27,9 @@ class ChangeFullName extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
               <InputGroup.Text>
                 Full Name
               </InputGroup.Text>
-            </InputGroup.Prepend>
             <FormControl
               type="text"
               placeholder="John Jeremy"

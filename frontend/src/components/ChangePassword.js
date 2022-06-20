@@ -30,11 +30,9 @@ class ChangePassword extends React.Component {
             Your password must be at least 8 characters long.
           </p>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
               <InputGroup.Text>
                 Password
               </InputGroup.Text>
-            </InputGroup.Prepend>
             <FormControl
               type="password"
               placeholder="*******"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { CSComponent } from 'react-central-state';
-import { Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import history from './history';
 import { getDeadlines, getProjects, getUser } from './calls';
@@ -30,17 +30,17 @@ class App extends React.Component {
 
   render() {
     return (
-      <Router history={history}>
+      <BrowserRouter history={history}>
         <Routes>
-          <Route exact path="/" component={Projects}/>
-          <Route path="/leaderboard" component={Leaderboard} />
-          <Route path="/submission" component={Submission} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/verification/:id" component={Verification} />
-          <Route path="/reset/:id" component={Reset} />
-          <Route component={NotFound} />
+          <Route exact path="/" element={<Projects />}/>
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/submission" element={<Submission />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/verification/:id" element={<Verification />} />
+          <Route path="/reset/:id" element={<Reset />} />
+          <Route element={NotFound} />
         </Routes>
-      </Router>
+      </BrowserRouter>
     );
   }
 }
