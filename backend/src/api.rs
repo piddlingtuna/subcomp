@@ -452,7 +452,7 @@ pub fn submit_project(
 
     if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_can_do_project(&user_id, &conn)) {
+        .all(|user_id| User::zid_can_do_project(user_id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -471,7 +471,7 @@ pub fn submit_project(
 
     if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_do_project(&user_id, &project.id, &conn)) {
+        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -528,13 +528,13 @@ pub fn edit_project(
 
     if !project_data.zids
         .iter()
-        .all(|zid| User::zid_doing_project(&zid, &project_id, &conn) || User::zid_can_do_project(&zid, &conn)) {
+        .all(|zid| User::zid_doing_project(zid, &project_id, &conn) || User::zid_can_do_project(zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
     if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zid| User::zid_not_do_project(&zid, &conn)) {
+        .all(|zid| User::zid_not_do_project(zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -554,7 +554,7 @@ pub fn edit_project(
 
     if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_do_project(&user_id, &project.id, &conn)) {
+        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -591,7 +591,7 @@ pub fn delete_project(
 
     if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zid| User::zid_not_do_project(&zid, &conn)) {
+        .all(|zid| User::zid_not_do_project(zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 

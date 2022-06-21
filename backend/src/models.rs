@@ -79,7 +79,7 @@ impl Project {
             .filter(votes::project_id.eq(self.id))
             .count()
             .get_result(conn)
-            .unwrap_or_else(|_| 0)
+            .unwrap_or(0)
     }
 
     pub fn insert(title: &str, summary: &str, link: &str, repo: &str, first_year: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
@@ -245,8 +245,8 @@ impl User {
             .collect::<String>();
 
         let new_token = NewToken {
-            token: token.clone(),
-            user_id: self.id.clone()
+            token,
+            user_id: self.id
         };
 
         match diesel::insert_into(tokens::table)
@@ -297,13 +297,13 @@ impl User {
             .filter(votes::user_id.eq(self.id))
             .count()
             .get_result(conn)
-            .unwrap_or_else(|_| 0)
+            .unwrap_or(0)
     }
 
     pub fn vote(&self, project_id: &Uuid, conn: &PgConnection) -> bool {
         let vote = NewVote {
-            user_id: self.id.clone(),
-            project_id: project_id.clone()
+            user_id: self.id,
+            project_id: *project_id
         };
 
         diesel::insert_into(votes::table)
@@ -332,12 +332,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for User {
             return Outcome::Failure((Status::BadRequest, ()));
         };
 
-        let token = match Token::get_by_token(&keys[0], &conn) {
+        let token = match Token::get_by_token(keys[0], conn) {
             Some(token) => token,
             None => return Outcome::Failure((Status::Unauthorized, ())),
         };
 
-        match token.get_user(&conn) {
+        match token.get_user(conn) {
             Some(user) => Outcome::Success(user),
             None => Outcome::Failure((Status::BadRequest, ())),
         }
@@ -398,7 +398,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for Token {
 
         let token = keys[0];
 
-        match Token::get_by_token(&token, &conn) {
+        match Token::get_by_token(token, conn) {
             Some(token) => Outcome::Success(token),
             None => Outcome::Failure((Status::Unauthorized, ())),
         }
@@ -553,6 +553,6 @@ impl Vote {
             .filter(votes::project_id.eq(project_id))
             .count()
             .get_result(conn)
-            .unwrap_or_else(|_| 0) > 0
+            .unwrap_or(0) > 0
     }
 }
