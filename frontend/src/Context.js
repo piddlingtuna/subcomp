@@ -19,9 +19,13 @@ const ContextProvider = (children) => {
 
   const initialContext = {
     projects,
+    setProjects,
     user,
+    setUser,
     projectDeadline,
+    setProjectDeadline,
     voteDeadline,
+    setVoteDeadline,
   };
 
   return <Context.Provider value={initialContext}>{children}</Context.Provider>;

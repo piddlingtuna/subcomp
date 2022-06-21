@@ -3,10 +3,60 @@ import Truncate from "react-truncate";
 import { Button, Container, Col, Row, Modal } from "react-bootstrap";
 
 import { Context } from "../Context";
-import { vote, unvote } from "../calls";
+import { callVote, callUnvote } from "../calls";
 
 const ProjectModal = (props) => {
-  const { user } = useContext(Context);
+  const { projects, setProjects, user, setUser } = useContext(Context);
+
+  const vote = () => {
+    callVote(props.projectId)
+      .then(() => {
+        const project = projects.filter(
+          (project) => project.id === props.project.id
+        )[0];
+        project.votes++;
+        setProjects(
+          projects
+            .filter((project) => project.id !== props.project.id)
+            .concat(project)
+            .sort((a, b) => a.id > b.id)
+        );
+        setUser({
+          zID: user.zID,
+          fullName: user.fullName,
+          votes: user.votes.concat(props.project.id),
+          projectId: user.projectId,
+        });
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+  };
+
+  const unvote = () => {
+    callUnvote(props.projectID)
+      .then(() => {
+        const project = projects.filter(
+          (project) => project.id === props.project.id
+        )[0];
+        project.votes--;
+        setProjects(
+          projects
+            .filter((project) => project.id !== props.project.id)
+            .concat(project)
+            .sort((a, b) => a.id > b.id)
+        );
+        setUser({
+          zID: user.zID,
+          fullName: user.fullName,
+          votes: user.votes.filter((id) => id !== props.project.id),
+          projectId: user.projectId,
+        });
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+  };
 
   return (
     <Modal

@@ -1,13 +1,27 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 
-import { changeFullName } from "../calls";
+import { Context } from "../Context";
+import { callChangeFullName } from "../calls";
 
 const ChangeFullName = (props) => {
+  const { user, setUser } = useContext(Context);
+
   const [fullName, setFullName] = useState("");
 
   const handleChangeFullName = () => {
-    changeFullName(fullName);
+    callChangeFullName(fullName)
+      .then(() => {
+        setUser({
+          zID: user.zID,
+          fullName: fullName,
+          votes: user.votes,
+          projectId: user.projectId,
+        });
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
     props.handleClose();
   };
   return (

@@ -2,18 +2,20 @@ import React, { useEffect, useState } from "react";
 
 import loadingGif from "../assets/img/loading.gif";
 import Header from "../components/Header";
-import { getComic } from "../calls";
+import { callGetComic } from "../calls";
 
 const NotFound = () => {
   const [state, setState] = useState({});
 
   useEffect(() => {
-    getComic().then((result) => {
-      setState({
-        title: result.title,
-        comic: result.comic,
-      });
-    });
+    callGetComic()
+      .then((response) => {
+        setState({
+          title: response.data.title,
+          comic: response.data.url,
+        });
+      })
+      .catch((error) => {});
   }, []);
 
   return (

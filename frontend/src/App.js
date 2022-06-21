@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import { Context } from "./Context";
 import history from "./history";
-import { getDeadlines, getProjects, getUser } from "./calls";
+import { callGetProjects, callGetUser, callGetDeadlines } from "./calls";
 import Projects from "./pages/Projects";
 import Leaderboard from "./pages/Leaderboard";
 import Submission from "./pages/Submission";
@@ -12,9 +13,37 @@ import Reset from "./pages/Reset";
 import NotFound from "./pages/NotFound";
 
 const App = () => {
-  getDeadlines();
-  getProjects();
-  getUser();
+  const { setProjects, setUser, setProjectDeadline, setVoteDeadline } =
+    useContext(Context);
+
+  callGetProjects()
+    .then((response) => {
+      setProjects(response.data.projects.sort((a, b) => a.id > b.id));
+    })
+    .catch((error) => {
+      setProjects([]);
+    });
+
+  callGetUser()
+    .then((response) => {
+      if (response !== null) {
+        setUser(response.data.user);
+      }
+    })
+    .catch((error) => {
+      setUser(null);
+    });
+
+  callGetDeadlines()
+    .then((response) => {
+      setProjectDeadline(response.data.projectDeadline);
+      setVoteDeadline(response.data.voteDeadline);
+    })
+    .catch((error) => {
+      setProjectDeadline(null);
+      setVoteDeadline(null);
+    });
+
   return (
     <BrowserRouter history={history}>
       <Routes>

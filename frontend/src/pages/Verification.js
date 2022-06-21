@@ -1,20 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
+import { Context } from "../Context";
 import Header from "../components/Header";
-import { verification } from "../calls";
+import { callUseVerification } from "../calls";
 
 const Verification = () => {
+  const { setUser } = useContext(Context);
+
   const [waiting, setWaiting] = useState(true);
   const [verified, setVerified] = useState(false);
   let { id } = useParams();
 
   useEffect(() => {
-    verification(id).then((verified) => {
-      setWaiting(false);
-      setVerified(verified);
-    });
-  }, [id]);
+    callUseVerification(id)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        setUser(response.data.user);
+        setWaiting(false);
+        setVerified(true);
+      })
+      .catch((error) => {
+        setWaiting(false);
+        setVerified(false);
+        alert(error.response.data.message);
+      });
+  }, [id, setUser]);
 
   return (
     <>

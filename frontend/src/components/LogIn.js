@@ -1,20 +1,32 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 
-import { logIn, generateReset } from "../calls";
+import { Context } from "../Context";
+import { callLogIn, callGenerateReset } from "../calls";
 
 const LogIn = (props) => {
-  const [zid, setZid] = useState("");
+  const { setUser } = useContext(Context);
+
+  const [zID, setZID] = useState("");
   const [password, setPassword] = useState("");
-  const [resetZid, setResetZid] = useState("");
+  const [resetZID, setResetZID] = useState("");
 
   const handleLogIn = () => {
-    logIn(zid, password);
+    callLogIn(zID, password)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        setUser(response.data.user);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
     props.handleClose();
   };
 
   const handleReset = () => {
-    generateReset(resetZid);
+    callGenerateReset(resetZID).catch((error) => {
+      alert(error.response.data.message);
+    });
     props.handleClose();
   };
 
@@ -31,7 +43,7 @@ const LogIn = (props) => {
             placeholder="z1234567"
             aria-label="zID"
             onChange={(event) => {
-              setZid(event.target.value);
+              setZID(event.target.value);
             }}
           />
         </InputGroup>
@@ -54,12 +66,12 @@ const LogIn = (props) => {
             placeholder="z1234567"
             aria-label="reset zID"
             onChange={(event) => {
-              setResetZid(event.target.value);
+              setResetZID(event.target.value);
             }}
           />
           <Button
             variant="outline-primary"
-            disabled={resetZid.length !== 8}
+            disabled={resetZID.length !== 8}
             onClick={handleReset}
           >
             reset
@@ -74,7 +86,7 @@ const LogIn = (props) => {
           variant="success"
           className="mx-2"
           onClick={handleLogIn}
-          disabled={zid.length !== 8 || password.length < 8}
+          disabled={zID.length !== 8 || password.length < 8}
         >
           Login
         </Button>

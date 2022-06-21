@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Modal } from "react-bootstrap";
 
-import { deleteProject } from "../calls";
+import { Context } from "../Context";
+import { callDeleteProject } from "../calls";
 
 const DeleteProject = (props) => {
+  const { projects, setProjects, user, setUser } = useContext(Context);
   const handleDelete = () => {
-    deleteProject();
+    callDeleteProject()
+      .then(() => {
+        setProjects(
+          projects.filter((project) => project.id !== user.projectId)
+        );
+        setUser({
+          zID: user.zID,
+          fullName: user.fullName,
+          votes: user.votes,
+          projectId: null,
+        });
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
     props.reset();
     props.handleClose();
   };

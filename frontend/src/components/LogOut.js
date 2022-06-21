@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Modal } from "react-bootstrap";
 
-import { logOut } from "../calls";
+import { Context } from "../Context";
+import { callLogOut } from "../calls";
 
 const LogOut = (props) => {
+  const { setUser } = useContext(Context);
+
   const handleLogOut = () => {
-    logOut();
+    callLogOut()
+      .then(() => {
+        localStorage.removeItem("token");
+        setUser(null);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
     props.handleClose();
   };
 

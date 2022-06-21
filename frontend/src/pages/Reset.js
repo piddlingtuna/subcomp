@@ -1,21 +1,31 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { Button, FormControl, InputGroup } from "react-bootstrap";
 
+import { Context } from "../Context";
 import Header from "../components/Header";
-import { useReset } from "../calls";
+import { callUseReset } from "../calls";
 
 const Reset = () => {
+  const { setUser } = useContext(Context);
   const [waiting, setWaiting] = useState(true);
   const [reset, setReset] = useState(false);
   const [password, setPassword] = useState("");
   let { id } = useParams();
 
   const handleReset = () => {
-    useReset(id, password).then((reset) => {
-      setWaiting(false);
-      setReset(reset);
-    });
+    callUseReset(id, password)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        setUser(response.data.user);
+        setWaiting(false);
+        setReset(true);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+        setWaiting(false);
+        setReset(false);
+      });
   };
 
   return (

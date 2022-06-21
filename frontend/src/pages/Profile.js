@@ -48,7 +48,7 @@ const Profile = () => {
               <Container className="m-3">
                 <Row>
                   <Col>
-                    <h5>zid: {user.zid}</h5>
+                    <h5>zID: {user.zID}</h5>
                   </Col>
                 </Row>
               </Container>
@@ -80,7 +80,7 @@ const Profile = () => {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 {projects
-                  .filter((project) => project.id === user.project)
+                  .filter((project) => project.id === user.projectId)
                   .map((project) => (
                     <ProjectCard key={project.id} project={project} />
                   ))}

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 
-import { changePassword } from "../calls";
+import { callChangePassword } from "../calls";
 
 const ChangePassword = (props) => {
   const [password, setPassword] = useState("");
 
   const handleChangePassword = () => {
-    changePassword(password);
+    callChangePassword(password).catch((error) => {
+      alert(error.response.data.message);
+    });
     props.handleClose();
   };
 
