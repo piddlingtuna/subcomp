@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Nav, Navbar } from "react-bootstrap";
 
@@ -83,8 +83,8 @@ const Header = () => {
               Login
             </Button>
           </Navbar.Text>
-          <SignUp show={state.signUpShow} handleClose={signUpClose} />
-          <LogIn show={state.logInShow} handleClose={logInClose} />
+          <SignUp show={signUpShow} handleClose={signUpClose} />
+          <LogIn show={logInShow} handleClose={logInClose} />
         </Navbar.Collapse>
       )}
       {user !== null && (
@@ -98,7 +98,7 @@ const Header = () => {
               Logout
             </Button>
           </Navbar.Text>
-          <LogOut show={state.logOutShow} handleClose={logOutClose} />
+          <LogOut show={logOutShow} handleClose={logOutClose} />
         </Navbar.Collapse>
       )}
     </Navbar>

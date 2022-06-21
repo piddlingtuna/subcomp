@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React, { useContext } from "react";
 import Truncate from "react-truncate";
 import { Button, Container, Col, Row, Modal } from "react-bootstrap";
 
+import { Context } from "../Context";
 import { vote, unvote } from "../calls";
 
 const ProjectModal = (props) => {

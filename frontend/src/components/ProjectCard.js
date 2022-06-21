@@ -4,7 +4,7 @@ import { Card, Container, Col, Row } from "react-bootstrap";
 
 import ProjectModal from "./ProjectModal";
 
-const ProjectCard = () => {
+const ProjectCard = (props) => {
   const [show, setShow] = useState(false);
   const handleOpen = () => {
     setShow(true);

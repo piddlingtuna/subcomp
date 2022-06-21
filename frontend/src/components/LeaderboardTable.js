@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FormControl, InputGroup, Table } from "react-bootstrap";
 
 import { Context } from "../Context";
@@ -80,8 +80,8 @@ const LeaderboardTable = () => {
     const newRanking = [];
     const inputLength = e.target.value.length;
     for (var i = 0; i < ranking.length; i++) {
-      const str = ranking[i].title.slice(0, inputLength).toLowerCase();
-      if (string === e.target.value.toLowerCase()) {
+      const titlePrefix = ranking[i].title.slice(0, inputLength).toLowerCase();
+      if (titlePrefix === e.target.value.toLowerCase()) {
         newRanking.push(ranking[i]);
       }
     }

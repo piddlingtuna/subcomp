@@ -7,18 +7,18 @@ import DeleteProject from "./DeleteProject";
 import { submitProject, editProject, checkzid } from "../calls";
 
 const SubmissionForm = () => {
-  const { user } = useContext(Context);
+  const { projects, user } = useContext(Context);
 
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [link, setLink] = useState("");
   const [repo, setRepo] = useState("");
-  const [zids, setzids] = useState([user.zid]);
+  const [zids, setZids] = useState([user.zid]);
   const [fullNames, setFullNames] = useState([user.fullName]);
   const [firstYear, setFirstYear] = useState(false);
   const [postgrad, setPostgrad] = useState(false);
-  const [addzid, setAddzid] = useState("");
-  const [deleteShow, SetDeleteShow] = useState(false);
+  const [addZid, setAddZid] = useState("");
+  const [deleteShow, setDeleteShow] = useState(false);
 
   useEffect(() => {
     const id = user.project;
@@ -28,47 +28,47 @@ const SubmissionForm = () => {
       setSummary(project.summary);
       setLink(project.link);
       setRepo(project.repo);
-      setzids(project.zids);
+      setZids(project.zids);
       setFullNames(project.fullNames);
       setFirstYear(false);
       setPostgrad(false);
-      setAddzid("");
-      SetDeleteShow(false);
+      setAddZid("");
+      setDeleteShow(false);
     }
   }, [projects, user]);
 
   const submit = () => {
-    submitProject(title, summary, link, repo, firstYear, postgrad, teamZids);
+    submitProject(title, summary, link, repo, firstYear, postgrad, zids);
   };
 
   const edit = () => {
-    editProject(title, summary, link, repo, firstYear, postgrad, teamZids);
+    editProject(title, summary, link, repo, firstYear, postgrad, zids);
   };
 
   const deleteOpen = () => {
-    SetDeleteShow(true);
+    setDeleteShow(true);
   };
 
   const deleteClose = () => {
-    setDeleteClose(false);
+    setDeleteShow(false);
   };
 
   const addTeamMember = () => {
-    if (teamzids.length >= 3) {
+    if (zids.length >= 3) {
       return;
     }
-    checkzid(addzid).then((user) => {
+    checkzid(addZid).then((user) => {
       if (user !== null) {
-        setTeamZids(teamZids.concat(user.zid));
+        setZids(zids.concat(user.zid));
         setFullNames(fullNames.concat(user.fullName));
       }
     });
   };
 
   const deleteTeamMember = (oldFullName) => {
-    const index = team.indexOf(oldFullName);
+    const index = fullNames.indexOf(oldFullName);
     if (index !== -1) {
-      setTeamZids(teamZids.splice(index, 1));
+      setZids(zids.splice(index, 1));
       setFullNames(fullNames.filter((fullName) => fullName !== oldFullName));
     }
   };
@@ -78,12 +78,12 @@ const SubmissionForm = () => {
     setSummary("");
     setLink("");
     setRepo("");
-    setzids([user.zid]);
+    setZids([user.zid]);
     setFullNames([user.fullName]);
     setFirstYear(false);
     setPostgrad(false);
     setAddZid("");
-    SetDeleteShow(false);
+    setDeleteShow(false);
   };
 
   return (
@@ -161,14 +161,14 @@ const SubmissionForm = () => {
               id="text"
               placeholder="zID"
               onChange={(event) => {
-                setZid(event.target.value);
+                setAddZid(event.target.value);
               }}
             />
             <InputGroup.Append>
               <Button
                 variant="outline-success"
                 onClick={addTeamMember}
-                disabled={addZid.length !== 8 || teamZids.length >= 3}
+                disabled={addZid.length !== 8 || zids.length >= 3}
               >
                 add
               </Button>
@@ -182,14 +182,14 @@ const SubmissionForm = () => {
           Current Team:
         </h5>
         <div className="mt-4">
-          {team.map((fullName, index) => (
+          {fullNames.map((fullName, index) => (
             <InputGroup key={index} className="mb-3">
               <InputGroup.Text>{fullName}</InputGroup.Text>
               <InputGroup.Append>
                 <Button
                   variant="outline-danger"
                   onClick={() => deleteTeamMember(fullName)}
-                  disabled={team_zids[index] === user.zid}
+                  disabled={zids[index] === user.zid}
                 >
                   delete
                 </Button>
@@ -238,7 +238,7 @@ const SubmissionForm = () => {
             summary: summary,
             link: link,
             repo: repo,
-            team: team,
+            zids: zids,
             votes: 0,
           }}
           disabled={true}

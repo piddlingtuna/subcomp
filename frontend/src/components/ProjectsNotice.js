@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Alert } from "react-bootstrap";
+
+import { Context } from "../Context";
 
 const ProjectsNotice = () => {
   const { user, projectDeadline, voteDeadline } = useContext(Context);

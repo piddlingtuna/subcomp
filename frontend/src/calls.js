@@ -443,7 +443,7 @@ export {
   changeFullName,
   changePassword,
   generateReset,
-  reset,
+  useReset,
   vote,
   unvote,
   checkzid,

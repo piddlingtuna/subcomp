@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import loadingGif from "../assets/img/loading.gif";
 import Header from "../components/Header";
