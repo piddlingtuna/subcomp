@@ -27,7 +27,7 @@ pub fn projects(
                 "link": project.link,
                 "repo": project.repo,
                 "votes": project.count_votes(&conn),
-                "zIDs": project.get_zID(&conn),
+                "zIDs": project.get_zIDs(&conn),
                 "fullNames": project.get_full_names(&conn),
         }))
         .collect();
