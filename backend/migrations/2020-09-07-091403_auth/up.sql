@@ -18,14 +18,14 @@ CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at TIMESTAMP DEFAULT current_timestamp NOT NULL,
     updated_at TIMESTAMP DEFAULT current_timestamp NOT NULL,
-    zID CHAR(8) UNIQUE NOT NULL,
+    zid CHAR(8) UNIQUE NOT NULL,
     full_name TEXT NOT NULL,
     password_hash BYTEA NOT NULL,
     project_id UUID DEFAULT NULL references projects(id)
 );
 
 SELECT diesel_manage_updated_at('users');
-CREATE UNIQUE INDEX zIDx ON users(zID);
+CREATE UNIQUE INDEX zidx ON users(zid);
 
 CREATE TABLE tokens (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

@@ -50,18 +50,18 @@ impl Project {
             .unwrap_or_else(|_| Vec::new())
     }
 
-    pub fn get_zIDs_from_id(id: &Uuid, conn: &PgConnection) -> Vec<String> {
+    pub fn get_zids_from_id(id: &Uuid, conn: &PgConnection) -> Vec<String> {
         all_users
             .filter(users::project_id.eq(id))
-            .select(users::zID)
+            .select(users::zid)
             .load::<String>(conn)
             .unwrap_or_else(|_| Vec::new())
     }
 
-    pub fn get_zIDs(&self, conn: &PgConnection) -> Vec<String> {
+    pub fn get_zids(&self, conn: &PgConnection) -> Vec<String> {
         all_users
             .filter(users::project_id.eq(self.id))
-            .select(users::zID)
+            .select(users::zid)
             .load::<String>(conn)
             .unwrap_or_else(|_| Vec::new())
     }
@@ -127,7 +127,7 @@ pub struct User {
     pub id: Uuid,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
-    pub zID: String,
+    pub zid: String,
     pub full_name: String,
     pub password_hash: Vec<u8>,
     pub project_id: Option<Uuid>
@@ -136,7 +136,7 @@ pub struct User {
 #[derive(Insertable)]
 #[table_name = "users"]
 pub struct NewUser {
-    pub zID: String,
+    pub zid: String,
     pub full_name: String,
     pub password_hash: Vec<u8>,
 }
@@ -156,9 +156,9 @@ impl User {
         self.password_hash == argon2i_simple(password, &login_salt).to_vec()
     }
 
-    pub fn exists_by_zID(zID: &str, conn: &PgConnection) -> bool {
+    pub fn exists_by_zid(zid: &str, conn: &PgConnection) -> bool {
         match all_users
-            .filter(users::zID.eq(zID))
+            .filter(users::zid.eq(zid))
             .first::<User>(conn) {
                 Ok(_) => true,
                 Err(_) => false,
@@ -174,9 +174,9 @@ impl User {
             }
     }
 
-    pub fn zID_doing_project(zID: &str, project_id: &Uuid, conn: &PgConnection) -> bool {
+    pub fn zid_doing_project(zid: &str, project_id: &Uuid, conn: &PgConnection) -> bool {
         let id = match all_users
-            .filter(users::zID.eq(zID))
+            .filter(users::zid.eq(zid))
             .select(users::project_id)
             .first::<Option<Uuid>>(conn) {
                 Ok(id) => (id),
@@ -186,9 +186,9 @@ impl User {
         id == Some(*project_id)
     }
 
-    pub fn zID_can_do_project(zID: &str, conn: &PgConnection) -> bool {
+    pub fn zid_can_do_project(zid: &str, conn: &PgConnection) -> bool {
         let id = match all_users
-            .filter(users::zID.eq(zID))
+            .filter(users::zid.eq(zid))
             .select(users::project_id)
             .first::<Option<Uuid>>(conn) {
                 Ok(id) => id,
@@ -198,34 +198,34 @@ impl User {
         id == None
     }
 
-    pub fn zID_do_project(zID: &str, project_id: &Uuid, conn: &PgConnection) -> bool {
-        diesel::update(all_users.filter(users::zID.eq(zID)))
+    pub fn zid_do_project(zid: &str, project_id: &Uuid, conn: &PgConnection) -> bool {
+        diesel::update(all_users.filter(users::zid.eq(zid)))
             .set(users::project_id.eq(project_id))
             .execute(conn)
             .is_ok()
     }
 
-    pub fn zID_not_do_project(zID: &str, conn: &PgConnection) -> bool {
+    pub fn zid_not_do_project(zid: &str, conn: &PgConnection) -> bool {
         let none: Option<Uuid> = None;
 
-        diesel::update(all_users.filter(users::zID.eq(zID)))
+        diesel::update(all_users.filter(users::zid.eq(zid)))
             .set(users::project_id.eq(none))
             .execute(conn)
             .is_ok()
     }
 
-    pub fn get_by_zID(zID: &str, conn: &PgConnection) -> Option<User> {
+    pub fn get_by_zid(zid: &str, conn: &PgConnection) -> Option<User> {
         match all_users
-            .filter(users::zID.eq(zID))
+            .filter(users::zid.eq(zid))
             .first::<User>(conn) {
                 Ok(user) => Some(user),
                 Err(_) => None,
             }
     }
 
-    pub fn insert(zID: &str, full_name: &str, password_hash: &Vec<u8>, conn: &PgConnection) -> Option<User> {
+    pub fn insert(zid: &str, full_name: &str, password_hash: &Vec<u8>, conn: &PgConnection) -> Option<User> {
         let new_user = NewUser {
-            zID: zID.to_string(),
+            zid: zid.to_string(),
             full_name: full_name.to_string(),
             password_hash: password_hash.clone(),
         };
@@ -411,7 +411,7 @@ pub struct Verification {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub token: String,
-    pub zID: String,
+    pub zid: String,
     pub full_name: String,
     pub password_hash: Vec<u8>,
 }
@@ -420,13 +420,13 @@ pub struct Verification {
 #[table_name = "verifications"]
 pub struct NewVerification {
     pub token: String,
-    pub zID: String,
+    pub zid: String,
     pub full_name: String,
     pub password_hash: Vec<u8>,
 }
 
 impl Verification {
-    pub fn insert(zID: &str, full_name: &str, password: &str, conn: &PgConnection) -> Option<Verification> {
+    pub fn insert(zid: &str, full_name: &str, password: &str, conn: &PgConnection) -> Option<Verification> {
         let token = thread_rng()
             .sample_iter(&Alphanumeric)
             .take(32)
@@ -436,7 +436,7 @@ impl Verification {
 
         let new_verification = NewVerification {
             token,
-            zID: zID.to_string(),
+            zid: zid.to_string(),
             full_name: full_name.to_string(),
             password_hash,
         };
@@ -482,8 +482,8 @@ pub struct NewReset {
 }
 
 impl Reset {
-    pub fn insert(zID: &str, conn: &PgConnection) -> Option<Reset> {
-        let user = match User::get_by_zID(zID, conn) {
+    pub fn insert(zid: &str, conn: &PgConnection) -> Option<Reset> {
+        let user = match User::get_by_zid(zid, conn) {
             Some(user) => user,
             None => return None,
         };

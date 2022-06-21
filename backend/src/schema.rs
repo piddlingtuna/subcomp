@@ -37,7 +37,7 @@ table! {
         id -> Uuid,
         created_at -> Timestamp,
         updated_at -> Timestamp,
-        zID -> Bpchar,
+        zid -> Bpchar,
         full_name -> Text,
         password_hash -> Bytea,
         project_id -> Nullable<Uuid>,
@@ -50,7 +50,7 @@ table! {
         created_at -> Timestamp,
         updated_at -> Timestamp,
         token -> Bpchar,
-        zID -> Bpchar,
+        zid -> Bpchar,
         full_name -> Text,
         password_hash -> Bytea,
     }

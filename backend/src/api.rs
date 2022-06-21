@@ -27,7 +27,7 @@ pub fn projects(
                 "link": project.link,
                 "repo": project.repo,
                 "votes": project.count_votes(&conn),
-                "zIDs": project.get_zIDs(&conn),
+                "zIDs": project.get_zids(&conn),
                 "fullNames": project.get_full_names(&conn),
         }))
         .collect();
@@ -44,7 +44,7 @@ pub fn user(
 ) -> APIResponse {
     ok().data(json!({
         "user": {
-            "zID": user.zID,
+            "zID": user.zid,
             "fullName": user.full_name,
             "votes": user.get_votes(&conn),
             "projectId": user.get_project(&conn),
@@ -54,7 +54,7 @@ pub fn user(
 
 #[derive(Deserialize)]
 pub struct GenerateVerificationData {
-    pub zID: String,
+    pub zid: String,
     pub full_name: String,
     pub password: String,
 }
@@ -65,7 +65,7 @@ pub fn generate_verification(
     conn: Conn,
 ) -> APIResponse {
     let re = Regex::new(r"^z[0-9]{7}$").unwrap();
-    if !re.is_match(&data.zID) {
+    if !re.is_match(&data.zid) {
         return bad_request().message("zID is invalid.");
     }
 
@@ -73,16 +73,16 @@ pub fn generate_verification(
         return bad_request().message("Password must be at least 8 characters.");
     }
 
-    if User::exists_by_zID(&data.zID, &conn) {
+    if User::exists_by_zid(&data.zid, &conn) {
         return bad_request().message("There is already an account with this zID.");
     }
 
-    let verification = match Verification::insert(&data.zID, &data.full_name, &data.password, &conn) {
+    let verification = match Verification::insert(&data.zid, &data.full_name, &data.password, &conn) {
         Some(verification) => verification,
         None => return internal_server_error(),
     };
 
-    let unsw_email = format!("<{}@unsw.edu.au>", &data.zID);
+    let unsw_email = format!("<{}@unsw.edu.au>", &data.zid);
     let domain = env::var("DOMAIN").expect("DOMAIN must be set in env");
     let body = format!("Go to the following link to verify your account for the CSESoc Personal Projects Competition. It will be valid for 1 hour.\n\n{}/verification/{}\n", &domain, &verification.token);
 
@@ -132,7 +132,7 @@ pub fn use_verification(
         return bad_request().message("Verification token has expired.");
     };
 
-    let user = match User::insert(&verification.zID, &verification.full_name, &verification.password_hash, &conn) {
+    let user = match User::insert(&verification.zid, &verification.full_name, &verification.password_hash, &conn) {
         Some(user) => user,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
@@ -149,7 +149,7 @@ pub fn use_verification(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zID,
+            "zID": user.zid,
             "fullName": user.full_name,
             "votes": user.get_votes(&conn),
             "projectId": user.get_project(&conn),
@@ -159,7 +159,7 @@ pub fn use_verification(
 
 #[derive(Deserialize)]
 pub struct LoginData {
-    zID: String,
+    zid: String,
     password: String,
 }
 
@@ -168,7 +168,7 @@ pub fn login(
     data: Json<LoginData>,
     conn: Conn,
 ) -> APIResponse {
-    let user = match User::get_by_zID(&data.zID, &conn) {
+    let user = match User::get_by_zid(&data.zid, &conn) {
         Some(user) => user,
         None => return unauthorized().message("zID or password is incorrect."),
     };
@@ -185,7 +185,7 @@ pub fn login(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zID,
+            "zID": user.zid,
             "fullName": user.full_name,
             "votes": user.get_votes(&conn),
             "projectId": user.get_project(&conn),
@@ -240,7 +240,7 @@ pub fn change_password(
 
 #[derive(Deserialize)]
 pub struct GenerateResetData {
-    pub zID: String,
+    pub zid: String,
 }
 
 #[post("/generate_reset", data = "<data>", format = "application/json")]
@@ -248,12 +248,12 @@ pub fn generate_reset(
     data: Json<GenerateResetData>,
     conn: Conn,
 ) -> APIResponse {
-    let reset = match Reset::insert(&data.zID, &conn) {
+    let reset = match Reset::insert(&data.zid, &conn) {
         Some(reset) => reset,
         None => return bad_request().message("zID is invalid."),
     };
 
-    let unsw_email = format!("<{}@unsw.edu.au>", &data.zID);
+    let unsw_email = format!("<{}@unsw.edu.au>", &data.zid);
     let domain = env::var("DOMAIN").expect("DOMAIN must be set in env");
     let body = format!("Go to the following link to reset your password for the CSESoc Personal Projects Competition. It will be valid for 1 hour.\n\n{}/reset/{}\n", &domain, &reset.token);
 
@@ -325,7 +325,7 @@ pub fn use_reset(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zID,
+            "zID": user.zid,
             "fullName": user.full_name,
             "votes": user.get_votes(&conn),
             "projectId": user.get_project(&conn),
@@ -395,15 +395,15 @@ pub fn unvote(
 
 #[derive(Deserialize)]
 pub struct CheckZidData {
-    pub zID: String,
+    pub zid: String,
 }
 
-#[post("/check_zID", data = "<data>", format = "application/json")]
-pub fn check_zID(
+#[post("/check_zid", data = "<data>", format = "application/json")]
+pub fn check_zid(
     data: Json<CheckZidData>,
     conn: Conn,
 ) -> APIResponse {
-    let user = match User::get_by_zID(&data.zID, &conn) {
+    let user = match User::get_by_zid(&data.zid, &conn) {
         Some(user) => user,
         None => return bad_request().message("zID is invalid. They must have an account."),
     };
@@ -413,7 +413,7 @@ pub fn check_zID(
     }
 
     ok().data(json!({
-        "zID": user.zID,
+        "zID": user.zid,
         "fullName": user.full_name,
     }))
 }
@@ -426,7 +426,7 @@ pub struct SubmitProjectData {
     pub repo: String,
     pub first_year: bool,
     pub postgraduate: bool,
-    pub zIDs: Vec<String>,
+    pub zids: Vec<String>,
 }
 
 #[post("/submit_project", data = "<project_data>", format = "application/json")]
@@ -442,17 +442,17 @@ pub fn submit_project(
         return bad_request().message("Project deadline is over.");
     }
 
-    if project_data.zIDs.len() > 3 {
+    if project_data.zids.len() > 3 {
         return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
-    if !project_data.zIDs.contains(&user.zID) {
+    if !project_data.zids.contains(&user.zid) {
         return bad_request().message("Your zID is not included in the team.");
     }
 
-    if !project_data.zIDs
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zID_can_do_project(&user_id, &conn)) {
+        .all(|user_id| User::zid_can_do_project(&user_id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -469,9 +469,9 @@ pub fn submit_project(
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
-    if !project_data.zIDs
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zID_do_project(&user_id, &project.id, &conn)) {
+        .all(|user_id| User::zid_do_project(&user_id, &project.id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -483,7 +483,7 @@ pub fn submit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "zIDs": project.get_zIDs(&conn),
+            "zIDs": project.get_zids(&conn),
             "fullNames": project.get_full_names(&conn),
         },
     }))
@@ -497,7 +497,7 @@ pub struct EditProjectData {
     pub repo: String,
     pub first_year: bool,
     pub postgraduate: bool,
-    pub zIDs: Vec<String>,
+    pub zids: Vec<String>,
 }
 
 #[post("/edit_project", data = "<project_data>", format = "application/json")]
@@ -513,11 +513,11 @@ pub fn edit_project(
         return bad_request().message("Project deadline is over.");
     }
 
-    if project_data.zIDs.len() > 3 {
+    if project_data.zids.len() > 3 {
         return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
-    if !project_data.zIDs.contains(&user.zID) {
+    if !project_data.zids.contains(&user.zid) {
         return bad_request().message("Your zID is not included in the team.");
     }
 
@@ -526,15 +526,15 @@ pub fn edit_project(
         None => return bad_request().message("You have not submitted a project."),
     };
 
-    if !project_data.zIDs
+    if !project_data.zids
         .iter()
-        .all(|zID| User::zID_doing_project(&zID, &project_id, &conn) || User::zID_can_do_project(&zID, &conn)) {
+        .all(|zid| User::zid_doing_project(&zid, &project_id, &conn) || User::zid_can_do_project(&zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
-    if !Project::get_zIDs_from_id(&project_id, &conn)
+    if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zID| User::zID_not_do_project(&zID, &conn)) {
+        .all(|zid| User::zid_not_do_project(&zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -552,9 +552,9 @@ pub fn edit_project(
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
-    if !project_data.zIDs
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zID_do_project(&user_id, &project.id, &conn)) {
+        .all(|user_id| User::zid_do_project(&user_id, &project.id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -566,7 +566,7 @@ pub fn edit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "zIDS": project.get_zIDs(&conn),
+            "zIDS": project.get_zids(&conn),
             "fullNames": project.get_full_names(&conn),
         },
     }))
@@ -589,9 +589,9 @@ pub fn delete_project(
         None => return bad_request().message("You have not submitted a project."),
     };
 
-    if !Project::get_zIDs_from_id(&project_id, &conn)
+    if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zID| User::zID_not_do_project(&zID, &conn)) {
+        .all(|zid| User::zid_not_do_project(&zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
