@@ -157,12 +157,10 @@ impl User {
     }
 
     pub fn exists_by_zid(zid: &str, conn: &PgConnection) -> bool {
-        match all_users
+        all_users
             .filter(users::zid.eq(zid))
-            .first::<User>(conn) {
-                Ok(_) => true,
-                Err(_) => false,
-            }
+            .first::<User>(conn)
+            .is_ok()
     }
 
     pub fn get_by_id(id: &Uuid, conn: &PgConnection) -> Option<User> {
@@ -223,11 +221,11 @@ impl User {
             }
     }
 
-    pub fn insert(zid: &str, full_name: &str, password_hash: &Vec<u8>, conn: &PgConnection) -> Option<User> {
+    pub fn insert(zid: &str, full_name: &str, password_hash: &[u8], conn: &PgConnection) -> Option<User> {
         let new_user = NewUser {
             zid: zid.to_string(),
             full_name: full_name.to_string(),
-            password_hash: password_hash.clone(),
+            password_hash: password_hash.to_owned(),
         };
 
         match diesel::insert_into(users::table)
