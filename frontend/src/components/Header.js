@@ -47,25 +47,25 @@ const Header = () => {
       </Navbar.Brand>
       <Nav className="mr-auto">
         <Navbar.Text className="mx-1">
-          <Link to="" style={{ color: "white" }}>
+          <Link to="/" style={{ color: "white" }}>
             Projects
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">
-          <Link to="leaderboard" style={{ color: "white" }}>
+          <Link to="/leaderboard" style={{ color: "white" }}>
             Leaderboard
           </Link>
         </Navbar.Text>
         {user !== null && (
           <Navbar.Text className="mx-1">
-            <Link to="submission" style={{ color: "white" }}>
+            <Link to="/submission" style={{ color: "white" }}>
               Submission
             </Link>
           </Navbar.Text>
         )}
         {user !== null && (
           <Navbar.Text className="mx-1">
-            <Link to="profile" style={{ color: "white" }}>
+            <Link to="/profile" style={{ color: "white" }}>
               Profile
             </Link>
           </Navbar.Text>

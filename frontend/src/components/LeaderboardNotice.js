@@ -8,7 +8,7 @@ const LeaderboardNotice = () => {
   return (
     <Alert className="m-3" variant="info">
       First place wins the Hitchhiker's Prize!
-      {voteDeadline && ` Voting closes on ${this.centralState.voteDeadline}.`}
+      {voteDeadline && ` Voting closes on ${voteDeadline}.`}
     </Alert>
   );
 };
