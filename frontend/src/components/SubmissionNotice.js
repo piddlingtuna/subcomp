@@ -1,30 +1,25 @@
-import React from 'react';
-import { CSComponent } from 'react-central-state';
-import { Alert } from 'react-bootstrap';
+import React from "react";
+import { Alert } from "react-bootstrap";
 
-class SubmissionNotice extends React.Component {
-  updateWith() {
-    return ['user'];
-  }
+const SubmissionNotice = () => {
+  const { user } = useContext(Context);
 
-  render() {
-    return (
-      <>
-        {this.centralState.user.project === null && (
-          <Alert className="m-3" variant="info">
-            Please submit a project! Only one submission per team is required.
-            Everyone on your team must have an account.
-          </Alert>
-        )}
-        {this.centralState.user.project !== null && (
-          <Alert className="m-3" variant="warning">
-            Ensure you press save if you change anything! Only one submission
-            per team is required. Everyone on your team must have an account.
-          </Alert>
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      {user.project === null && (
+        <Alert className="m-3" variant="info">
+          Please submit a project! Only one submission per team is required.
+          Everyone on your team must have an account.
+        </Alert>
+      )}
+      {user.project !== null && (
+        <Alert className="m-3" variant="warning">
+          Ensure you press save if you change anything! Only one submission per
+          team is required. Everyone on your team must have an account.
+        </Alert>
+      )}
+    </>
+  );
+};
 
-export default CSComponent(SubmissionNotice);
+export default SubmissionNotice;

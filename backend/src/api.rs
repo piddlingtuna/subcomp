@@ -27,8 +27,8 @@ pub fn projects(
                 "link": project.link,
                 "repo": project.repo,
                 "votes": project.count_votes(&conn),
-                "team_zids": project.get_zids(&conn),
-                "team": project.get_full_names(&conn),
+                "zids": project.get_zids(&conn),
+                "fullNames": project.get_full_names(&conn),
         }))
         .collect();
     
@@ -483,8 +483,8 @@ pub fn submit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "team_zids": project.get_zids(&conn),
-            "team": project.get_full_names(&conn),
+            "zids": project.get_zids(&conn),
+            "fullNames": project.get_full_names(&conn),
         },
     }))
 }
@@ -566,8 +566,8 @@ pub fn edit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "team_zids": project.get_zids(&conn),
-            "team": project.get_full_names(&conn),
+            "zids": project.get_zids(&conn),
+            "fullNames": project.get_full_names(&conn),
         },
     }))
 }

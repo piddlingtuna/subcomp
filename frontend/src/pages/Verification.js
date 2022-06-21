@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
 
-import Header from '../components/Header';
-import { verification } from '../calls';
+import Header from "../components/Header";
+import { verification } from "../calls";
 
-function Verification() {
-  const [state, setState] = useState({});
+const Verification = () => {
+  const [waiting, setWaiting] = useState(true);
+  const [verified, setVerified] = useState(false);
   let { id } = useParams();
 
   useEffect(() => {
     verification(id).then((verified) => {
-      setState({
-        verified: verified,
-      });
+      setWaiting(false);
+      setVerified(verified);
     });
   }, [id]);
+
   return (
     <>
-      {state.verified ? (
+      {verified ? (
         <Navigate to="" />
       ) : (
         <>
           <Header />
-          <div style={{ width: '75%', margin: '0 auto' }}>
+          <div style={{ width: "75%", margin: "0 auto" }}>
             <h1
               className="m-3"
-              style={{ display: 'flex', justifyContent: 'center' }}
+              style={{ display: "flex", justifyContent: "center" }}
             >
               Verification
             </h1>
             <div className="m-5">
-              {state.verified === undefined ? (
+              {waiting ? (
                 <p>We're just verifying your account...</p>
               ) : (
                 <p>This link is invalid :(</p>
@@ -41,6 +42,6 @@ function Verification() {
       )}
     </>
   );
-}
+};
 
 export default Verification;

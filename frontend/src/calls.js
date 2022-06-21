@@ -1,11 +1,13 @@
-import { CSHandler } from 'react-central-state';
-import axios from 'axios';
+import axios from "axios";
 
-const handler = new CSHandler();
+import { Context } from "./Context";
+
+const { setProjects, setUser, setProjectDeadline, setVoteDeadline } =
+  useContext(Context);
 
 const getComic = () => {
   return axios
-    .get('https://xkcd-imgs.herokuapp.com/')
+    .get("https://xkcd-imgs.herokuapp.com/")
     .then((response) => {
       return {
         title: response.data.title,
@@ -20,7 +22,7 @@ const getComic = () => {
 
 const getDeadlines = () => {
   axios
-    .get('/api/deadlines/')
+    .get("/api/deadlines/")
     .then((response) => {
       handler.setCentralState({
         projectDeadline: response.data.project_deadline,
@@ -38,7 +40,7 @@ const getDeadlines = () => {
 
 const getProjects = () => {
   axios
-    .get('/api/projects/')
+    .get("/api/projects/")
     .then((response) => {
       handler.setCentralState({
         projects: response.data.projects.sort((a, b) => a.id > b.id),
@@ -53,11 +55,11 @@ const getProjects = () => {
 };
 
 const getUser = () => {
-  if (localStorage.getItem('token')) {
+  if (localStorage.getItem("token")) {
     axios
-      .get('/api/user/', {
+      .get("/api/user/", {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
       })
       .then((response) => {
@@ -78,10 +80,10 @@ const getUser = () => {
   }
 };
 
-const generateVerification = (zID, fullName, password) => {
+const generateVerification = (zid, fullName, password) => {
   axios
-    .post('/api/generate_verification/', {
-      zid: zID,
+    .post("/api/generate_verification/", {
+      zid: zid,
       full_name: fullName,
       password: password,
     })
@@ -92,11 +94,11 @@ const generateVerification = (zID, fullName, password) => {
 
 const verification = (token) => {
   return axios
-    .post('/api/use_verification/', {
+    .post("/api/use_verification/", {
       token: token,
     })
     .then((response) => {
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
       handler.setCentralState({
         user: response.data.user,
       });
@@ -108,14 +110,14 @@ const verification = (token) => {
     });
 };
 
-const logIn = (zID, password) => {
+const logIn = (zid, password) => {
   axios
-    .post('/api/login/', {
-      zid: zID,
+    .post("/api/login/", {
+      zid: zid,
       password: password,
     })
     .then((response) => {
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
       handler.setCentralState({
         user: response.data.user,
       });
@@ -127,13 +129,13 @@ const logIn = (zID, password) => {
 
 const logOut = () => {
   axios
-    .get('/api/logout/', {
+    .get("/api/logout/", {
       headers: {
-        Authorization: localStorage.getItem('token'),
+        Authorization: localStorage.getItem("token"),
       },
     })
     .then(() => {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       handler.setCentralState({
         user: null,
       });
@@ -146,20 +148,20 @@ const logOut = () => {
 const changeFullName = (fullName) => {
   axios
     .post(
-      '/api/change_full_name/',
+      "/api/change_full_name/",
       {
         full_name: fullName,
       },
       {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
-      },
+      }
     )
     .then(() => {
       handler.setCentralState({
         user: {
-          zID: handler.centralState.user.zID,
+          zid: handler.centralState.user.zid,
           fullName: fullName,
           votes: handler.centralState.user.votes,
           project: handler.centralState.user.project,
@@ -174,39 +176,39 @@ const changeFullName = (fullName) => {
 const changePassword = (password) => {
   axios
     .post(
-      '/api/change_password/',
+      "/api/change_password/",
       {
         password: password,
       },
       {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
-      },
+      }
     )
     .catch((error) => {
       alert(error.response.data.message);
     });
 };
 
-const generateReset = (zID) => {
+const generateReset = (zid) => {
   axios
-    .post('/api/generate_reset/', {
-      zid: zID,
+    .post("/api/generate_reset/", {
+      zid: zid,
     })
     .catch((error) => {
       alert(error.response.data.message);
     });
 };
 
-const reset = (token, password) => {
+const useReset = (token, password) => {
   return axios
-    .post('/api/use_reset/', {
+    .post("/api/use_reset/", {
       token: token,
       password: password,
     })
     .then((response) => {
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
       handler.setCentralState({
         user: response.data.user,
       });
@@ -221,24 +223,24 @@ const reset = (token, password) => {
 const vote = (project_id) => {
   axios
     .post(
-      '/api/vote/',
+      "/api/vote/",
       {
         project_id: project_id,
       },
       {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
-      },
+      }
     )
     .then(() => {
       const project = handler.centralState.projects.filter(
-        (project) => project.id === project_id,
+        (project) => project.id === project_id
       )[0];
       project.votes++;
       handler.setCentralState({
         user: {
-          zID: handler.centralState.user.zID,
+          zid: handler.centralState.user.zid,
           fullName: handler.centralState.user.fullName,
           votes: handler.centralState.user.votes.concat(project_id),
           project: handler.centralState.user.project,
@@ -257,27 +259,27 @@ const vote = (project_id) => {
 const unvote = (project_id) => {
   axios
     .post(
-      '/api/unvote/',
+      "/api/unvote/",
       {
         project_id: project_id,
       },
       {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
-      },
+      }
     )
     .then(() => {
       const project = handler.centralState.projects.filter(
-        (project) => project.id === project_id,
+        (project) => project.id === project_id
       )[0];
       project.votes--;
       handler.setCentralState({
         user: {
-          zID: handler.centralState.user.zID,
+          zid: handler.centralState.user.zid,
           fullName: handler.centralState.user.fullName,
           votes: handler.centralState.user.votes.filter(
-            (id) => id !== project_id,
+            (id) => id !== project_id
           ),
           project: handler.centralState.user.project,
         },
@@ -292,22 +294,22 @@ const unvote = (project_id) => {
     });
 };
 
-const checkZID = (zID) => {
+const checkzid = (zid) => {
   return axios
     .post(
-      '/api/check_zid/',
+      "/api/check_zid/",
       {
-        zid: zID,
+        zid: zid,
       },
       {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
-      },
+      }
     )
     .then((response) => {
       return {
-        zID: response.data.zID,
+        zid: response.data.zid,
         fullName: response.data.fullName,
       };
     })
@@ -324,11 +326,11 @@ const submitProject = (
   repo,
   first_year,
   postgraduate,
-  team_zids,
+  team_zids
 ) => {
   axios
     .post(
-      '/api/submit_project/',
+      "/api/submit_project/",
       {
         title: title,
         summary: summary,
@@ -340,15 +342,15 @@ const submitProject = (
       },
       {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
-      },
+      }
     )
     .then((response) => {
       handler.setCentralState({
         user: {
-          zID: handler.centralState.user.zID,
-          fullName: handler.centralState.user.zID,
+          zid: handler.centralState.user.zid,
+          fullName: handler.centralState.user.zid,
           votes: handler.centralState.user.votes,
           project: response.data.project.id,
         },
@@ -369,12 +371,12 @@ const editProject = (
   repo,
   first_year,
   postgraduate,
-  team_zids,
+  team_zids
 ) => {
   const id = handler.centralState.user.project;
   axios
     .post(
-      '/api/edit_project/',
+      "/api/edit_project/",
       {
         title: title,
         summary: summary,
@@ -386,9 +388,9 @@ const editProject = (
       },
       {
         headers: {
-          Authorization: localStorage.getItem('token'),
+          Authorization: localStorage.getItem("token"),
         },
-      },
+      }
     )
     .then((response) => {
       handler.setCentralState({
@@ -406,21 +408,21 @@ const editProject = (
 const deleteProject = () => {
   const id = handler.centralState.user.project;
   axios
-    .get('/api/delete_project/', {
+    .get("/api/delete_project/", {
       headers: {
-        Authorization: localStorage.getItem('token'),
+        Authorization: localStorage.getItem("token"),
       },
     })
     .then(() => {
       handler.setCentralState({
         user: {
-          zID: handler.centralState.user.zID,
-          fullName: handler.centralState.user.zID,
+          zid: handler.centralState.user.zid,
+          fullName: handler.centralState.user.zid,
           votes: handler.centralState.user.votes,
           project: null,
         },
         projects: handler.centralState.projects.filter(
-          (project) => project.id !== id,
+          (project) => project.id !== id
         ),
       });
     })
@@ -444,7 +446,7 @@ export {
   reset,
   vote,
   unvote,
-  checkZID,
+  checkzid,
   submitProject,
   editProject,
   deleteProject,

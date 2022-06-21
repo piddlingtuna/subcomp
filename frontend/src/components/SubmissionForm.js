@@ -1,319 +1,251 @@
-import React from 'react';
-import { CSComponent } from 'react-central-state';
-import { Button, Form, FormControl, InputGroup } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 
-import ProjectCard from './ProjectCard';
-import DeleteProject from './DeleteProject';
-import { submitProject, editProject, checkZID } from '../calls';
+import { Context } from "../Context";
+import ProjectCard from "./ProjectCard";
+import DeleteProject from "./DeleteProject";
+import { submitProject, editProject, checkzid } from "../calls";
 
-class SubmissionForm extends React.Component {
-  constructor() {
-    super();
-    const id = this.centralState.user.project;
+const SubmissionForm = () => {
+  const { user } = useContext(Context);
+
+  const [title, setTitle] = useState("");
+  const [summary, setSummary] = useState("");
+  const [link, setLink] = useState("");
+  const [repo, setRepo] = useState("");
+  const [zids, setzids] = useState([user.zid]);
+  const [fullNames, setFullNames] = useState([user.fullName]);
+  const [firstYear, setFirstYear] = useState(false);
+  const [postgrad, setPostgrad] = useState(false);
+  const [addzid, setAddzid] = useState("");
+  const [deleteShow, SetDeleteShow] = useState(false);
+
+  useEffect(() => {
+    const id = user.project;
     if (id !== null) {
-      const project = this.centralState.projects.filter(
-        (project) => project.id === id,
-      )[0];
-      this.state = {
-        title: project.title,
-        summary: project.summary,
-        link: project.link,
-        repo: project.repo,
-        team_zids: project.team_zids,
-        team: project.team,
-        firstYear: false,
-        postgrad: false,
-        addZID: '',
-        deleteShow: false,
-      };
-    } else {
-      this.state = {
-        title: '',
-        summary: '',
-        link: '',
-        repo: '',
-        team_zids: [this.centralState.user.zID],
-        team: [this.centralState.user.fullName],
-        firstYear: false,
-        postgrad: false,
-        addZID: '',
-        deleteShow: false,
-      };
+      const project = projects.filter((project) => project.id === id)[0];
+      setTitle(project.title);
+      setSummary(project.summary);
+      setLink(project.link);
+      setRepo(project.repo);
+      setzids(project.zids);
+      setFullNames(project.fullNames);
+      setFirstYear(false);
+      setPostgrad(false);
+      setAddzid("");
+      SetDeleteShow(false);
     }
-    this.submit = this.submit.bind(this);
-    this.edit = this.edit.bind(this);
-    this.deleteOpen = this.deleteOpen.bind(this);
-    this.deleteClose = this.deleteClose.bind(this);
-    this.addTeamMember = this.addTeamMember.bind(this);
-    this.deleteTeamMember = this.deleteTeamMember.bind(this);
-    this.deleteReset = this.deleteReset.bind(this);
-  }
+  }, [projects, user]);
 
-  submit() {
-    submitProject(
-      this.state.title,
-      this.state.summary,
-      this.state.link,
-      this.state.repo,
-      this.state.firstYear,
-      this.state.postgrad,
-      this.state.team_zids,
-    );
-  }
+  const submit = () => {
+    submitProject(title, summary, link, repo, firstYear, postgrad, teamZids);
+  };
 
-  edit() {
-    editProject(
-      this.state.title,
-      this.state.summary,
-      this.state.link,
-      this.state.repo,
-      this.state.firstYear,
-      this.state.postgrad,
-      this.state.team_zids,
-    );
-  }
+  const edit = () => {
+    editProject(title, summary, link, repo, firstYear, postgrad, teamZids);
+  };
 
-  deleteOpen() {
-    this.setState({
-      deleteShow: true,
-    });
-  }
+  const deleteOpen = () => {
+    SetDeleteShow(true);
+  };
 
-  deleteClose() {
-    this.setState({
-      deleteShow: false,
-    });
-  }
+  const deleteClose = () => {
+    setDeleteClose(false);
+  };
 
-  addTeamMember() {
-    if (this.state.team_zids.length >= 3) {
+  const addTeamMember = () => {
+    if (teamzids.length >= 3) {
       return;
     }
-    checkZID(this.state.addZID).then((user) => {
+    checkzid(addzid).then((user) => {
       if (user !== null) {
-        this.setState({
-          team_zids: this.state.team_zids.concat(user.zID),
-          team: this.state.team.concat(user.fullName),
-        });
+        setTeamZids(teamZids.concat(user.zid));
+        setFullNames(fullNames.concat(user.fullName));
       }
     });
-  }
+  };
 
-  deleteTeamMember(oldFullName) {
-    const index = this.state.team.indexOf(oldFullName);
+  const deleteTeamMember = (oldFullName) => {
+    const index = team.indexOf(oldFullName);
     if (index !== -1) {
-      this.setState({
-        team_zids: this.state.team_zids.splice(index, 1),
-        team: this.state.team.filter((fullName) => fullName !== oldFullName),
-      });
+      setTeamZids(teamZids.splice(index, 1));
+      setFullNames(fullNames.filter((fullName) => fullName !== oldFullName));
     }
-  }
+  };
 
-  deleteReset() {
-    this.setState({
-      title: '',
-      summary: '',
-      link: '',
-      repo: '',
-      team_zids: [this.centralState.user.zID],
-      team: [this.centralState.user.fullName],
-      firstYear: false,
-      postgrad: false,
-      addZID: '',
-      deleteShow: false,
-    });
-  }
+  const deleteReset = () => {
+    setTitle("");
+    setSummary("");
+    setLink("");
+    setRepo("");
+    setzids([user.zid]);
+    setFullNames([user.fullName]);
+    setFirstYear(false);
+    setPostgrad(false);
+    setAddZid("");
+    SetDeleteShow(false);
+  };
 
-  updateWith() {
-    return ['user', 'projects'];
-  }
-
-  render() {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Form style={{ width: '50%' }}>
-          <Form.Group controlId="formTitle">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              type="text"
-              value={this.state.title}
-              placeholder="A Cool Project"
+  return (
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <Form style={{ width: "50%" }}>
+        <Form.Group controlId="formTitle">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            value={title}
+            placeholder="A Cool Project"
+            onChange={(event) => {
+              setTitle(event.target.value);
+            }}
+          />
+        </Form.Group>
+        <Form.Group controlId="formSummary">
+          <Form.Label>Summary</Form.Label>
+          <Form.Control
+            value={summary}
+            as="textarea"
+            rows="5"
+            placeholder="Something very, very interesting..."
+            onChange={(event) => {
+              setSummary(event.target.value);
+            }}
+          />
+        </Form.Group>
+        <Form.Group controlId="formLink">
+          <Form.Label>Link</Form.Label>
+          <Form.Control
+            type="text"
+            value={link}
+            placeholder="https://www.rust-lang.org/"
+            onChange={(event) => {
+              setLink(event.target.value);
+            }}
+          />
+        </Form.Group>
+        <Form.Group controlId="formRepo">
+          <Form.Label>Repo</Form.Label>
+          <Form.Control
+            type="text"
+            value={repo}
+            placeholder="https://github.com/rust-lang/rust"
+            onChange={(event) => {
+              setRepo(event.target.value);
+            }}
+          />
+          <p className="mt-3">
+            These questions determine if your project can be considered for the
+            First Year's Prize or the Postgraduate Prize. They will be verified.
+          </p>
+          <Form.Check
+            className="mt-3"
+            type="checkbox"
+            label="Did all team members commence as Undergraduate students in 2022?"
+            onChange={(event) => {
+              setFirstYear(event.target.value === "on");
+            }}
+          />
+          <Form.Check
+            className="mt-3"
+            type="checkbox"
+            label="Are all team members enrolled as Postgraduate students?"
+            onChange={(event) => {
+              setPostgrad(event.target.value === "on");
+            }}
+          />
+        </Form.Group>
+        <div className="my-3">
+          <label>Add team members:</label>
+          <InputGroup>
+            <FormControl
+              id="text"
+              placeholder="zID"
               onChange={(event) => {
-                this.setState({
-                  title: event.target.value,
-                });
+                setZid(event.target.value);
               }}
             />
-          </Form.Group>
-          <Form.Group controlId="formSummary">
-            <Form.Label>Summary</Form.Label>
-            <Form.Control
-              value={this.state.summary}
-              as="textarea"
-              rows="5"
-              placeholder="Something very, very interesting..."
-              onChange={(event) => {
-                this.setState({
-                  summary: event.target.value,
-                });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="formLink">
-            <Form.Label>Link</Form.Label>
-            <Form.Control
-              type="text"
-              value={this.state.link}
-              placeholder="https://www.rust-lang.org/"
-              onChange={(event) => {
-                this.setState({
-                  link: event.target.value,
-                });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="formRepo">
-            <Form.Label>Repo</Form.Label>
-            <Form.Control
-              type="text"
-              value={this.state.repo}
-              placeholder="https://github.com/rust-lang/rust"
-              onChange={(event) => {
-                this.setState({
-                  repo: event.target.value,
-                });
-              }}
-            />
-            <p className="mt-3">
-              These questions determine if your project can be considered for
-              the First Year's Prize or the Postgraduate Prize. They will be
-              verified.
-            </p>
-            <Form.Check
-              className="mt-3"
-              type="checkbox"
-              label="Did all team members commence as Undergraduate students in 2021?"
-              onChange={(event) => {
-                this.setState({
-                  firstYear: event.target.value === 'on',
-                });
-              }}
-            />
-            <Form.Check
-              className="mt-3"
-              type="checkbox"
-              label="Are all team members enrolled as Postgraduate students?"
-              onChange={(event) => {
-                this.setState({
-                  postgrad: event.target.value === 'on',
-                });
-              }}
-            />
-          </Form.Group>
-          <div className="my-3">
-            <label>Add team members:</label>
-            <InputGroup>
-              <FormControl
-                id="text"
-                placeholder="zID"
-                onChange={(event) => {
-                  this.setState({
-                    addZID: event.target.value,
-                  });
-                }}
-              />
+            <InputGroup.Append>
+              <Button
+                variant="outline-success"
+                onClick={addTeamMember}
+                disabled={addZid.length !== 8 || teamZids.length >= 3}
+              >
+                add
+              </Button>
+            </InputGroup.Append>
+          </InputGroup>
+        </div>
+        <h5
+          className="mt-4"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          Current Team:
+        </h5>
+        <div className="mt-4">
+          {team.map((fullName, index) => (
+            <InputGroup key={index} className="mb-3">
+              <InputGroup.Text>{fullName}</InputGroup.Text>
               <InputGroup.Append>
                 <Button
-                  variant="outline-success"
-                  onClick={this.addTeamMember}
-                  disabled={
-                    this.state.addZID.length !== 8 ||
-                    this.state.team_zids.length >= 3
-                  }
+                  variant="outline-danger"
+                  onClick={() => deleteTeamMember(fullName)}
+                  disabled={team_zids[index] === user.zid}
                 >
-                  add
+                  delete
                 </Button>
               </InputGroup.Append>
             </InputGroup>
-          </div>
-          <h5
-            className="mt-4"
-            style={{ display: 'flex', justifyContent: 'center' }}
-          >
-            Current Team:
-          </h5>
-          <div className="mt-4">
-            {this.state.team.map((fullName, index) => (
-              <InputGroup key={index} className="mb-3">
-                <InputGroup.Text>{fullName}</InputGroup.Text>
-                <InputGroup.Append>
-                  <Button
-                    variant="outline-danger"
-                    onClick={() => this.deleteTeamMember(fullName)}
-                    disabled={
-                      this.state.team_zids[index] === this.centralState.user.zID
-                    }
-                  >
-                    delete
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-            ))}
-          </div>
-          <div className="mt-4">
-            {this.centralState.user.project === null && (
-              <Button
-                variant="success"
-                onClick={this.submit}
-                disabled={
-                  this.state.title.length === 0 ||
-                  this.state.summary.length === 0 ||
-                  this.state.link.length === 0 ||
-                  this.state.repo.length === 0
-                }
-              >
-                Submit
-              </Button>
-            )}
-            {this.centralState.user.project !== null && (
-              <div className="mb-3">
-                <Button className="mx-2" variant="success" onClick={this.edit}>
-                  Save
-                </Button>
-                <Button
-                  className="mx-2"
-                  variant="danger"
-                  onClick={this.deleteOpen}
-                >
-                  Delete
-                </Button>
-                <DeleteProject
-                  show={this.state.deleteShow}
-                  handleClose={this.deleteClose}
-                  reset={this.deleteReset}
-                />
-              </div>
-            )}
-          </div>
-        </Form>
-        <div>
-          <h3 style={{ display: 'flex', justifyContent: 'center' }}>Preview</h3>
-          <ProjectCard
-            project={{
-              id: 0,
-              title: this.state.title,
-              summary: this.state.summary,
-              link: this.state.link,
-              repo: this.state.repo,
-              team: this.state.team,
-              votes: 0,
-            }}
-            disabled={true}
-          />
+          ))}
         </div>
+        <div className="mt-4">
+          {user.project === null && (
+            <Button
+              variant="success"
+              onClick={submit}
+              disabled={
+                title.length === 0 ||
+                summary.length === 0 ||
+                link.length === 0 ||
+                repo.length === 0
+              }
+            >
+              Submit
+            </Button>
+          )}
+          {user.project !== null && (
+            <div className="mb-3">
+              <Button className="mx-2" variant="success" onClick={edit}>
+                Save
+              </Button>
+              <Button className="mx-2" variant="danger" onClick={deleteOpen}>
+                Delete
+              </Button>
+              <DeleteProject
+                show={deleteShow}
+                handleClose={deleteClose}
+                reset={deleteReset}
+              />
+            </div>
+          )}
+        </div>
+      </Form>
+      <div>
+        <h3 style={{ display: "flex", justifyContent: "center" }}>Preview</h3>
+        <ProjectCard
+          project={{
+            id: 0,
+            title: title,
+            summary: summary,
+            link: link,
+            repo: repo,
+            team: team,
+            votes: 0,
+          }}
+          disabled={true}
+        />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default CSComponent(SubmissionForm);
+export default SubmissionForm;

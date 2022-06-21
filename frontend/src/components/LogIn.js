@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
-import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import React, { useState } from "react";
+import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 
-import { logIn, generateReset } from '../calls';
+import { logIn, generateReset } from "../calls";
 
 const LogIn = (props) => {
-  const [state, setState] = useState({
-    zID: '',
-    password: '',
-    resetZID: '',
-  });
+  const [zid, setZid] = useState("");
+  const [password, setPassword] = useState("");
+  const [resetZid, setResetZid] = useState("");
 
   const handleLogIn = () => {
-    logIn(state.zID, state.password);
+    logIn(zid, password);
     props.handleClose();
   };
 
   const handleReset = () => {
-    generateReset(state.resetZID);
+    generateReset(resetZid);
     props.handleClose();
   };
 
@@ -33,9 +31,7 @@ const LogIn = (props) => {
             placeholder="z1234567"
             aria-label="zID"
             onChange={(event) => {
-              setState({
-                zID: event.target.value,
-              });
+              setZid(event.target.value);
             }}
           />
         </InputGroup>
@@ -46,9 +42,7 @@ const LogIn = (props) => {
             placeholder="*******"
             aria-label="password"
             onChange={(event) => {
-              setState({
-                password: event.target.value,
-              });
+              setPassword(event.target.value);
             }}
           />
         </InputGroup>
@@ -60,14 +54,12 @@ const LogIn = (props) => {
             placeholder="z1234567"
             aria-label="reset zID"
             onChange={(event) => {
-              setState({
-                resetZID: event.target.value,
-              });
+              setResetZid(event.target.value);
             }}
           />
           <Button
             variant="outline-primary"
-            disabled={state.resetZID.length !== 8}
+            disabled={resetZid.length !== 8}
             onClick={handleReset}
           >
             reset
@@ -82,7 +74,7 @@ const LogIn = (props) => {
           variant="success"
           className="mx-2"
           onClick={handleLogIn}
-          disabled={state.zID.length !== 8 || state.password.length < 8}
+          disabled={zid.length !== 8 || password.length < 8}
         >
           Login
         </Button>
