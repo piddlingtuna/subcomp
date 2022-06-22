@@ -199,7 +199,9 @@ const SubmissionForm = () => {
             <Button
               variant="outline-success"
               onClick={addTeamMember}
-              disabled={addZid.length !== 8 || zids.includes(addZid) || zids.length >= 3}
+              disabled={
+                addZid.length !== 8 || zids.includes(addZid) || zids.length >= 3
+              }
             >
               add
             </Button>

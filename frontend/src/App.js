@@ -22,28 +22,25 @@ const App = () => {
 
   useEffect(() => {
     const getProjects = callGetProjects()
-        .then((response) => {
-          setProjects(response.data.projects.sort((a, b) => a.id > b.id));
-        })
-        .catch((error) => {
-          setProjects([]);
-        });
-     
+      .then((response) => {
+        setProjects(response.data.projects.sort((a, b) => a.id > b.id));
+      })
+      .catch((error) => {
+        setProjects([]);
+      });
+
     const getUser = callGetUser()
-        .then((response) => {
-          setUser(response.data.user);
-        })
-        .catch((error) => {
-          setUser(null);
-        });
+      .then((response) => {
+        setUser(response.data.user);
+      })
+      .catch((error) => {
+        setUser(null);
+      });
 
-  
-    const getDeadlines = callGetDeadlines()
-        .then((response) => {
-          setProjectDeadline(response.data.projectDeadline);
-          setVoteDeadline(response.data.voteDeadline);
-        })
-
+    const getDeadlines = callGetDeadlines().then((response) => {
+      setProjectDeadline(response.data.projectDeadline);
+      setVoteDeadline(response.data.voteDeadline);
+    });
 
     Promise.all([getProjects, getUser, getDeadlines]).then(() => {
       setWaiting(false);
