@@ -75,14 +75,14 @@ const LeaderboardTable = () => {
     }
   };
 
-  const filterRank = (e, projects) => {
+  const filterRank = (event, projects) => {
     const ranking = rank(projects);
     const newRanking = [];
-    const inputLength = e.target.value.length;
-    for (var i = 0; i < ranking.length; i++) {
-      const titlePrefix = ranking[i].title.slice(0, inputLength).toLowerCase();
-      if (titlePrefix === e.target.value.toLowerCase()) {
-        newRanking.push(ranking[i]);
+    const inputLength = event.target.value.length;
+    for (let project in ranking) {
+      const titlePrefix = project.title.slice(0, inputLength).toLowerCase();
+      if (titlePrefix === event.target.value.toLowerCase()) {
+        newRanking.push(project);
       }
     }
     newRanking.sort(compareVotes).reverse();

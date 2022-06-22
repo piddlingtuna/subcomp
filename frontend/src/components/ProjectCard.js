@@ -30,7 +30,7 @@ const ProjectCard = (props) => {
             </Truncate>
           </Card.Title>
           <Truncate lines={2} width={250}>
-            Team: {props.project.team.join(", ")}
+            Team: {props.project.names.join(", ")}
           </Truncate>
           <br />
           <Truncate lines={4} width={250}>

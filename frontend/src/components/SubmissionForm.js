@@ -4,7 +4,7 @@ import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import { Context } from "../Context";
 import ProjectCard from "./ProjectCard";
 import DeleteProject from "./DeleteProject";
-import { callSubmitProject, callEditProject, callCheckZID } from "../calls";
+import { callSubmitProject, callEditProject, callCheckZid } from "../calls";
 
 const SubmissionForm = () => {
   const { projects, setProjects, user, setUser } = useContext(Context);
@@ -13,11 +13,11 @@ const SubmissionForm = () => {
   const [summary, setSummary] = useState("");
   const [link, setLink] = useState("");
   const [repo, setRepo] = useState("");
-  const [zIDs, setZIDs] = useState([user.zIDs]);
+  const [zids, setZids] = useState([user.zid]);
   const [names, setnames] = useState([user.name]);
   const [firstyear, setFirstyear] = useState(false);
   const [postgrad, setPostgrad] = useState(false);
-  const [addZID, setAddZID] = useState("");
+  const [addZid, setAddZid] = useState("");
   const [deleteShow, setDeleteShow] = useState(false);
 
   useEffect(() => {
@@ -25,28 +25,30 @@ const SubmissionForm = () => {
       const project = projects.find(
         (project) => project.id === user.project_id
       );
-      setTitle(project.title);
-      setSummary(project.summary);
-      setLink(project.link);
-      setRepo(project.repo);
-      setZIDs(project.zIDs);
-      setnames(project.names);
-      setFirstyear(false);
-      setPostgrad(false);
-      setAddZID("");
-      setDeleteShow(false);
+      if (project) {
+        setTitle(project.title);
+        setSummary(project.summary);
+        setLink(project.link);
+        setRepo(project.repo);
+        setZids(project.zids);
+        setnames(project.names);
+        setFirstyear(false);
+        setPostgrad(false);
+        setAddZid("");
+        setDeleteShow(false);
+      }
     }
   }, [projects, user]);
 
   const submit = () => {
-    callSubmitProject(title, summary, link, repo, firstyear, postgrad, zIDs)
+    callSubmitProject(title, summary, link, repo, firstyear, postgrad, zids)
       .then((response) => {
         setProjects(
           projects.concat(response.data.project).sort((a, b) => a.id > b.id)
         );
         setUser({
-          zID: user.zID,
-          name: user.zIDs,
+          zid: user.zid,
+          name: user.name,
           votes: user.votes,
           project_id: response.data.project.id,
         });
@@ -57,7 +59,7 @@ const SubmissionForm = () => {
   };
 
   const edit = () => {
-    callEditProject(title, summary, link, repo, firstyear, postgrad, zIDs)
+    callEditProject(title, summary, link, repo, firstyear, postgrad, zids)
       .then((response) => {
         setProjects(
           projects
@@ -80,13 +82,13 @@ const SubmissionForm = () => {
   };
 
   const addTeamMember = () => {
-    if (zIDs.length >= 3) {
+    if (zids.length >= 3) {
       return;
     }
-    callCheckZID(addZID)
+    callCheckZid(addZid)
       .then((response) => {
         if (user !== null) {
-          setZIDs(zIDs.concat(response.data.zID));
+          setZids(zids.concat(response.data.zid));
           setnames(names.concat(response.data.name));
         }
       })
@@ -98,7 +100,7 @@ const SubmissionForm = () => {
   const deleteTeamMember = (oldname) => {
     const index = names.indexOf(oldname);
     if (index !== -1) {
-      setZIDs(zIDs.splice(index, 1));
+      setZids(zids.splice(index, 1));
       setnames(names.filter((name) => name !== oldname));
     }
   };
@@ -108,11 +110,11 @@ const SubmissionForm = () => {
     setSummary("");
     setLink("");
     setRepo("");
-    setZIDs([user.zID]);
+    setZids([user.zids]);
     setnames([user.name]);
     setFirstyear(false);
     setPostgrad(false);
-    setAddZID("");
+    setAddZid("");
     setDeleteShow(false);
   };
 
@@ -191,18 +193,16 @@ const SubmissionForm = () => {
               id="text"
               placeholder="zID"
               onChange={(event) => {
-                setAddZID(event.target.value);
+                setAddZid(event.target.value);
               }}
             />
-            <InputGroup.Append>
               <Button
                 variant="outline-success"
                 onClick={addTeamMember}
-                disabled={addZID.length !== 8 || zIDs.length >= 3}
+                disabled={addZid.length !== 8 || zids.length >= 3}
               >
                 add
               </Button>
-            </InputGroup.Append>
           </InputGroup>
         </div>
         <h5
@@ -215,15 +215,13 @@ const SubmissionForm = () => {
           {names.map((name, index) => (
             <InputGroup key={index} className="mb-3">
               <InputGroup.Text>{name}</InputGroup.Text>
-              <InputGroup.Append>
                 <Button
                   variant="outline-danger"
                   onClick={() => deleteTeamMember(name)}
-                  disabled={zIDs[index] === user.zID}
+                  disabled={zids[index] === user.zid}
                 >
                   delete
                 </Button>
-              </InputGroup.Append>
             </InputGroup>
           ))}
         </div>
@@ -268,7 +266,8 @@ const SubmissionForm = () => {
             summary: summary,
             link: link,
             repo: repo,
-            zIDs: zIDs,
+            zids: zids,
+            names: names,
             votes: 0,
           }}
           disabled={true}

@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Context } from "./Context";
-import history from "./history";
 import { callGetProjects, callGetUser, callGetDeadlines } from "./calls";
 import Projects from "./pages/Projects";
 import Leaderboard from "./pages/Leaderboard";
@@ -16,7 +15,8 @@ const App = () => {
   const { setProjects, setUser, setProjectDeadline, setVoteDeadline } =
     useContext(Context);
 
-  callGetProjects()
+  useEffect(() => {
+    callGetProjects()
     .then((response) => {
       setProjects(response.data.projects.sort((a, b) => a.id > b.id));
     })
@@ -26,9 +26,7 @@ const App = () => {
 
   callGetUser()
     .then((response) => {
-      if (response !== null) {
         setUser(response.data.user);
-      }
     })
     .catch((error) => {
       setUser(null);
@@ -43,19 +41,20 @@ const App = () => {
       setProjectDeadline(null);
       setVoteDeadline(null);
     });
+  }, [setProjects, setUser, setProjectDeadline, setVoteDeadline]);
 
   return (
-    <BrowserRouter history={history}>
-      <Routes>
-        <Route exact path="/" element={<Projects />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/submission" element={<Submission />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/verification/:id" element={<Verification />} />
-        <Route path="/reset/:id" element={<Reset />} />
-        <Route element={NotFound} />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<Projects />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/submission" element={<Submission />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/verification/:id" element={<Verification />} />
+          <Route path="/reset/:id" element={<Reset />} />
+          <Route element={NotFound} />
+        </Routes>
+      </BrowserRouter>
   );
 };
 

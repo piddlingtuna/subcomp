@@ -1,5 +1,7 @@
 import axios from "axios";
 
+axios.defaults.baseURL = 'http://localhost:8000';
+
 const callGetComic = () => {
   return axios
     .get("https://xkcd-imgs.herokuapp.com/")
@@ -30,7 +32,7 @@ const callGetUser = () => {
 
 const callGenerateVerification = (zID, name, password) => {
   return axios.post("/api/generate_verification/", {
-    zID: zID,
+    zid: zID,
     name: name,
     password: password,
   });
@@ -44,7 +46,7 @@ const callUseVerification = (token) => {
 
 const callLogIn = (zID, password) => {
   return axios.post("/api/login/", {
-    zID: zID,
+    zid: zID,
     password: password,
   });
 };
@@ -87,7 +89,7 @@ const callChangePassword = (password) => {
 
 const callGenerateReset = (zID) => {
   return axios.post("/api/generate_reset/", {
-    zID: zID,
+    zid: zID,
   });
 };
 
@@ -126,11 +128,11 @@ const callUnvote = (project_id) => {
   );
 };
 
-const callCheckZID = (zID) => {
+const callCheckZid = (zID) => {
   return axios.post(
-    "/api/check_zID/",
+    "/api/check_zid/",
     {
-      zID: zID,
+      zid: zID,
     },
     {
       headers: {
@@ -146,7 +148,7 @@ const callSubmitProject = (
   link,
   repo,
   firstyear,
-  postgraduate,
+  postgrad,
   zIDs
 ) => {
   return axios.post(
@@ -157,8 +159,8 @@ const callSubmitProject = (
       link: link,
       repo: repo,
       firstyear: firstyear,
-      postgraduate: postgraduate,
-      zIDs: zIDs,
+      postgrad: postgrad,
+      zids: zIDs,
     },
     {
       headers: {
@@ -174,7 +176,7 @@ const callEditProject = (
   link,
   repo,
   firstyear,
-  postgraduate,
+  postgrad,
   zIDs
 ) => {
   return axios.post(
@@ -185,8 +187,8 @@ const callEditProject = (
       link: link,
       repo: repo,
       firstyear: firstyear,
-      postgraduate: postgraduate,
-      zIDs: zIDs,
+      postgrad: postgrad,
+      zids: zIDs,
     },
     {
       headers: {
@@ -219,7 +221,7 @@ export {
   callUseReset,
   callVote,
   callUnvote,
-  callCheckZID,
+  callCheckZid,
   callSubmitProject,
   callEditProject,
   callDeleteProject,

@@ -7,6 +7,7 @@ import ProjectCard from "../components/ProjectCard";
 
 const Projects = () => {
   const { projects } = useContext(Context);
+  console.log(projects);
 
   return (
     <>

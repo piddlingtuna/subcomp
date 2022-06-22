@@ -31,7 +31,7 @@ const Reset = () => {
   return (
     <>
       {reset ? (
-        <Navigate to="" />
+        <Navigate to="/" />
       ) : (
         <>
           <Header />
@@ -58,7 +58,6 @@ const Reset = () => {
                         setPassword(event.target.value);
                       }}
                     />
-                    <InputGroup.Append>
                       <Button
                         variant="outline-primary"
                         disabled={password.length < 8}
@@ -66,7 +65,6 @@ const Reset = () => {
                       >
                         Reset
                       </Button>
-                    </InputGroup.Append>
                   </InputGroup>
                 </div>
               ) : (

@@ -30,7 +30,7 @@ const Verification = () => {
   return (
     <>
       {verified ? (
-        <Navigate to="" />
+        <Navigate to="/" />
       ) : (
         <>
           <Header />

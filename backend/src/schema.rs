@@ -8,7 +8,7 @@ table! {
         link -> Text,
         repo -> Text,
         firstyear -> Bool,
-        postgraduate -> Bool,
+        postgrad -> Bool,
     }
 }
 

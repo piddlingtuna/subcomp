@@ -4,12 +4,12 @@ import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 import { callGenerateVerification } from "../calls";
 
 const SignUp = (props) => {
-  const [zID, setZID] = useState("");
+  const [zid, setZid] = useState("");
   const [name, setname] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignUp = () => {
-    callGenerateVerification(zID, name, password).catch((error) => {
+    callGenerateVerification(zid, name, password).catch((error) => {
       alert(error.response.data.message);
     });
     props.handleClose();
@@ -28,7 +28,7 @@ const SignUp = (props) => {
             placeholder="z1234567"
             aria-label="zID"
             onChange={(event) => {
-              setZID(event.target.value);
+              setZid(event.target.value);
             }}
           />
         </InputGroup>
@@ -56,7 +56,7 @@ const SignUp = (props) => {
           />
         </InputGroup>
         <p>
-          An email will be sent to {zID}@unsw.edu.au to verify your account.
+          An email will be sent to {zid}@unsw.edu.au to verify your account.
         </p>
       </Modal.Body>
       <Modal.Footer>
@@ -68,7 +68,7 @@ const SignUp = (props) => {
           className="mx-2"
           onClick={handleSignUp}
           disabled={
-            zID.length !== 8 || name.length === 0 || password.length < 8
+            zid.length !== 8 || name.length === 0 || password.length < 8
           }
         >
           Signup

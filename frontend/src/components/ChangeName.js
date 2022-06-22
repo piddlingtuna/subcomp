@@ -13,7 +13,7 @@ const Changename = (props) => {
     callChangename(name)
       .then(() => {
         setUser({
-          zID: user.zID,
+          zid: user.zid,
           name: name,
           votes: user.votes,
           project_id: user.project_id,

@@ -9,7 +9,7 @@ CREATE TABLE projects (
     link TEXT NOT NULL,
     repo TEXT NOT NULL,
     firstyear BOOLEAN DEFAULT FALSE NOT NULL, 
-    postgraduate BOOLEAN DEFAULT FALSE NOT NULL
+    postgrad BOOLEAN DEFAULT FALSE NOT NULL
 );
 
 SELECT diesel_manage_updated_at('projects');

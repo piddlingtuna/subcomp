@@ -27,7 +27,7 @@ pub fn projects(
                 "link": project.link,
                 "repo": project.repo,
                 "votes": project.count_votes(&conn),
-                "zIDs": project.get_zids(&conn),
+                "zids": project.get_zids(&conn),
                 "names": project.get_names(&conn),
         }))
         .collect();
@@ -44,7 +44,7 @@ pub fn user(
 ) -> APIResponse {
     ok().data(json!({
         "user": {
-            "zID": user.zid,
+            "zid": user.zid,
             "name": user.name,
             "votes": user.get_votes(&conn),
             "project_id": user.get_project(&conn),
@@ -77,10 +77,14 @@ pub fn generate_verification(
         return bad_request().message("There is already an account with this zID.");
     }
 
+    std::println!("BEFORE VERIFICATION INSERT");
+
     let verification = match Verification::insert(&data.zid, &data.name, &data.password, &conn) {
         Some(verification) => verification,
         None => return internal_server_error(),
     };
+
+    std::println!("AFTER VERIFICATION INSERT");
 
     let unsw_email = format!("<{}@unsw.edu.au>", &data.zid);
     let domain = env::var("DOMAIN").expect("DOMAIN must be set in env");
@@ -132,15 +136,21 @@ pub fn use_verification(
         return bad_request().message("Verification token has expired.");
     };
 
+    std::println!("BEFORE USER INSERT");
+
     let user = match User::insert(&verification.zid, &verification.name, &verification.password_hash, &conn) {
         Some(user) => user,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
+    std::println!("BEFORE GENERATE TOKEN");
+
     let token = match user.generate_token(&conn) {
         Some(token) => token,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
+
+    std::println!("BEFORE VERIFICATION DELETE");
 
     if !verification.delete(&conn) {
         return internal_server_error().message("Looks like our code is buggy :(");
@@ -149,7 +159,7 @@ pub fn use_verification(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zid,
+            "zid": user.zid,
             "name": user.name,
             "votes": user.get_votes(&conn),
             "project_id": user.get_project(&conn),
@@ -185,7 +195,7 @@ pub fn login(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zid,
+            "zid": user.zid,
             "name": user.name,
             "votes": user.get_votes(&conn),
             "project_id": user.get_project(&conn),
@@ -325,7 +335,7 @@ pub fn use_reset(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zid,
+            "zid": user.zid,
             "name": user.name,
             "votes": user.get_votes(&conn),
             "project_id": user.get_project(&conn),
@@ -413,7 +423,7 @@ pub fn check_zid(
     }
 
     ok().data(json!({
-        "zID": user.zid,
+        "zid": user.zid,
         "name": user.name,
     }))
 }
@@ -425,7 +435,7 @@ pub struct SubmitProjectData {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgraduate: bool,
+    pub postgrad: bool,
     pub zids: Vec<String>,
 }
 
@@ -462,7 +472,7 @@ pub fn submit_project(
         &project_data.link,
         &project_data.repo,
         project_data.firstyear,
-        project_data.postgraduate,
+        project_data.postgrad,
         &conn,
     ) {
         Some(project) => project,
@@ -483,7 +493,7 @@ pub fn submit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "zIDs": project.get_zids(&conn),
+            "zids": project.get_zids(&conn),
             "names": project.get_names(&conn),
         },
     }))
@@ -496,7 +506,7 @@ pub struct EditProjectData {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgraduate: bool,
+    pub postgrad: bool,
     pub zids: Vec<String>,
 }
 
@@ -545,7 +555,7 @@ pub fn edit_project(
         &project_data.link,
         &project_data.repo,
         project_data.firstyear,
-        project_data.postgraduate,
+        project_data.postgrad,
         &conn,
     ) {
         Some(project) => project,
@@ -566,7 +576,7 @@ pub fn edit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "zIDS": project.get_zids(&conn),
+            "zids": project.get_zids(&conn),
             "names": project.get_names(&conn),
         },
     }))

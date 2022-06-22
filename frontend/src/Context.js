@@ -11,7 +11,7 @@ export const Context = createContext({
   setVoteDeadline: () => {},
 });
 
-const ContextProvider = (children) => {
+const ContextProvider = ({ children}) => {
   const [projects, setProjects] = useState([]);
   const [user, setUser] = useState(null);
   const [projectDeadline, setProjectDeadline] = useState(null);

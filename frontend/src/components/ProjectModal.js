@@ -7,22 +7,20 @@ import { callVote, callUnvote } from "../calls";
 
 const ProjectModal = (props) => {
   const { projects, setProjects, user, setUser } = useContext(Context);
+  console.log(props);
 
   const vote = () => {
-    callVote(props.project_id)
+    callVote(props.project.id)
       .then(() => {
-        const project = projects.find(
-          (project) => project.id === props.project.id
-        );
-        project.votes++;
+        props.project.votes++;
         setProjects(
           projects
             .filter((project) => project.id !== props.project.id)
-            .concat(project)
+            .concat(props.project)
             .sort((a, b) => a.id > b.id)
         );
         setUser({
-          zID: user.zID,
+          zid: user.zid,
           name: user.name,
           votes: user.votes.concat(props.project.id),
           project_id: user.project_id,
@@ -34,20 +32,17 @@ const ProjectModal = (props) => {
   };
 
   const unvote = () => {
-    callUnvote(props.project_id)
+    callUnvote(props.project.id)
       .then(() => {
-        const project = projects.find(
-          (project) => project.id === props.project.id
-        );
-        project.votes--;
+        props.project.votes--;
         setProjects(
           projects
             .filter((project) => project.id !== props.project.id)
-            .concat(project)
+            .concat(props.project)
             .sort((a, b) => a.id > b.id)
         );
         setUser({
-          zID: user.zID,
+          zid: user.zid,
           name: user.name,
           votes: user.votes.filter((id) => id !== props.project.id),
           project_id: user.project_id,
@@ -73,7 +68,7 @@ const ProjectModal = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ wordWrap: "break-word" }}>
-        Team: {props.project.team.join(", ")}
+        Team: {props.project.names.join(", ")}
         <br />
         {props.project.summary}
       </Modal.Body>
@@ -102,22 +97,22 @@ const ProjectModal = (props) => {
               {props.project.votes}{" "}
               {props.project.votes === 1 ? "vote" : "votes"}
             </Col>
-            {user != null && !user.votes.includes(props.project.id) && (
+            {user !== null && !user.votes.includes(props.project.id) && (
               <Button
                 variant="success"
                 style={{ width: "150px" }}
                 disabled={props.disabled || user.votes.length >= 3}
-                onClick={() => vote(props.project.id)}
+                onClick={vote}
               >
                 Vote for project!
               </Button>
             )}
-            {user != null && user.votes.includes(props.project.id) && (
+            {user !== null && user.votes.includes(props.project.id) && (
               <Button
                 variant="danger"
                 style={{ width: "150px" }}
                 disabled={props.disabled}
-                onClick={() => unvote(props.project.id)}
+                onClick={unvote}
               >
                 Unvote project
               </Button>

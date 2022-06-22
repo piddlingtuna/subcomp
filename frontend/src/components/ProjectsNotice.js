@@ -6,8 +6,9 @@ import { Context } from "../Context";
 const ProjectsNotice = () => {
   const { user, projectDeadline, voteDeadline } = useContext(Context);
 
-  return (
-    <>
+  return (<>
+    { projectDeadline !== null && voteDeadline !== null ? 
+      <>
       {user === null && (
         <Alert className="m-3" variant="warning">
           Please sign up/log in to vote! Submission closes on {projectDeadline}.
@@ -26,7 +27,8 @@ const ProjectsNotice = () => {
           You have no more votes remaining.
         </Alert>
       )}
-    </>
+    </> : <></>
+    }</>
   );
 };
 

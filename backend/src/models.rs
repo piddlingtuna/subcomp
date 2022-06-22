@@ -29,7 +29,7 @@ pub struct Project {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgraduate: bool,}
+    pub postgrad: bool,}
 
 #[derive(Insertable)]
 #[table_name = "projects"]
@@ -39,7 +39,7 @@ pub struct NewProject {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgraduate: bool,
+    pub postgrad: bool,
 }
 
 impl Project {
@@ -82,14 +82,14 @@ impl Project {
             .unwrap_or(0)
     }
 
-    pub fn insert(title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
+    pub fn insert(title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgrad: bool, conn: &PgConnection) -> Option<Project> {
         let new_project = NewProject {
             title: title.to_string(),
             summary: summary.to_string(),
             link: link.to_string(),
             repo: repo.to_string(),
             firstyear,
-            postgraduate,
+            postgrad,
         };
         match diesel::insert_into(projects::table)
             .values(&new_project)
@@ -99,7 +99,7 @@ impl Project {
             }
     }
 
-    pub fn edit(id: &Uuid, title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
+    pub fn edit(id: &Uuid, title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgrad: bool, conn: &PgConnection) -> Option<Project> {
         match diesel::update(projects::table.find(id))
             .set((
                 projects::title.eq(title),
@@ -107,7 +107,7 @@ impl Project {
                 projects::repo.eq(repo),
                 projects::link.eq(link),
                 projects::firstyear.eq(firstyear),
-                projects::postgraduate.eq(postgraduate),
+                projects::postgrad.eq(postgrad),
             ))
             .get_result(conn) {
                 Ok(project) => Some(project),
@@ -439,11 +439,13 @@ impl Verification {
             password_hash,
         };
 
+        std::println!("JUST VERIFICATION INSERT");
+
         match diesel::insert_into(verifications::table)
             .values(&new_verification)
             .get_result(conn) {
                 Ok(verification) => Some(verification),
-                Err(_) => None,
+                Err(error) => { std::println!("{}", error); None},
             }
     }
 

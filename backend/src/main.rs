@@ -8,6 +8,8 @@ extern crate rocket;
 use std::env;
 use dotenv::dotenv;
 use rocket::{catchers, routes};
+use rocket::http::Method;
+use rocket_cors::{AllowedOrigins, Cors, CorsOptions};
 
 pub mod models;
 pub mod api;
@@ -16,6 +18,19 @@ pub mod files;
 pub mod handlers;
 pub mod responses;
 pub mod schema;
+
+pub fn cors() -> Cors {
+    CorsOptions::default()
+    .allowed_origins(AllowedOrigins::all())
+    .allowed_methods(vec![Method::Get, Method::Post]
+    .into_iter()
+    .map(From::from)
+    .collect(),
+    )
+    .to_cors()
+    .expect("Failed to create CORS")
+}
+
 
 /// Constructs a new Rocket instance.
 ///
@@ -54,6 +69,7 @@ pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
             handlers::internal_server_error_handler,
             handlers::service_unavailable_handler,
         ])
+        .attach(cors())
 }
 
 fn main() {

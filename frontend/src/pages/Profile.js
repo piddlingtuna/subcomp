@@ -33,7 +33,7 @@ const Profile = () => {
   return (
     <>
       {user === null ? (
-        <Navigate to="" />
+        <Navigate to="/" />
       ) : (
         <>
           <Header />
@@ -48,7 +48,7 @@ const Profile = () => {
               <Container className="m-3">
                 <Row>
                   <Col>
-                    <h5>zID: {user.zID}</h5>
+                    <h5>zID: {user.zid}</h5>
                   </Col>
                 </Row>
               </Container>

@@ -12,7 +12,7 @@ const Submission = () => {
   return (
     <>
       {user === null ? (
-        <Navigate to="" />
+        <Navigate to="/" />
       ) : (
         <>
           <Header />
