@@ -1,21 +1,16 @@
-import React from 'react';
-import { CSComponent } from 'react-central-state';
-import { Alert } from 'react-bootstrap';
+import React, { useContext } from "react";
+import { Alert } from "react-bootstrap";
 
-class LeaderboardNotice extends React.Component {
-  updateWith() {
-    return ['voteDeadline'];
-  }
+import { Context } from "../Context";
 
-  render() {
-    return (
-      <Alert className="m-3" variant="info">
-        First place wins the Hitchhiker's Prize!
-        {this.centralState.voteDeadline &&
-          ` Voting closes on ${this.centralState.voteDeadline}.`}
-      </Alert>
-    );
-  }
-}
+const LeaderboardNotice = () => {
+  const { voteDeadline } = useContext(Context);
+  return (
+    <Alert className="m-3" variant="info">
+      First place wins the Hitchhiker's Prize!
+      {voteDeadline && ` Voting closes on ${voteDeadline}.`}
+    </Alert>
+  );
+};
 
-export default CSComponent(LeaderboardNotice);
+export default LeaderboardNotice;

@@ -1,40 +1,49 @@
-import React, { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import { Button, FormControl, InputGroup } from 'react-bootstrap';
+import React, { useContext, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
+import { Button, FormControl, InputGroup } from "react-bootstrap";
 
-import Header from '../components/Header';
-import { reset } from '../calls';
+import { Context } from "../Context";
+import Header from "../components/Header";
+import { callUseReset } from "../calls";
 
-function Reset() {
-  const [state, setState] = useState({
-    password: '',
-  });
+const Reset = () => {
+  const { setUser } = useContext(Context);
+  const [waiting, setWaiting] = useState(true);
+  const [reset, setReset] = useState(false);
+  const [password, setPassword] = useState("");
   let { id } = useParams();
 
   const handleReset = () => {
-    reset(id, state.password).then((reset) => {
-      setState({
-        reset: reset,
+    callUseReset(id, password)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        setUser(response.data.user);
+        setWaiting(false);
+        setReset(true);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+        setWaiting(false);
+        setReset(false);
       });
-    });
   };
 
   return (
     <>
-      {state.reset ? (
-        <Navigate to="" />
+      {reset ? (
+        <Navigate to="/" />
       ) : (
         <>
           <Header />
-          <div style={{ width: '75%', margin: '0 auto' }}>
+          <div style={{ width: "75%", margin: "0 auto" }}>
             <h1
               className="m-3"
-              style={{ display: 'flex', justifyContent: 'center' }}
+              style={{ display: "flex", justifyContent: "center" }}
             >
               Reset your password
             </h1>
             <div className="m-5">
-              {state.reset === undefined ? (
+              {waiting ? (
                 <div>
                   <p>
                     Please enter in your new password (make sure to remember it
@@ -46,20 +55,16 @@ function Reset() {
                       placeholder="password"
                       aria-label="password"
                       onChange={(event) => {
-                        setState({
-                          password: event.target.value,
-                        });
+                        setPassword(event.target.value);
                       }}
                     />
-                    <InputGroup.Append>
-                      <Button
-                        variant="outline-primary"
-                        disabled={state.password.length < 8}
-                        onClick={handleReset}
-                      >
-                        Reset
-                      </Button>
-                    </InputGroup.Append>
+                    <Button
+                      variant="outline-primary"
+                      disabled={password.length < 8}
+                      onClick={handleReset}
+                    >
+                      Reset
+                    </Button>
                   </InputGroup>
                 </div>
               ) : (
@@ -71,6 +76,6 @@ function Reset() {
       )}
     </>
   );
-}
+};
 
 export default Reset;

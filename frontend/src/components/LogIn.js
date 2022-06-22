@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
-import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import React, { useContext, useState } from "react";
+import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 
-import { logIn, generateReset } from '../calls';
+import { Context } from "../Context";
+import { callLogIn, callGenerateReset } from "../calls";
 
 const LogIn = (props) => {
-  const [state, setState] = useState({
-    zID: '',
-    password: '',
-    resetZID: '',
-  });
+  const { setUser } = useContext(Context);
+
+  const [zid, setZid] = useState("");
+  const [password, setPassword] = useState("");
+  const [resetZid, setResetZid] = useState("");
 
   const handleLogIn = () => {
-    logIn(state.zID, state.password);
+    callLogIn(zid, password)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        setUser(response.data.user);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
     props.handleClose();
   };
 
   const handleReset = () => {
-    generateReset(state.resetZID);
+    callGenerateReset(resetZid).catch((error) => {
+      alert(error.response.data.message);
+    });
     props.handleClose();
   };
 
@@ -27,15 +37,13 @@ const LogIn = (props) => {
       </Modal.Header>
       <Modal.Body>
         <InputGroup className="mb-3">
-          <InputGroup.Text>zID</InputGroup.Text>
+          <InputGroup.Text>zid</InputGroup.Text>
           <FormControl
             type="text"
             placeholder="z1234567"
-            aria-label="zID"
+            aria-label="zid"
             onChange={(event) => {
-              setState({
-                zID: event.target.value,
-              });
+              setZid(event.target.value);
             }}
           />
         </InputGroup>
@@ -46,31 +54,27 @@ const LogIn = (props) => {
             placeholder="*******"
             aria-label="password"
             onChange={(event) => {
-              setState({
-                password: event.target.value,
-              });
+              setPassword(event.target.value);
             }}
           />
         </InputGroup>
         <p>Did you forget your password?</p>
         <InputGroup className="mb-3">
-          <InputGroup.Text>zID</InputGroup.Text>
+          <InputGroup.Text>zid</InputGroup.Text>
           <FormControl
             type="text"
             placeholder="z1234567"
-            aria-label="reset zID"
+            aria-label="reset zid"
             onChange={(event) => {
-              setState({
-                resetZID: event.target.value,
-              });
+              setResetZid(event.target.value);
             }}
           />
           <Button
             variant="outline-primary"
-            disabled={state.resetZID.length !== 8}
+            disabled={resetZid.length !== 8}
             onClick={handleReset}
           >
-            reset
+            Reset
           </Button>
         </InputGroup>
       </Modal.Body>
@@ -82,7 +86,7 @@ const LogIn = (props) => {
           variant="success"
           className="mx-2"
           onClick={handleLogIn}
-          disabled={state.zID.length !== 8 || state.password.length < 8}
+          disabled={zid.length !== 8 || password.length < 8}
         >
           Login
         </Button>

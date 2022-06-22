@@ -8,5 +8,9 @@ pub fn index() -> Option<NamedFile> {
 
 #[get("/<file..>", rank = 2)]
 pub fn files(file: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("public/").join(file)).ok()
+    let path = Path::new("public/").join(file);
+    if path.exists() {
+        return NamedFile::open(path).ok();
+    }
+    NamedFile::open("public/index.html").ok()
 }

@@ -1,36 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
 
-import Header from '../components/Header';
-import { verification } from '../calls';
+import { Context } from "../Context";
+import Header from "../components/Header";
+import { callUseVerification } from "../calls";
 
-function Verification() {
-  const [state, setState] = useState({});
+const Verification = () => {
+  const { setUser } = useContext(Context);
+
+  const [waiting, setWaiting] = useState(true);
+  const [verified, setVerified] = useState(false);
   let { id } = useParams();
 
   useEffect(() => {
-    verification(id).then((verified) => {
-      setState({
-        verified: verified,
+    callUseVerification(id)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        setUser(response.data.user);
+        setWaiting(false);
+        setVerified(true);
+      })
+      .catch((error) => {
+        setWaiting(false);
+        setVerified(false);
+        alert(error.response.data.message);
       });
-    });
-  }, [id]);
+  }, [id, setUser]);
+
   return (
     <>
-      {state.verified ? (
-        <Navigate to="" />
+      {verified ? (
+        <Navigate to="/" />
       ) : (
         <>
           <Header />
-          <div style={{ width: '75%', margin: '0 auto' }}>
+          <div style={{ width: "75%", margin: "0 auto" }}>
             <h1
               className="m-3"
-              style={{ display: 'flex', justifyContent: 'center' }}
+              style={{ display: "flex", justifyContent: "center" }}
             >
               Verification
             </h1>
             <div className="m-5">
-              {state.verified === undefined ? (
+              {waiting ? (
                 <p>We're just verifying your account...</p>
               ) : (
                 <p>This link is invalid :(</p>
@@ -41,6 +53,6 @@ function Verification() {
       )}
     </>
   );
-}
+};
 
 export default Verification;
