@@ -14,24 +14,24 @@ const SubmissionForm = () => {
   const [link, setLink] = useState("");
   const [repo, setRepo] = useState("");
   const [zIDs, setZIDs] = useState([user.zIDs]);
-  const [fullNames, setFullNames] = useState([user.fullName]);
-  const [firstYear, setFirstYear] = useState(false);
+  const [names, setnames] = useState([user.name]);
+  const [firstyear, setFirstyear] = useState(false);
   const [postgrad, setPostgrad] = useState(false);
   const [addZID, setAddZID] = useState("");
   const [deleteShow, setDeleteShow] = useState(false);
 
   useEffect(() => {
-    if (user.projectId !== null) {
-      const project = projects.filter(
-        (project) => project.id === user.projectId
-      )[0];
+    if (user.project_id !== null) {
+      const project = projects.find(
+        (project) => project.id === user.project_id
+      );
       setTitle(project.title);
       setSummary(project.summary);
       setLink(project.link);
       setRepo(project.repo);
       setZIDs(project.zIDs);
-      setFullNames(project.fullNames);
-      setFirstYear(false);
+      setnames(project.names);
+      setFirstyear(false);
       setPostgrad(false);
       setAddZID("");
       setDeleteShow(false);
@@ -39,16 +39,16 @@ const SubmissionForm = () => {
   }, [projects, user]);
 
   const submit = () => {
-    callSubmitProject(title, summary, link, repo, firstYear, postgrad, zIDs)
+    callSubmitProject(title, summary, link, repo, firstyear, postgrad, zIDs)
       .then((response) => {
         setProjects(
           projects.concat(response.data.project).sort((a, b) => a.id > b.id)
         );
         setUser({
           zID: user.zID,
-          fullName: user.zIDs,
+          name: user.zIDs,
           votes: user.votes,
-          projectId: response.data.project.id,
+          project_id: response.data.project.id,
         });
       })
       .catch((error) => {
@@ -57,11 +57,11 @@ const SubmissionForm = () => {
   };
 
   const edit = () => {
-    callEditProject(title, summary, link, repo, firstYear, postgrad, zIDs)
+    callEditProject(title, summary, link, repo, firstyear, postgrad, zIDs)
       .then((response) => {
         setProjects(
           projects
-            .filter((project) => project.id !== user.projectId)
+            .filter((project) => project.id !== user.project_id)
             .concat(response.data.project)
             .sort((a, b) => a.id > b.id)
         );
@@ -87,7 +87,7 @@ const SubmissionForm = () => {
       .then((response) => {
         if (user !== null) {
           setZIDs(zIDs.concat(response.data.zID));
-          setFullNames(fullNames.concat(response.data.fullName));
+          setnames(names.concat(response.data.name));
         }
       })
       .catch((error) => {
@@ -95,11 +95,11 @@ const SubmissionForm = () => {
       });
   };
 
-  const deleteTeamMember = (oldFullName) => {
-    const index = fullNames.indexOf(oldFullName);
+  const deleteTeamMember = (oldname) => {
+    const index = names.indexOf(oldname);
     if (index !== -1) {
       setZIDs(zIDs.splice(index, 1));
-      setFullNames(fullNames.filter((fullName) => fullName !== oldFullName));
+      setnames(names.filter((name) => name !== oldname));
     }
   };
 
@@ -109,8 +109,8 @@ const SubmissionForm = () => {
     setLink("");
     setRepo("");
     setZIDs([user.zID]);
-    setFullNames([user.fullName]);
-    setFirstYear(false);
+    setnames([user.name]);
+    setFirstyear(false);
     setPostgrad(false);
     setAddZID("");
     setDeleteShow(false);
@@ -172,7 +172,7 @@ const SubmissionForm = () => {
             type="checkbox"
             label="Did all team members commence as Undergraduate students in 2022?"
             onChange={(event) => {
-              setFirstYear(event.target.value === "on");
+              setFirstyear(event.target.value === "on");
             }}
           />
           <Form.Check
@@ -212,13 +212,13 @@ const SubmissionForm = () => {
           Current Team:
         </h5>
         <div className="mt-4">
-          {fullNames.map((fullName, index) => (
+          {names.map((name, index) => (
             <InputGroup key={index} className="mb-3">
-              <InputGroup.Text>{fullName}</InputGroup.Text>
+              <InputGroup.Text>{name}</InputGroup.Text>
               <InputGroup.Append>
                 <Button
                   variant="outline-danger"
-                  onClick={() => deleteTeamMember(fullName)}
+                  onClick={() => deleteTeamMember(name)}
                   disabled={zIDs[index] === user.zID}
                 >
                   delete
@@ -228,7 +228,7 @@ const SubmissionForm = () => {
           ))}
         </div>
         <div className="mt-4">
-          {user.projectId === null && (
+          {user.project_id === null && (
             <Button
               variant="success"
               onClick={submit}
@@ -242,7 +242,7 @@ const SubmissionForm = () => {
               Submit
             </Button>
           )}
-          {user.projectId !== null && (
+          {user.project_id !== null && (
             <div className="mb-3">
               <Button className="mx-2" variant="success" onClick={edit}>
                 Save

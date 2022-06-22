@@ -34,7 +34,7 @@ pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
             api::use_verification,
             api::login,
             api::logout,
-            api::change_full_name,
+            api::change_name,
             api::change_password,
             api::generate_reset,
             api::use_reset,

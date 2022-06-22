@@ -9,11 +9,11 @@ const ProjectModal = (props) => {
   const { projects, setProjects, user, setUser } = useContext(Context);
 
   const vote = () => {
-    callVote(props.projectId)
+    callVote(props.project_id)
       .then(() => {
-        const project = projects.filter(
+        const project = projects.find(
           (project) => project.id === props.project.id
-        )[0];
+        );
         project.votes++;
         setProjects(
           projects
@@ -23,9 +23,9 @@ const ProjectModal = (props) => {
         );
         setUser({
           zID: user.zID,
-          fullName: user.fullName,
+          name: user.name,
           votes: user.votes.concat(props.project.id),
-          projectId: user.projectId,
+          project_id: user.project_id,
         });
       })
       .catch((error) => {
@@ -34,11 +34,11 @@ const ProjectModal = (props) => {
   };
 
   const unvote = () => {
-    callUnvote(props.projectID)
+    callUnvote(props.project_id)
       .then(() => {
-        const project = projects.filter(
+        const project = projects.find(
           (project) => project.id === props.project.id
-        )[0];
+        );
         project.votes--;
         setProjects(
           projects
@@ -48,9 +48,9 @@ const ProjectModal = (props) => {
         );
         setUser({
           zID: user.zID,
-          fullName: user.fullName,
+          name: user.name,
           votes: user.votes.filter((id) => id !== props.project.id),
-          projectId: user.projectId,
+          project_id: user.project_id,
         });
       })
       .catch((error) => {

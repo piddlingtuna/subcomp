@@ -9,9 +9,7 @@ const callGetComic = () => {
         comic: response.data.url,
       };
     })
-    .catch((error) => {
-      return null;
-    });
+    .catch((error) => {});
 };
 
 const callGetProjects = () => {
@@ -23,21 +21,17 @@ const callGetDeadlines = () => {
 };
 
 const callGetUser = () => {
-  if (localStorage.getItem("token")) {
-    return axios.get("/api/user/", {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    });
-  } else {
-    return Promise.resolve();
-  }
+  return axios.get("/api/user/", {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  });
 };
 
-const callGenerateVerification = (zID, fullName, password) => {
+const callGenerateVerification = (zID, name, password) => {
   return axios.post("/api/generate_verification/", {
     zID: zID,
-    fullName: fullName,
+    name: name,
     password: password,
   });
 };
@@ -63,11 +57,11 @@ const callLogOut = () => {
   });
 };
 
-const callChangeFullName = (fullName) => {
+const callChangename = (name) => {
   return axios.post(
-    "/api/change_full_name/",
+    "/api/change_name/",
     {
-      fullName: fullName,
+      name: name,
     },
     {
       headers: {
@@ -104,11 +98,11 @@ const callUseReset = (token, password) => {
   });
 };
 
-const callVote = (projectId) => {
+const callVote = (project_id) => {
   return axios.post(
     "/api/vote/",
     {
-      projectId: projectId,
+      project_id: project_id,
     },
     {
       headers: {
@@ -118,11 +112,11 @@ const callVote = (projectId) => {
   );
 };
 
-const callUnvote = (projectId) => {
+const callUnvote = (project_id) => {
   return axios.post(
     "/api/unvote/",
     {
-      projectId: projectId,
+      project_id: project_id,
     },
     {
       headers: {
@@ -151,18 +145,18 @@ const callSubmitProject = (
   summary,
   link,
   repo,
-  first_year,
+  firstyear,
   postgraduate,
   zIDs
 ) => {
-  axios.post(
+  return axios.post(
     "/api/submit_project/",
     {
       title: title,
       summary: summary,
       link: link,
       repo: repo,
-      first_year: first_year,
+      firstyear: firstyear,
       postgraduate: postgraduate,
       zIDs: zIDs,
     },
@@ -175,23 +169,22 @@ const callSubmitProject = (
 };
 
 const callEditProject = (
-  id,
   title,
   summary,
   link,
   repo,
-  first_year,
+  firstyear,
   postgraduate,
   zIDs
 ) => {
-  axios.post(
+  return axios.post(
     "/api/edit_project/",
     {
       title: title,
       summary: summary,
       link: link,
       repo: repo,
-      first_year: first_year,
+      firstyear: firstyear,
       postgraduate: postgraduate,
       zIDs: zIDs,
     },
@@ -220,7 +213,7 @@ export {
   callUseVerification,
   callLogIn,
   callLogOut,
-  callChangeFullName,
+  callChangename,
   callChangePassword,
   callGenerateReset,
   callUseReset,

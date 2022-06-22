@@ -2,21 +2,21 @@ import React, { useContext, useState } from "react";
 import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 
 import { Context } from "../Context";
-import { callChangeFullName } from "../calls";
+import { callChangename } from "../calls";
 
-const ChangeFullName = (props) => {
+const Changename = (props) => {
   const { user, setUser } = useContext(Context);
 
-  const [fullName, setFullName] = useState("");
+  const [name, setname] = useState("");
 
-  const handleChangeFullName = () => {
-    callChangeFullName(fullName)
+  const handleChangename = () => {
+    callChangename(name)
       .then(() => {
         setUser({
           zID: user.zID,
-          fullName: fullName,
+          name: name,
           votes: user.votes,
-          projectId: user.projectId,
+          project_id: user.project_id,
         });
       })
       .catch((error) => {
@@ -37,7 +37,7 @@ const ChangeFullName = (props) => {
             placeholder="John Jeremy"
             aria-label="full name"
             onChange={(event) => {
-              setFullName(event.target.value);
+              setname(event.target.value);
             }}
           />
         </InputGroup>
@@ -49,8 +49,8 @@ const ChangeFullName = (props) => {
         <Button
           variant="success"
           className="mx-2"
-          onClick={handleChangeFullName}
-          disabled={fullName.length === 0}
+          onClick={handleChangename}
+          disabled={name.length === 0}
         >
           Change
         </Button>
@@ -59,4 +59,4 @@ const ChangeFullName = (props) => {
   );
 };
 
-export default ChangeFullName;
+export default Changename;

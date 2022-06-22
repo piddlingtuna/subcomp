@@ -90,8 +90,7 @@ const Header = () => {
       {user !== null && (
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text className="mx-2">
-            Signed in as:{" "}
-            <span style={{ color: "white" }}>{user.fullName}</span>
+            Signed in as: <span style={{ color: "white" }}>{user.name}</span>
           </Navbar.Text>
           <Navbar.Text className="mx-2">
             <Button variant="danger" onClick={logOutOpen}>

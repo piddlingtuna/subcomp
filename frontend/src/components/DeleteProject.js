@@ -10,13 +10,13 @@ const DeleteProject = (props) => {
     callDeleteProject()
       .then(() => {
         setProjects(
-          projects.filter((project) => project.id !== user.projectId)
+          projects.filter((project) => project.id !== user.project_id)
         );
         setUser({
           zID: user.zID,
-          fullName: user.fullName,
+          name: user.name,
           votes: user.votes,
-          projectId: null,
+          project_id: null,
         });
       })
       .catch((error) => {

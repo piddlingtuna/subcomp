@@ -28,7 +28,7 @@ pub fn projects(
                 "repo": project.repo,
                 "votes": project.count_votes(&conn),
                 "zIDs": project.get_zids(&conn),
-                "fullNames": project.get_full_names(&conn),
+                "names": project.get_names(&conn),
         }))
         .collect();
     
@@ -45,9 +45,9 @@ pub fn user(
     ok().data(json!({
         "user": {
             "zID": user.zid,
-            "fullName": user.full_name,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "projectId": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -55,7 +55,7 @@ pub fn user(
 #[derive(Deserialize)]
 pub struct GenerateVerificationData {
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password: String,
 }
 
@@ -77,7 +77,7 @@ pub fn generate_verification(
         return bad_request().message("There is already an account with this zID.");
     }
 
-    let verification = match Verification::insert(&data.zid, &data.full_name, &data.password, &conn) {
+    let verification = match Verification::insert(&data.zid, &data.name, &data.password, &conn) {
         Some(verification) => verification,
         None => return internal_server_error(),
     };
@@ -132,7 +132,7 @@ pub fn use_verification(
         return bad_request().message("Verification token has expired.");
     };
 
-    let user = match User::insert(&verification.zid, &verification.full_name, &verification.password_hash, &conn) {
+    let user = match User::insert(&verification.zid, &verification.name, &verification.password_hash, &conn) {
         Some(user) => user,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
@@ -150,9 +150,9 @@ pub fn use_verification(
         "token": token.token,
         "user": {
             "zID": user.zid,
-            "fullName": user.full_name,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "projectId": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -186,9 +186,9 @@ pub fn login(
         "token": token.token,
         "user": {
             "zID": user.zid,
-            "fullName": user.full_name,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "projectId": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -206,16 +206,16 @@ pub fn logout(
 
 #[derive(Deserialize)]
 pub struct ChangeFullNameData {
-    pub full_name: String,
+    pub name: String,
 }
 
-#[post("/change_full_name", data = "<data>", format = "application/json")]
-pub fn change_full_name(
+#[post("/change_name", data = "<data>", format = "application/json")]
+pub fn change_name(
     user: User,
     data: Json<ChangeFullNameData>,
     conn: Conn,
 ) -> APIResponse {
-    match user.change_full_name(&data.full_name, &conn) {
+    match user.change_name(&data.name, &conn) {
         true => ok(),
         false => internal_server_error().message("Looks like our code is buggy :("),
     }
@@ -326,9 +326,9 @@ pub fn use_reset(
         "token": token.token,
         "user": {
             "zID": user.zid,
-            "fullName": user.full_name,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "projectId": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -414,7 +414,7 @@ pub fn check_zid(
 
     ok().data(json!({
         "zID": user.zid,
-        "fullName": user.full_name,
+        "name": user.name,
     }))
 }
 
@@ -424,7 +424,7 @@ pub struct SubmitProjectData {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
+    pub firstyear: bool,
     pub postgraduate: bool,
     pub zids: Vec<String>,
 }
@@ -461,7 +461,7 @@ pub fn submit_project(
         &project_data.summary,
         &project_data.link,
         &project_data.repo,
-        project_data.first_year,
+        project_data.firstyear,
         project_data.postgraduate,
         &conn,
     ) {
@@ -484,7 +484,7 @@ pub fn submit_project(
             "repo": project.repo,
             "votes": project.count_votes(&conn),
             "zIDs": project.get_zids(&conn),
-            "fullNames": project.get_full_names(&conn),
+            "names": project.get_names(&conn),
         },
     }))
 }
@@ -495,7 +495,7 @@ pub struct EditProjectData {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
+    pub firstyear: bool,
     pub postgraduate: bool,
     pub zids: Vec<String>,
 }
@@ -544,7 +544,7 @@ pub fn edit_project(
         &project_data.summary,
         &project_data.link,
         &project_data.repo,
-        project_data.first_year,
+        project_data.firstyear,
         project_data.postgraduate,
         &conn,
     ) {
@@ -567,7 +567,7 @@ pub fn edit_project(
             "repo": project.repo,
             "votes": project.count_votes(&conn),
             "zIDS": project.get_zids(&conn),
-            "fullNames": project.get_full_names(&conn),
+            "names": project.get_names(&conn),
         },
     }))
 }

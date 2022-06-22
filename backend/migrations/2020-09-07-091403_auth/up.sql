@@ -8,7 +8,7 @@ CREATE TABLE projects (
     summary TEXT NOT NULL,
     link TEXT NOT NULL,
     repo TEXT NOT NULL,
-    first_year BOOLEAN DEFAULT FALSE NOT NULL, 
+    firstyear BOOLEAN DEFAULT FALSE NOT NULL, 
     postgraduate BOOLEAN DEFAULT FALSE NOT NULL
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT current_timestamp NOT NULL,
     updated_at TIMESTAMP DEFAULT current_timestamp NOT NULL,
     zid CHAR(8) UNIQUE NOT NULL,
-    full_name TEXT NOT NULL,
+    name TEXT NOT NULL,
     password_hash BYTEA NOT NULL,
     project_id UUID DEFAULT NULL references projects(id)
 );
@@ -44,7 +44,7 @@ CREATE TABLE verifications (
     updated_at TIMESTAMP DEFAULT current_timestamp NOT NULL,
     token CHAR(32) UNIQUE NOT NULL,
     zID CHAR(8) NOT NULL,
-    full_name TEXT NOT NULL,
+    name TEXT NOT NULL,
     password_hash BYTEA NOT NULL
 );
 

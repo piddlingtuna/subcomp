@@ -5,21 +5,21 @@ import { Button, Container, Col, Row } from "react-bootstrap";
 import { Context } from "../Context";
 import Header from "../components/Header";
 import ProjectCard from "../components/ProjectCard";
-import ChangeFullName from "../components/ChangeFullName";
+import ChangeName from "../components/ChangeName";
 import ChangePassword from "../components/ChangePassword";
 
 const Profile = () => {
   const { projects, user } = useContext(Context);
 
-  const [fullNameShow, setFullNameShow] = useState(false);
+  const [nameShow, setnameShow] = useState(false);
   const [passwordShow, setPasswordShow] = useState(false);
 
-  const fullNameOpen = () => {
-    setFullNameShow(true);
+  const nameOpen = () => {
+    setnameShow(true);
   };
 
-  const fullNameClose = () => {
-    setFullNameShow(false);
+  const nameClose = () => {
+    setnameShow(false);
   };
 
   const passwordOpen = () => {
@@ -55,16 +55,13 @@ const Profile = () => {
               <Container className="m-3">
                 <Row>
                   <Col className="col-md-auto">
-                    <h5>Full Name: {user.fullName}</h5>
+                    <h5>Full Name: {user.name}</h5>
                   </Col>
                   <Col className="col-md-auto">
-                    <Button variant="warning" onClick={fullNameOpen}>
+                    <Button variant="warning" onClick={nameOpen}>
                       Change
                     </Button>
-                    <ChangeFullName
-                      show={fullNameShow}
-                      handleClose={fullNameClose}
-                    />
+                    <ChangeName show={nameShow} handleClose={nameClose} />
                   </Col>
                 </Row>
               </Container>
@@ -80,7 +77,7 @@ const Profile = () => {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 {projects
-                  .filter((project) => project.id === user.projectId)
+                  .filter((project) => project.id === user.project_id)
                   .map((project) => (
                     <ProjectCard key={project.id} project={project} />
                   ))}

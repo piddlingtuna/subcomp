@@ -5,11 +5,11 @@ import { callGenerateVerification } from "../calls";
 
 const SignUp = (props) => {
   const [zID, setZID] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [name, setname] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignUp = () => {
-    callGenerateVerification(zID, fullName, password).catch((error) => {
+    callGenerateVerification(zID, name, password).catch((error) => {
       alert(error.response.data.message);
     });
     props.handleClose();
@@ -39,7 +39,7 @@ const SignUp = (props) => {
             placeholder="Jashank Shepherd"
             aria-label="full name"
             onChange={(event) => {
-              setFullName(event.target.value);
+              setname(event.target.value);
             }}
           />
         </InputGroup>
@@ -68,7 +68,7 @@ const SignUp = (props) => {
           className="mx-2"
           onClick={handleSignUp}
           disabled={
-            zID.length !== 8 || fullName.length === 0 || password.length < 8
+            zID.length !== 8 || name.length === 0 || password.length < 8
           }
         >
           Signup

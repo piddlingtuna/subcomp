@@ -28,7 +28,7 @@ pub struct Project {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
+    pub firstyear: bool,
     pub postgraduate: bool,}
 
 #[derive(Insertable)]
@@ -38,7 +38,7 @@ pub struct NewProject {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
+    pub firstyear: bool,
     pub postgraduate: bool,
 }
 
@@ -66,10 +66,10 @@ impl Project {
             .unwrap_or_else(|_| Vec::new())
     }
 
-    pub fn get_full_names(&self, conn: &PgConnection) -> Vec<String> {
+    pub fn get_names(&self, conn: &PgConnection) -> Vec<String> {
         all_users
             .filter(users::project_id.eq(self.id))
-            .select(users::full_name)
+            .select(users::name)
             .load::<String>(conn)
             .unwrap_or_else(|_| Vec::new())
     }
@@ -82,13 +82,13 @@ impl Project {
             .unwrap_or(0)
     }
 
-    pub fn insert(title: &str, summary: &str, link: &str, repo: &str, first_year: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
+    pub fn insert(title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
         let new_project = NewProject {
             title: title.to_string(),
             summary: summary.to_string(),
             link: link.to_string(),
             repo: repo.to_string(),
-            first_year,
+            firstyear,
             postgraduate,
         };
         match diesel::insert_into(projects::table)
@@ -99,14 +99,14 @@ impl Project {
             }
     }
 
-    pub fn edit(id: &Uuid, title: &str, summary: &str, link: &str, repo: &str, first_year: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
+    pub fn edit(id: &Uuid, title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
         match diesel::update(projects::table.find(id))
             .set((
                 projects::title.eq(title),
                 projects::summary.eq(summary),
                 projects::repo.eq(repo),
                 projects::link.eq(link),
-                projects::first_year.eq(first_year),
+                projects::firstyear.eq(firstyear),
                 projects::postgraduate.eq(postgraduate),
             ))
             .get_result(conn) {
@@ -128,7 +128,7 @@ pub struct User {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
     pub project_id: Option<Uuid>
 }
@@ -137,7 +137,7 @@ pub struct User {
 #[table_name = "users"]
 pub struct NewUser {
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
 }
 
@@ -221,10 +221,10 @@ impl User {
             }
     }
 
-    pub fn insert(zid: &str, full_name: &str, password_hash: &[u8], conn: &PgConnection) -> Option<User> {
+    pub fn insert(zid: &str, name: &str, password_hash: &[u8], conn: &PgConnection) -> Option<User> {
         let new_user = NewUser {
             zid: zid.to_string(),
-            full_name: full_name.to_string(),
+            name: name.to_string(),
             password_hash: password_hash.to_owned(),
         };
 
@@ -255,9 +255,9 @@ impl User {
             }
     }
 
-    pub fn change_full_name(&self, full_name: &str, conn: &PgConnection) -> bool {
+    pub fn change_name(&self, name: &str, conn: &PgConnection) -> bool {
         diesel::update(users::table.find(self.id))
-            .set(users::full_name.eq(full_name))
+            .set(users::name.eq(name))
             .execute(conn)
             .is_ok()
     }
@@ -410,7 +410,7 @@ pub struct Verification {
     pub updated_at: NaiveDateTime,
     pub token: String,
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
 }
 
@@ -419,12 +419,12 @@ pub struct Verification {
 pub struct NewVerification {
     pub token: String,
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
 }
 
 impl Verification {
-    pub fn insert(zid: &str, full_name: &str, password: &str, conn: &PgConnection) -> Option<Verification> {
+    pub fn insert(zid: &str, name: &str, password: &str, conn: &PgConnection) -> Option<Verification> {
         let token = thread_rng()
             .sample_iter(&Alphanumeric)
             .take(32)
@@ -435,7 +435,7 @@ impl Verification {
         let new_verification = NewVerification {
             token,
             zid: zid.to_string(),
-            full_name: full_name.to_string(),
+            name: name.to_string(),
             password_hash,
         };
 
