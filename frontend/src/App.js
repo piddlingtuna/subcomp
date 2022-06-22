@@ -12,36 +12,43 @@ import Reset from "./pages/Reset";
 import NotFound from "./pages/NotFound";
 
 const App = () => {
-  const { setProjects, setUser, setProjectDeadline, setVoteDeadline } =
-    useContext(Context);
+  const {
+    setProjects,
+    setUser,
+    setProjectDeadline,
+    setVoteDeadline,
+    setWaiting,
+  } = useContext(Context);
 
   useEffect(() => {
-    callGetProjects()
-      .then((response) => {
-        setProjects(response.data.projects.sort((a, b) => a.id > b.id));
-      })
-      .catch((error) => {
-        setProjects([]);
-      });
+    const getProjects = callGetProjects()
+        .then((response) => {
+          setProjects(response.data.projects.sort((a, b) => a.id > b.id));
+        })
+        .catch((error) => {
+          setProjects([]);
+        });
+     
+    const getUser = callGetUser()
+        .then((response) => {
+          setUser(response.data.user);
+        })
+        .catch((error) => {
+          setUser(null);
+        });
 
-    callGetUser()
-      .then((response) => {
-        setUser(response.data.user);
-      })
-      .catch((error) => {
-        setUser(null);
-      });
+  
+    const getDeadlines = callGetDeadlines()
+        .then((response) => {
+          setProjectDeadline(response.data.projectDeadline);
+          setVoteDeadline(response.data.voteDeadline);
+        })
 
-    callGetDeadlines()
-      .then((response) => {
-        setProjectDeadline(response.data.projectDeadline);
-        setVoteDeadline(response.data.voteDeadline);
-      })
-      .catch((error) => {
-        setProjectDeadline(null);
-        setVoteDeadline(null);
-      });
-  }, [setProjects, setUser, setProjectDeadline, setVoteDeadline]);
+
+    Promise.all([getProjects, getUser, getDeadlines]).then(() => {
+      setWaiting(false);
+    });
+  }, [setProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
 
   return (
     <BrowserRouter>

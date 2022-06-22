@@ -7,7 +7,6 @@ import { callVote, callUnvote } from "../calls";
 
 const ProjectModal = (props) => {
   const { projects, setProjects, user, setUser } = useContext(Context);
-  console.log(props);
 
   const vote = () => {
     callVote(props.project.id)

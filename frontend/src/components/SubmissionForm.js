@@ -172,7 +172,7 @@ const SubmissionForm = () => {
           <Form.Check
             className="mt-3"
             type="checkbox"
-            label="Did all team members commence as Undergraduate students in 2022?"
+            label="Are all team members first year students?"
             onChange={(event) => {
               setFirstyear(event.target.value === "on");
             }}
@@ -180,7 +180,7 @@ const SubmissionForm = () => {
           <Form.Check
             className="mt-3"
             type="checkbox"
-            label="Are all team members enrolled as Postgraduate students?"
+            label="Are all team members postgraduate students?"
             onChange={(event) => {
               setPostgrad(event.target.value === "on");
             }}
@@ -199,7 +199,7 @@ const SubmissionForm = () => {
             <Button
               variant="outline-success"
               onClick={addTeamMember}
-              disabled={addZid.length !== 8 || zids.length >= 3}
+              disabled={addZid.length !== 8 || zids.includes(addZid) || zids.length >= 3}
             >
               add
             </Button>
