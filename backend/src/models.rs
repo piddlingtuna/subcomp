@@ -443,7 +443,7 @@ impl Verification {
             .values(&new_verification)
             .get_result(conn) {
                 Ok(verification) => Some(verification),
-                Err(error) => None,
+                Err(_error) => None,
             }
     }
 
