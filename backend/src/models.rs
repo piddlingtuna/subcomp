@@ -439,13 +439,11 @@ impl Verification {
             password_hash,
         };
 
-        std::println!("JUST VERIFICATION INSERT");
-
         match diesel::insert_into(verifications::table)
             .values(&new_verification)
             .get_result(conn) {
                 Ok(verification) => Some(verification),
-                Err(error) => { std::println!("{}", error); None},
+                Err(error) => None,
             }
     }
 

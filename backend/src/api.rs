@@ -77,14 +77,10 @@ pub fn generate_verification(
         return bad_request().message("There is already an account with this zID.");
     }
 
-    std::println!("BEFORE VERIFICATION INSERT");
-
     let verification = match Verification::insert(&data.zid, &data.name, &data.password, &conn) {
         Some(verification) => verification,
         None => return internal_server_error(),
     };
-
-    std::println!("AFTER VERIFICATION INSERT");
 
     let unsw_email = format!("<{}@unsw.edu.au>", &data.zid);
     let domain = env::var("DOMAIN").expect("DOMAIN must be set in env");
@@ -136,21 +132,15 @@ pub fn use_verification(
         return bad_request().message("Verification token has expired.");
     };
 
-    std::println!("BEFORE USER INSERT");
-
     let user = match User::insert(&verification.zid, &verification.name, &verification.password_hash, &conn) {
         Some(user) => user,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
-    std::println!("BEFORE GENERATE TOKEN");
-
     let token = match user.generate_token(&conn) {
         Some(token) => token,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
-
-    std::println!("BEFORE VERIFICATION DELETE");
 
     if !verification.delete(&conn) {
         return internal_server_error().message("Looks like our code is buggy :(");
@@ -456,6 +446,13 @@ pub fn submit_project(
         return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
+    let mut deduped_zids = project_data.zids.clone();
+    deduped_zids.sort();
+    deduped_zids.dedup();
+    if deduped_zids.len() != project_data.zids.len() {
+        return bad_request().message("You cannot count a team member twice.");
+    }
+
     if !project_data.zids.contains(&user.zid) {
         return bad_request().message("Your zID is not included in the team.");
     }
@@ -527,9 +524,18 @@ pub fn edit_project(
         return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
+    let mut deduped_zids = project_data.zids.clone();
+    deduped_zids.sort();
+    deduped_zids.dedup();
+    if deduped_zids.len() != project_data.zids.len() {
+        return bad_request().message("You cannot count a team member twice.");
+    }
+
     if !project_data.zids.contains(&user.zid) {
         return bad_request().message("Your zID is not included in the team.");
     }
+
+    
 
     let project_id = match user.project_id {
         Some(project_id) => project_id,
