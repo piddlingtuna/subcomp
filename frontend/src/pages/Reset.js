@@ -58,13 +58,13 @@ const Reset = () => {
                         setPassword(event.target.value);
                       }}
                     />
-                      <Button
-                        variant="outline-primary"
-                        disabled={password.length < 8}
-                        onClick={handleReset}
-                      >
-                        Reset
-                      </Button>
+                    <Button
+                      variant="outline-primary"
+                      disabled={password.length < 8}
+                      onClick={handleReset}
+                    >
+                      Reset
+                    </Button>
                   </InputGroup>
                 </div>
               ) : (

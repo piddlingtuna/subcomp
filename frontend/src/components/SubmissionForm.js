@@ -196,13 +196,13 @@ const SubmissionForm = () => {
                 setAddZid(event.target.value);
               }}
             />
-              <Button
-                variant="outline-success"
-                onClick={addTeamMember}
-                disabled={addZid.length !== 8 || zids.length >= 3}
-              >
-                add
-              </Button>
+            <Button
+              variant="outline-success"
+              onClick={addTeamMember}
+              disabled={addZid.length !== 8 || zids.length >= 3}
+            >
+              add
+            </Button>
           </InputGroup>
         </div>
         <h5
@@ -215,13 +215,13 @@ const SubmissionForm = () => {
           {names.map((name, index) => (
             <InputGroup key={index} className="mb-3">
               <InputGroup.Text>{name}</InputGroup.Text>
-                <Button
-                  variant="outline-danger"
-                  onClick={() => deleteTeamMember(name)}
-                  disabled={zids[index] === user.zid}
-                >
-                  delete
-                </Button>
+              <Button
+                variant="outline-danger"
+                onClick={() => deleteTeamMember(name)}
+                disabled={zids[index] === user.zid}
+              >
+                delete
+              </Button>
             </InputGroup>
           ))}
         </div>

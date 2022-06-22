@@ -12,7 +12,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 ReactDOM.render(
   <React.StrictMode>
     <ContextProvider>
-    <App />
+      <App />
     </ContextProvider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -17,44 +17,44 @@ const App = () => {
 
   useEffect(() => {
     callGetProjects()
-    .then((response) => {
-      setProjects(response.data.projects.sort((a, b) => a.id > b.id));
-    })
-    .catch((error) => {
-      setProjects([]);
-    });
+      .then((response) => {
+        setProjects(response.data.projects.sort((a, b) => a.id > b.id));
+      })
+      .catch((error) => {
+        setProjects([]);
+      });
 
-  callGetUser()
-    .then((response) => {
+    callGetUser()
+      .then((response) => {
         setUser(response.data.user);
-    })
-    .catch((error) => {
-      setUser(null);
-    });
+      })
+      .catch((error) => {
+        setUser(null);
+      });
 
-  callGetDeadlines()
-    .then((response) => {
-      setProjectDeadline(response.data.projectDeadline);
-      setVoteDeadline(response.data.voteDeadline);
-    })
-    .catch((error) => {
-      setProjectDeadline(null);
-      setVoteDeadline(null);
-    });
+    callGetDeadlines()
+      .then((response) => {
+        setProjectDeadline(response.data.projectDeadline);
+        setVoteDeadline(response.data.voteDeadline);
+      })
+      .catch((error) => {
+        setProjectDeadline(null);
+        setVoteDeadline(null);
+      });
   }, [setProjects, setUser, setProjectDeadline, setVoteDeadline]);
 
   return (
-      <BrowserRouter>
-        <Routes>
-          <Route exact path="/" element={<Projects />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/submission" element={<Submission />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/verification/:id" element={<Verification />} />
-          <Route path="/reset/:id" element={<Reset />} />
-          <Route element={NotFound} />
-        </Routes>
-      </BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route exact path="/" element={<Projects />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/submission" element={<Submission />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/verification/:id" element={<Verification />} />
+        <Route path="/reset/:id" element={<Reset />} />
+        <Route element={NotFound} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

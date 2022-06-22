@@ -22,8 +22,8 @@ const DeleteProject = (props) => {
       .catch((error) => {
         alert(error.response.data.message);
       });
-      props.reset();
-      props.handleClose();
+    props.reset();
+    props.handleClose();
   };
 
   return (
