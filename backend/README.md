@@ -4,7 +4,12 @@ The backend server is written in Rust using the [Rocket](https://rocket.rs/) web
 
 The database uses [PostgreSQL](https://www.postgresql.org/). Although fancy features aren't used, it has only been tested with PostgreSQL 14.4.
 
+Be a good person and run `cargo clippy --fix` every so often.
+
+
 ## Documentation
+
+If you are new to Rust, take a look at the [Rust Book](https://doc.rust-lang.org/book/).
 
 [See Rocket documentation.](https://rocket.rs/v0.5-rc/guide//)
 

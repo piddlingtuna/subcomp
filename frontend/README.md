@@ -1,6 +1,47 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Frontend
+
+The frontend uses the [React](https://reactjs.org/) with JavaScript (it really should use TypeScript). It has been refactored to use functional components, instead of outdated (but maybe more performant class components) to improve maintainability. It does not use any state management libraries; React hooks suffice.
+
+[React Bootstrap](https://react-bootstrap.github.io/) is used for styling and [Prettier](https://prettier.io/) is used for linting.
+
+Be a good person and run `prettier --write .` in this directory every so often.
+
+## Documentation
+
+If you are new to React, take a look [here](https://reactjs.org/tutorial/tutorial.html).
+
+[See React documentation.](https://reactjs.org/docs/getting-started.html)
+
+[See React Bootstrap](https://react-bootstrap.github.io/components/alerts)
+
+
+## Architecture
+
+`src/index.js` and `src/index.css` It is unlikely you will need to modify this file.
+
+`src/App.js`
+
+`src/Context.js` provides the React Context for global state management. It exposes `projects`, `user`, `projectDeadline`, `voteDeadline`, and `waiting` defined below.
+
+`src/calls.js` implements the API calls to the backend server. If you add another endpoint, you will need to add a function here.
+
+`src/pages/` contains all the pages of the frontend. Try to keep these pages small and add components liberally. If you add a page, you will need to modify `src/App.js` to route to it.
+
+`src/components/` contains all the components of the frontend. Add components liberally.
+
+TODO define user and projects
+
+
+## Environment variables
+
+A `.env` file must exist in this directory. It must contain:
+
+- `REACT_APP_BASE_URL` = The domain name used to host the frontend. When developing locally, this will be localhost with some port. When deploying, please use [HTTPS](https://en.wikipedia.org/wiki/HTTPS).
+
 
 ## Available Scripts
+
+Everything below here was written by [Create React App](https://github.com/facebook/create-react-app). It's the spiel you see in everything React frontend.
 
 In the project directory, you can run:
 
