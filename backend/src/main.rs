@@ -77,7 +77,7 @@ fn main() {
 
     // Must contain the following in .env
     // DATABASE_URL
-    // LOGIN_SALT
+    // PASSWORD_SALT
     // DOMAIN
     // SMTP_USERNAME
     // SMTP_PASSWORD

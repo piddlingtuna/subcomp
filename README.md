@@ -142,7 +142,7 @@ A project submission system for competitions.
     
     ```
     DATABASE_URL=postgres://postgres:password@localhost/subcomp
-    LOGIN_SALT=RANDOM_STRING_HERE
+    PASSWORD_SALT=RANDOM_STRING_HERE
     DOMAIN=https://www.example.com
     SMTP_USERNAME=example@gmail.com
     SMTP_PASSWORD=password
@@ -152,7 +152,7 @@ A project submission system for competitions.
 
     `DATABASE_URL` is a URL to connect to the database. The example URL should work for local development except replace `password` with the `postgres` user's password.
 
-    `LOGIN_SALT` must a long string consisting of letters and numbers for security reasons. KEEP THIS SECRET.
+    `PASSWORD_SALT` must a long string consisting of letters and numbers for security reasons. KEEP THIS SECRET.
 
     `DOMAIN` is the domain the project is hosted on. It is used for sending emails.
 
