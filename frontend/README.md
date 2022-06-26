@@ -1,6 +1,6 @@
 # Frontend
 
-The frontend uses the [React](https://reactjs.org/) with JavaScript (it really should use TypeScript). It has been refactored to use functional components, instead of outdated (but maybe more performant class components) to improve maintainability. It does not use any state management libraries; React hooks suffice.
+The frontend uses [React](https://reactjs.org/) with JavaScript (it really should use TypeScript). It has been refactored to use functional components, instead of outdated (but maybe more performant) class components to improve maintainability. It does not use any state management libraries; React hooks suffice.
 
 [React Bootstrap](https://react-bootstrap.github.io/) is used for styling and [Prettier](https://prettier.io/) is used for linting.
 
@@ -65,7 +65,7 @@ REACT_APP_BASE_URL=http://localhost:8000
 
 ## Available Scripts
 
-Everything below here was written by [Create React App](https://github.com/facebook/create-react-app). It's the spiel you see in everything React frontend.
+Everything below here was written by [Create React App](https://github.com/facebook/create-react-app). It's the spiel you see in every React frontend.
 
 In the project directory, you can run:
 

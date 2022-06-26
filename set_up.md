@@ -18,25 +18,25 @@ Install PostgreSQL by following [these instructions](https://www.postgresql.org/
 
 ## Set Up PostgreSQL
 
-Start the PostgreSQL service on every boot.
+Start the PostgreSQL service on every boot:
 
 ```
 sudo systemctl enable postgresql
 ```
 
-Start the PostgreSQL service.
+Start the PostgreSQL service:
 
 ```
 sudo systemctl start postgresql
 ```
 
-Later, you can disable the starting the PostgreSQL service on every boot using:
+Later, you can disable starting the PostgreSQL service on every boot:
 
 ```
 sudo systemctl disable postgresql
 ```
 
-Create a password for the `postgres` user.
+Create a password for the `postgres` user:
 
 ```
 sudo -u postgres psql
@@ -45,7 +45,7 @@ postgres=# \password postgres
 postgres#= \q
 ```
 
-Create a database
+Create a database:
 
 ```
 createdb subcomp
@@ -138,7 +138,7 @@ As an alternative to all the above steps, you can use docker.
 
 Install `docker` by following [these instructions](https://docs.docker.com/get-docker/).
 
-Install `docker compose` by following these instructions.
+Install `docker compose` by [following these instructions](https://docs.docker.com/compose/install/).
 
 ### Running the backend and frontend
 
@@ -150,5 +150,3 @@ Please change `localhost` to `database` in `backend/.env`.
 sudo docker compose up # This will take a long time.
 sudo docker compose build
 ```
-
-If

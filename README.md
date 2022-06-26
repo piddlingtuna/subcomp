@@ -1,6 +1,6 @@
 # subcomp
 
-This is a project submission system for [CSESoc](https://csesoc.unsw.edu.au/)'s Personal Project Competition. It was written and first used in 2020 will no longer be maintained by it's [original committer](https://github.com/piddlingtuna/subcomp/).
+This is a project submission system for [CSESoc](https://csesoc.unsw.edu.au/)'s Personal Project Competition. It was written and first used in 2020 will no longer be maintained by its [original committer](https://github.com/piddlingtuna/subcomp/).
 
 ## Authentication
 
@@ -8,9 +8,9 @@ This project only lets users sign up using a [UNSW](https://www.unsw.edu.au/) zI
 
 ## Environment variables
 
-A `.env` file must exist in this directory if you are using docker. It must contain:
+A `.env` file must exist in this directory _if you are using docker_. It must contain:
 
-- `POSTGRES_USER` = the name of a user in the database. It must have permission to read/write to the database.
+- `POSTGRES_USER` = the name of a user in the database. This user must have permission to read/write to the database.
 - `POSTGRES_PASSWORD` = the password of the above user.
 - `POSTGRES_DB` = the name of the database.
 
