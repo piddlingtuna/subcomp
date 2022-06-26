@@ -17,11 +17,34 @@ If you are new to React, take a look [here](https://reactjs.org/tutorial/tutoria
 
 ## Architecture
 
-`src/index.js` and `src/index.css` It is unlikely you will need to modify this file.
+`src/index.js` imports css, including bootstrap, and renders the App with the React Context. It is unlikely you will need to modify this file.
 
-`src/App.js`
+`src/index.css` provides very basic styling, mostly to do with fonts. It is unlikely you will need to modify this file.
 
-`src/Context.js` provides the React Context for global state management. It exposes `projects`, `user`, `projectDeadline`, `voteDeadline`, and `waiting` defined below.
+`src/App.js` is the root compontent. If adds the routes and initializes objects in the React context via API calls. If you add another page or need to initialize another object in the React context, you will need to modify this file.
+
+`src/Context.js` provides the React context for global state management. It exposes `projects`, `user`, `projectDeadline`, `voteDeadline`, and `waiting` defined below. If you add another object in the React context, you will need to modify `src/App.js` to initialize it.
+
+```
+interface Project {
+    id: string;
+    title: string;
+    summary: string;
+    repo: string;
+    votes: number;
+    zids: string[];
+    names: string[];
+};
+type Projects = Project[];
+interface User {
+    zid: string;
+    name: string;
+    votes: string[];
+    project_id: string;
+}
+type ProjectDeadline = string;
+type VoteDeadline = string;
+```
 
 `src/calls.js` implements the API calls to the backend server. If you add another endpoint, you will need to add a function here.
 
@@ -29,14 +52,18 @@ If you are new to React, take a look [here](https://reactjs.org/tutorial/tutoria
 
 `src/components/` contains all the components of the frontend. Add components liberally.
 
-TODO define user and projects
-
 
 ## Environment variables
 
 A `.env` file must exist in this directory. It must contain:
 
-- `REACT_APP_BASE_URL` = The domain name used to host the frontend. When developing locally, this will be localhost with some port. When deploying, please use [HTTPS](https://en.wikipedia.org/wiki/HTTPS).
+- `REACT_APP_BASE_URL` = The domain name used to host the backend. When developing locally, this will be localhost with some port. When deploying, you can exclude this entirely.
+
+An example `.env` would look like:
+
+```
+REACT_APP_BASE_URL=http://localhost:8000
+```
 
 
 ## Available Scripts

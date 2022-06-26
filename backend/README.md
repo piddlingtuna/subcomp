@@ -52,7 +52,7 @@ An example `.env` would look like:
 ```
 DATABASE_URL=postgres://postgres:postgres@localhost/subcomp
 PASSWORD_SALT=VERY_LONG_AND_COMPLEX_STRING
-DOMAIN=https://example.com
+DOMAIN=http://localhost:3000
 SMTP_USERNAME=noreply@example.com
 SMTP_PASSWORD=password
 PROJECT_END=1999-09-09T23:59:59+10:00

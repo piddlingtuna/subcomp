@@ -1,214 +1,160 @@
 ## Set Up
 
-Note the following instructions have only been fully tested on Arch Linux.
+Please read the sections on environment variables in `backend/README.md` and `frontend/README.md`.
 
 
-THIS IS STILL UNDER CONSTRUCTION
+## Supporting operating systems
 
+This guide supports MacOS, Debian Linux, and Arch Linux. However, it has only been fully tested on Arch Linux.
 
-## Setting Up
+If you are using Windows, [please install Linux with the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install).
 
-1. Install dependencies
 
-    1. Install Rust
+## Install dependencies
 
-    The source of truth is https://www.rust-lang.org/tools/install.
+Install Rust by follwing [these instructions](https://www.rust-lang.org/tools/install).
 
-    ### Windows
+Install Node by following [these instructions](https://nodejs.org/en/download/).
 
-    See https://forge.rust-lang.org/infra/other-installation-methods.html.
+Install PostgreSQL by following [these instructions](https://www.postgresql.org/download/).
 
-    ### MacOS, Debian Linux, Arch Linux
 
-    ```
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    ```
+## Set Up PostgreSQL
 
-
-    2. Install Node
-
-    The source of truth is https://nodejs.org/en/download/.
-
-    # Windows
-
-    See the source of truth.
-
-    ## MacOS
-
-    ```
-    brew install node
-    ```
-
-    ### Debian Linux
-
-    See: https://github.com/nodesource/distributions/blob/master/README.md
-
-    ### Arch Linux
-
-    ```
-    pacman -S nodejs npm
-    ```
-
-
-    3. Install PostgreSQL
-
-    The source of truth is https://www.postgresql.org/download/.
-
-    ### Windows
-
-    See: https://www.postgresql.org/download/windows/
-
-    ### MacOS
-
-    ```
-    brew install postgresql
-    ```
-
-    ### Debian Linux
-
-    ```
-    sudo apt install postgresql postgresql-client
-    ```
-
-    ### Arch Linux
-    
-    ```
-    pacman -S postgresql
-    ```
-
-
-2. Start PostgreSQL
-
-    ### Arch Linux
-
-    Switch to the `postgres` user and initialize the database cluster.
-
-    ```
-    sudo -u postgres –i  initdb -D '/var/lib/postgres/data'
-    ```
-
-    Exit the `postgres` user.
-    
-    ```
-    exit
-    ```
-
-    Start the PostgreSQL service on every boot.
-    
-    ```
-    sudo systemctl enable postgresql
-    ```
-
-    Start the PostgreSQL service.
-
-    ```
-    sudo systemctl start postgresql
-    ```
-
-    You can disable the starting the PostgreSQL service on every boot using:
-
-    ```
-    sudo systemctl disable postgresql
-    ```
-
-
-3. Create database
-
-    Create a password for the `postgres` user.
-
-    ```
-    sudo -u postgres psql
-    postgres=# \password postgres
-    [Enter a strong password]
-    postgres#= \q
-    ```
-
-    Create a database
-
-    ```
-    createdb subcomp
-    ```
-
-
-4. Add secrets to .env file
-
-    `$SUBCOMP` represents the working directory of this project.
-
-    ```
-    cd $SUBCOMP
-    cd backend
-    touch .env
-    ```
-
-    ### All environments
-
-    Open `.env` and add the following:
-    
-    ```
-    TODO
-    ```
-
-
-4. Build frontend
-
-    The frontend is statically served by the backend. Run these commands every time you want to rebuild the frontend.
-
-    `$SUBCOMP` represents the working directory of this project.
-
-    ```
-    cd $SUBCOMP
-    cd frontend
-    yarn build
-    rm -r ../backend/public || true
-    mv build ../backend/public
-    ```
-
-
-3. Run backend
-
-    Thanks to `rocket`, we use nightly Rust.
-
-    ### First debug build
-
-    ```
-    rustup default nightly
-    cargo update
-    cargo build
-    cargo install diesel_cli --no-default-features --features postgres
-    diesel setup
-    diesel run migration # CAUTION: This will wipe the database.
-    cargo run
-    ```
-
-    ### Subsequent debug builds
-
-    ```
-    cargo run
-    ```
-
-    ### First release build
-
-    ```
-    rustup default nightly
-    cargo update
-    cargo build --release
-    cargo install diesel_cli --no-default-features --features postgres
-    diesel setup
-    diesel run migration # CAUTION: This will wipe the database.
-    cargo run --release
-    ```
-
-    ### Subsequent release builds
-
-    ```
-    cargo run --release
-    ```
-
-
-# Docker
-
-Alternatively, you can use docker.
+Start the PostgreSQL service on every boot.
 
 ```
-sudo docker compose up
+sudo systemctl enable postgresql
+```
+
+Start the PostgreSQL service.
+
+```
+sudo systemctl start postgresql
+```
+
+Later, you can disable the starting the PostgreSQL service on every boot using:
+
+```
+sudo systemctl disable postgresql
+```
+
+Create a password for the `postgres` user.
+
+```
+sudo -u postgres psql
+postgres=# \password postgres
+[Enter a strong password]
+postgres#= \q
+```
+
+Create a database
+
+```
+createdb subcomp
+```
+
+
+## Run the backend
+
+Thanks to `rocket`, we use nightly Rust. Thus, you must run:
+
+```
+rustup default nightly
+```
+
+Ensure you have added a `backend/.env` file as described in `backend/README.md`.
+
+### Development
+
+Navigate to `backend` in your terminal and run:
+
+```
+cargo build
+cargo install diesel_cli --no-default-features --features postgres
+diesel setup
+cargo run
+```
+
+You can subsequently run the backend using:
+
+```
+cargo run
+```
+
+If you want to restart the backend after every code change, install `cargo watch`:
+
+```
+cargo install cargo-watch
+```
+
+You can subsequently run the backend using:
+
+```
+cargo watch -x run
+```
+
+### Production
+
+Navigate to `backend` in your terminal and run:
+
+```
+cargo install diesel_cli --no-default-features --features postgres
+diesel setup
+cargo build --release
+./target/release/backend
+```
+
+## Run the frontend
+
+
+Ensure you have added a `frontend/.env` file as described in `frontend/README.md`.
+
+### Development
+
+Navigate to `frontend` in your terminal and run:
+
+```
+yarn install
+yarn start
+```
+
+You can subsequently run the backend using:
+
+```
+yarn start
+```
+
+
+### Production
+
+Navigate to `frontend` in your terminal and run:
+
+```
+yarn install --production
+yarn build --production
+yarn serve -s build
+```
+
+
+## Docker
+
+As an alternative to all the above steps, you can use docker.
+
+### Installing dependencies
+
+Install `docker` by following [these instructions](https://docs.docker.com/get-docker/).
+
+Install `docker compose` by following these instructions.
+
+### Running the backend and frontend
+
+Please read the sections on environment variables in `README.md`, `backend/README.md`, and `frontend/README.md`.
+
+Please change `localhost` to `database` in `backend/.env`.
+
+
+```
+sudo docker compose up # This will take a long time.
+sudo docker compose build
 ```
