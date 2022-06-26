@@ -150,3 +150,9 @@ Please change `localhost` to `database` in `backend/.env`.
 sudo docker compose up # This will take a long time.
 sudo docker compose build
 ```
+
+If it fails because 0.0.0.0:5432 is already in use, stop the PostgreSQL service:
+
+```
+sudo systemctl stop postgresql
+```
