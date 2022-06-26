@@ -1,6 +1,71 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Frontend
+
+The frontend uses [React](https://reactjs.org/) with JavaScript (it really should use TypeScript). It has been refactored to use functional components, instead of outdated (but maybe more performant) class components to improve maintainability. It does not use any state management libraries; React hooks suffice.
+
+[React Bootstrap](https://react-bootstrap.github.io/) is used for styling and [Prettier](https://prettier.io/) is used for linting.
+
+Be a good person and run `prettier --write .` in this directory every so often.
+
+## Documentation
+
+If you are new to React, take a look [here](https://reactjs.org/tutorial/tutorial.html).
+
+[See React documentation.](https://reactjs.org/docs/getting-started.html)
+
+[See React Bootstrap](https://react-bootstrap.github.io/components/alerts)
+
+## Architecture
+
+`src/index.js` imports css, including bootstrap, and renders the App with the React Context. It is unlikely you will need to modify this file.
+
+`src/index.css` provides very basic styling, mostly to do with fonts. It is unlikely you will need to modify this file.
+
+`src/App.js` is the root compontent. If adds the routes and initializes objects in the React context via API calls. If you add another page or need to initialize another object in the React context, you will need to modify this file.
+
+`src/Context.js` provides the React context for global state management. It exposes `projects`, `user`, `projectDeadline`, `voteDeadline`, and `waiting` defined below. If you add another object in the React context, you will need to modify `src/App.js` to initialize it.
+
+```
+interface Project {
+    id: string;
+    title: string;
+    summary: string;
+    repo: string;
+    votes: number;
+    zids: string[];
+    names: string[];
+};
+type Projects = Project[];
+interface User {
+    zid: string;
+    name: string;
+    votes: string[];
+    project_id: string;
+}
+type ProjectDeadline = string;
+type VoteDeadline = string;
+```
+
+`src/calls.js` implements the API calls to the backend server. If you add another endpoint, you will need to add a function here.
+
+`src/pages/` contains all the pages of the frontend. Try to keep these pages small and add components liberally. If you add a page, you will need to modify `src/App.js` to route to it.
+
+`src/components/` contains all the components of the frontend. Add components liberally.
+
+## Environment variables
+
+A `.env` file must exist in this directory. It must contain:
+
+- `REACT_APP_BASE_URL` = The domain name used to host the backend. When developing locally, this will be localhost with some port. When deploying, you can exclude this entirely.
+
+An example `.env` would look like:
+
+```
+REACT_APP_BASE_URL=http://localhost:8000
+```
 
 ## Available Scripts
+
+Everything below here was written by [Create React App](https://github.com/facebook/create-react-app). It's the spiel you see in every React frontend.
 
 In the project directory, you can run:
 

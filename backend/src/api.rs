@@ -27,8 +27,8 @@ pub fn projects(
                 "link": project.link,
                 "repo": project.repo,
                 "votes": project.count_votes(&conn),
-                "team_zids": project.get_zids(&conn),
-                "team": project.get_full_names(&conn),
+                "zids": project.get_zids(&conn),
+                "names": project.get_names(&conn),
         }))
         .collect();
     
@@ -44,10 +44,10 @@ pub fn user(
 ) -> APIResponse {
     ok().data(json!({
         "user": {
-            "zID": user.zid,
-            "fullName": user.full_name,
+            "zid": user.zid,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "project": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -55,7 +55,7 @@ pub fn user(
 #[derive(Deserialize)]
 pub struct GenerateVerificationData {
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password: String,
 }
 
@@ -77,7 +77,7 @@ pub fn generate_verification(
         return bad_request().message("There is already an account with this zID.");
     }
 
-    let verification = match Verification::insert(&data.zid, &data.full_name, &data.password, &conn) {
+    let verification = match Verification::insert(&data.zid, &data.name, &data.password, &conn) {
         Some(verification) => verification,
         None => return internal_server_error(),
     };
@@ -132,7 +132,7 @@ pub fn use_verification(
         return bad_request().message("Verification token has expired.");
     };
 
-    let user = match User::insert(&verification.zid, &verification.full_name, &verification.password_hash, &conn) {
+    let user = match User::insert(&verification.zid, &verification.name, &verification.password_hash, &conn) {
         Some(user) => user,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
@@ -149,10 +149,10 @@ pub fn use_verification(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zid,
-            "fullName": user.full_name,
+            "zid": user.zid,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "project": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -185,10 +185,10 @@ pub fn login(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zid,
-            "fullName": user.full_name,
+            "zid": user.zid,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "project": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -206,16 +206,16 @@ pub fn logout(
 
 #[derive(Deserialize)]
 pub struct ChangeFullNameData {
-    pub full_name: String,
+    pub name: String,
 }
 
-#[post("/change_full_name", data = "<data>", format = "application/json")]
-pub fn change_full_name(
+#[post("/change_name", data = "<data>", format = "application/json")]
+pub fn change_name(
     user: User,
     data: Json<ChangeFullNameData>,
     conn: Conn,
 ) -> APIResponse {
-    match user.change_full_name(&data.full_name, &conn) {
+    match user.change_name(&data.name, &conn) {
         true => ok(),
         false => internal_server_error().message("Looks like our code is buggy :("),
     }
@@ -325,10 +325,10 @@ pub fn use_reset(
     ok().data(json!({
         "token": token.token,
         "user": {
-            "zID": user.zid,
-            "fullName": user.full_name,
+            "zid": user.zid,
+            "name": user.name,
             "votes": user.get_votes(&conn),
-            "project": user.get_project(&conn),
+            "project_id": user.get_project(&conn),
         },
     }))
 }
@@ -413,8 +413,8 @@ pub fn check_zid(
     }
 
     ok().data(json!({
-        "zID": user.zid,
-        "fullName": user.full_name,
+        "zid": user.zid,
+        "name": user.name,
     }))
 }
 
@@ -424,9 +424,9 @@ pub struct SubmitProjectData {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
-    pub postgraduate: bool,
-    pub team_zids: Vec<String>,
+    pub firstyear: bool,
+    pub postgrad: bool,
+    pub zids: Vec<String>,
 }
 
 #[post("/submit_project", data = "<project_data>", format = "application/json")]
@@ -442,17 +442,24 @@ pub fn submit_project(
         return bad_request().message("Project deadline is over.");
     }
 
-    if project_data.team_zids.len() > 3 {
+    if project_data.zids.len() > 3 {
         return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
-    if !project_data.team_zids.contains(&user.zid) {
+    let mut deduped_zids = project_data.zids.clone();
+    deduped_zids.sort();
+    deduped_zids.dedup();
+    if deduped_zids.len() != project_data.zids.len() {
+        return bad_request().message("You cannot count a team member twice.");
+    }
+
+    if !project_data.zids.contains(&user.zid) {
         return bad_request().message("Your zID is not included in the team.");
     }
 
-    if !project_data.team_zids
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_can_do_project(&user_id, &conn)) {
+        .all(|user_id| User::zid_can_do_project(user_id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -461,17 +468,17 @@ pub fn submit_project(
         &project_data.summary,
         &project_data.link,
         &project_data.repo,
-        project_data.first_year,
-        project_data.postgraduate,
+        project_data.firstyear,
+        project_data.postgrad,
         &conn,
     ) {
         Some(project) => project,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
-    if !project_data.team_zids
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_do_project(&user_id, &project.id, &conn)) {
+        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -483,8 +490,8 @@ pub fn submit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "team_zids": project.get_zids(&conn),
-            "team": project.get_full_names(&conn),
+            "zids": project.get_zids(&conn),
+            "names": project.get_names(&conn),
         },
     }))
 }
@@ -495,9 +502,9 @@ pub struct EditProjectData {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
-    pub postgraduate: bool,
-    pub team_zids: Vec<String>,
+    pub firstyear: bool,
+    pub postgrad: bool,
+    pub zids: Vec<String>,
 }
 
 #[post("/edit_project", data = "<project_data>", format = "application/json")]
@@ -513,28 +520,37 @@ pub fn edit_project(
         return bad_request().message("Project deadline is over.");
     }
 
-    if project_data.team_zids.len() > 3 {
+    if project_data.zids.len() > 3 {
         return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
-    if !project_data.team_zids.contains(&user.zid) {
+    let mut deduped_zids = project_data.zids.clone();
+    deduped_zids.sort();
+    deduped_zids.dedup();
+    if deduped_zids.len() != project_data.zids.len() {
+        return bad_request().message("You cannot count a team member twice.");
+    }
+
+    if !project_data.zids.contains(&user.zid) {
         return bad_request().message("Your zID is not included in the team.");
     }
+
+    
 
     let project_id = match user.project_id {
         Some(project_id) => project_id,
         None => return bad_request().message("You have not submitted a project."),
     };
 
-    if !project_data.team_zids
+    if !project_data.zids
         .iter()
-        .all(|zid| User::zid_doing_project(&zid, &project_id, &conn) || User::zid_can_do_project(&zid, &conn)) {
+        .all(|zid| User::zid_doing_project(zid, &project_id, &conn) || User::zid_can_do_project(zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
     if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zid| User::zid_not_do_project(&zid, &conn)) {
+        .all(|zid| User::zid_not_do_project(zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -544,17 +560,17 @@ pub fn edit_project(
         &project_data.summary,
         &project_data.link,
         &project_data.repo,
-        project_data.first_year,
-        project_data.postgraduate,
+        project_data.firstyear,
+        project_data.postgrad,
         &conn,
     ) {
         Some(project) => project,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
-    if !project_data.team_zids
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_do_project(&user_id, &project.id, &conn)) {
+        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -566,8 +582,8 @@ pub fn edit_project(
             "link": project.link,
             "repo": project.repo,
             "votes": project.count_votes(&conn),
-            "team_zids": project.get_zids(&conn),
-            "team": project.get_full_names(&conn),
+            "zids": project.get_zids(&conn),
+            "names": project.get_names(&conn),
         },
     }))
 }
@@ -591,7 +607,7 @@ pub fn delete_project(
 
     if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zid| User::zid_not_do_project(&zid, &conn)) {
+        .all(|zid| User::zid_not_do_project(zid, &conn)) {
             return bad_request().message("Team contains invalid zIDs.");
         }
 
@@ -608,7 +624,7 @@ pub fn deadlines(
     let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in env");
 
     ok().data(json!({
-        "project_deadline": project_end,
-        "vote_deadline": vote_end,
+        "projectDeadline": project_end,
+        "voteDeadline": vote_end,
     }))
 }

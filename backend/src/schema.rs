@@ -7,8 +7,8 @@ table! {
         summary -> Text,
         link -> Text,
         repo -> Text,
-        first_year -> Bool,
-        postgraduate -> Bool,
+        firstyear -> Bool,
+        postgrad -> Bool,
     }
 }
 
@@ -38,7 +38,7 @@ table! {
         created_at -> Timestamp,
         updated_at -> Timestamp,
         zid -> Bpchar,
-        full_name -> Text,
+        name -> Text,
         password_hash -> Bytea,
         project_id -> Nullable<Uuid>,
     }
@@ -51,7 +51,7 @@ table! {
         updated_at -> Timestamp,
         token -> Bpchar,
         zid -> Bpchar,
-        full_name -> Text,
+        name -> Text,
         password_hash -> Bytea,
     }
 }

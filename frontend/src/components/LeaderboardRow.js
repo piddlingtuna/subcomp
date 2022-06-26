@@ -1,41 +1,36 @@
-import React from 'react';
+import React, { useState } from "react";
 
-import ProjectModal from './ProjectModal';
+import ProjectModal from "./ProjectModal";
 
-class LeaderboardRow extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      show: false,
-    }
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
+const LeaderboardRow = (props) => {
+  const [show, setShow] = useState(false);
 
-  handleOpen() {
-    this.setState({
-      show: true,
-    })
-  }
+  const handleOpen = () => {
+    setShow(true);
+  };
 
-  handleClose() {
-    this.setState({
-      show: false,
-    })
-  }
+  const handleClose = () => {
+    setShow(false);
+  };
 
-  render() {
-    return (
-      <>
-        <tr key={this.props.project.id} style={{ cursor: 'pointer' }} onClick={this.handleOpen}>
-          <td>{ this.props.rank }</td>
-          <td>{ this.props.project.title }</td>
-          <td>{ this.props.project.votes }</td>
-        </tr>
-        <ProjectModal show={this.state.show} handleClose={this.handleClose} project={this.props.project} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <tr
+        key={props.project.id}
+        style={{ cursor: "pointer" }}
+        onClick={handleOpen}
+      >
+        <td>{props.rank}</td>
+        <td>{props.project.title}</td>
+        <td>{props.project.votes}</td>
+      </tr>
+      <ProjectModal
+        show={show}
+        handleClose={handleClose}
+        project={props.project}
+      />
+    </>
+  );
+};
 
 export default LeaderboardRow;

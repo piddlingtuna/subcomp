@@ -28,8 +28,8 @@ pub struct Project {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
-    pub postgraduate: bool,}
+    pub firstyear: bool,
+    pub postgrad: bool,}
 
 #[derive(Insertable)]
 #[table_name = "projects"]
@@ -38,8 +38,8 @@ pub struct NewProject {
     pub summary: String,
     pub link: String,
     pub repo: String,
-    pub first_year: bool,
-    pub postgraduate: bool,
+    pub firstyear: bool,
+    pub postgrad: bool,
 }
 
 impl Project {
@@ -66,10 +66,10 @@ impl Project {
             .unwrap_or_else(|_| Vec::new())
     }
 
-    pub fn get_full_names(&self, conn: &PgConnection) -> Vec<String> {
+    pub fn get_names(&self, conn: &PgConnection) -> Vec<String> {
         all_users
             .filter(users::project_id.eq(self.id))
-            .select(users::full_name)
+            .select(users::name)
             .load::<String>(conn)
             .unwrap_or_else(|_| Vec::new())
     }
@@ -79,17 +79,17 @@ impl Project {
             .filter(votes::project_id.eq(self.id))
             .count()
             .get_result(conn)
-            .unwrap_or_else(|_| 0)
+            .unwrap_or(0)
     }
 
-    pub fn insert(title: &str, summary: &str, link: &str, repo: &str, first_year: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
+    pub fn insert(title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgrad: bool, conn: &PgConnection) -> Option<Project> {
         let new_project = NewProject {
             title: title.to_string(),
             summary: summary.to_string(),
             link: link.to_string(),
             repo: repo.to_string(),
-            first_year,
-            postgraduate,
+            firstyear,
+            postgrad,
         };
         match diesel::insert_into(projects::table)
             .values(&new_project)
@@ -99,15 +99,15 @@ impl Project {
             }
     }
 
-    pub fn edit(id: &Uuid, title: &str, summary: &str, link: &str, repo: &str, first_year: bool, postgraduate: bool, conn: &PgConnection) -> Option<Project> {
+    pub fn edit(id: &Uuid, title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgrad: bool, conn: &PgConnection) -> Option<Project> {
         match diesel::update(projects::table.find(id))
             .set((
                 projects::title.eq(title),
                 projects::summary.eq(summary),
                 projects::repo.eq(repo),
                 projects::link.eq(link),
-                projects::first_year.eq(first_year),
-                projects::postgraduate.eq(postgraduate),
+                projects::firstyear.eq(firstyear),
+                projects::postgrad.eq(postgrad),
             ))
             .get_result(conn) {
                 Ok(project) => Some(project),
@@ -128,7 +128,7 @@ pub struct User {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
     pub project_id: Option<Uuid>
 }
@@ -137,32 +137,28 @@ pub struct User {
 #[table_name = "users"]
 pub struct NewUser {
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
 }
 
 impl User {
-
     /// Hash `password` using argon2 and return it.
-    /// TODO change loginsalt
     fn generate_password_hash(password: &str) -> Vec<u8> {
-        let login_salt = env::var("LOGIN_SALT").expect("LOGIN_SALT must be set in env");
-        argon2i_simple(password, &login_salt).to_vec()
+        let password_salt = env::var("PASSWORD_SALT").expect("PASSWORD_SALT must be set in env");
+        argon2i_simple(password, &password_salt).to_vec()
     }
     
     /// Verify that `candidate_password` matches the stored password.
     pub fn verify_password(&self, password: &str) -> bool {
-        let login_salt = env::var("LOGIN_SALT").expect("LOGIN_SALT must be set in env");
-        self.password_hash == argon2i_simple(password, &login_salt).to_vec()
+        let password_salt = env::var("PASSWORD_SALT").expect("PASSWORD_SALT must be set in env");
+        self.password_hash == argon2i_simple(password, &password_salt).to_vec()
     }
 
     pub fn exists_by_zid(zid: &str, conn: &PgConnection) -> bool {
-        match all_users
+        all_users
             .filter(users::zid.eq(zid))
-            .first::<User>(conn) {
-                Ok(_) => true,
-                Err(_) => false,
-            }
+            .first::<User>(conn)
+            .is_ok()
     }
 
     pub fn get_by_id(id: &Uuid, conn: &PgConnection) -> Option<User> {
@@ -223,11 +219,11 @@ impl User {
             }
     }
 
-    pub fn insert(zid: &str, full_name: &str, password_hash: &Vec<u8>, conn: &PgConnection) -> Option<User> {
+    pub fn insert(zid: &str, name: &str, password_hash: &[u8], conn: &PgConnection) -> Option<User> {
         let new_user = NewUser {
             zid: zid.to_string(),
-            full_name: full_name.to_string(),
-            password_hash: password_hash.clone(),
+            name: name.to_string(),
+            password_hash: password_hash.to_owned(),
         };
 
         match diesel::insert_into(users::table)
@@ -245,8 +241,8 @@ impl User {
             .collect::<String>();
 
         let new_token = NewToken {
-            token: token.clone(),
-            user_id: self.id.clone()
+            token,
+            user_id: self.id
         };
 
         match diesel::insert_into(tokens::table)
@@ -257,9 +253,9 @@ impl User {
             }
     }
 
-    pub fn change_full_name(&self, full_name: &str, conn: &PgConnection) -> bool {
+    pub fn change_name(&self, name: &str, conn: &PgConnection) -> bool {
         diesel::update(users::table.find(self.id))
-            .set(users::full_name.eq(full_name))
+            .set(users::name.eq(name))
             .execute(conn)
             .is_ok()
     }
@@ -297,13 +293,13 @@ impl User {
             .filter(votes::user_id.eq(self.id))
             .count()
             .get_result(conn)
-            .unwrap_or_else(|_| 0)
+            .unwrap_or(0)
     }
 
     pub fn vote(&self, project_id: &Uuid, conn: &PgConnection) -> bool {
         let vote = NewVote {
-            user_id: self.id.clone(),
-            project_id: project_id.clone()
+            user_id: self.id,
+            project_id: *project_id
         };
 
         diesel::insert_into(votes::table)
@@ -319,7 +315,6 @@ impl User {
             .execute(conn)
             .is_ok()
     }
-
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for User {
@@ -332,12 +327,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for User {
             return Outcome::Failure((Status::BadRequest, ()));
         };
 
-        let token = match Token::get_by_token(&keys[0], &conn) {
+        let token = match Token::get_by_token(keys[0], conn) {
             Some(token) => token,
             None => return Outcome::Failure((Status::Unauthorized, ())),
         };
 
-        match token.get_user(&conn) {
+        match token.get_user(conn) {
             Some(user) => Outcome::Success(user),
             None => Outcome::Failure((Status::BadRequest, ())),
         }
@@ -398,7 +393,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for Token {
 
         let token = keys[0];
 
-        match Token::get_by_token(&token, &conn) {
+        match Token::get_by_token(token, conn) {
             Some(token) => Outcome::Success(token),
             None => Outcome::Failure((Status::Unauthorized, ())),
         }
@@ -412,7 +407,7 @@ pub struct Verification {
     pub updated_at: NaiveDateTime,
     pub token: String,
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
 }
 
@@ -421,12 +416,12 @@ pub struct Verification {
 pub struct NewVerification {
     pub token: String,
     pub zid: String,
-    pub full_name: String,
+    pub name: String,
     pub password_hash: Vec<u8>,
 }
 
 impl Verification {
-    pub fn insert(zid: &str, full_name: &str, password: &str, conn: &PgConnection) -> Option<Verification> {
+    pub fn insert(zid: &str, name: &str, password: &str, conn: &PgConnection) -> Option<Verification> {
         let token = thread_rng()
             .sample_iter(&Alphanumeric)
             .take(32)
@@ -437,7 +432,7 @@ impl Verification {
         let new_verification = NewVerification {
             token,
             zid: zid.to_string(),
-            full_name: full_name.to_string(),
+            name: name.to_string(),
             password_hash,
         };
 
@@ -445,7 +440,7 @@ impl Verification {
             .values(&new_verification)
             .get_result(conn) {
                 Ok(verification) => Some(verification),
-                Err(_) => None,
+                Err(_error) => None,
             }
     }
 
@@ -553,6 +548,6 @@ impl Vote {
             .filter(votes::project_id.eq(project_id))
             .count()
             .get_result(conn)
-            .unwrap_or_else(|_| 0) > 0
+            .unwrap_or(0) > 0
     }
 }

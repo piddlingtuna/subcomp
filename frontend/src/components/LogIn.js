@@ -1,110 +1,98 @@
-import React from 'react';
-import { Button,  FormControl, InputGroup, Modal } from 'react-bootstrap';
+import React, { useContext, useState } from "react";
+import { Button, FormControl, InputGroup, Modal } from "react-bootstrap";
 
-import { logIn, generateReset } from '../calls';
+import { Context } from "../Context";
+import { callLogIn, callGenerateReset } from "../calls";
 
-class LogIn extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      zID: '',
-      password: '',
-      resetZID: '',
-    }
-    this.handleLogIn = this.handleLogIn.bind(this);
-    this.handleReset = this.handleReset.bind(this);
-  }
+const LogIn = (props) => {
+  const { setUser } = useContext(Context);
 
-  handleLogIn() {
-    logIn(this.state.zID, this.state.password);
-    this.props.handleClose();
-  }
+  const [zid, setZid] = useState("");
+  const [password, setPassword] = useState("");
+  const [resetZid, setResetZid] = useState("");
 
-  handleReset() {
-    generateReset(this.state.resetZID);
-    this.props.handleClose();
-  }
+  const handleLogIn = () => {
+    callLogIn(zid, password)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        setUser(response.data.user);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+    props.handleClose();
+  };
 
-  render() {
-    return (
-      <Modal show={this.props.show} onHide={this.props.handleClose} animation={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            Login
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+  const handleReset = () => {
+    callGenerateReset(resetZid).catch((error) => {
+      alert(error.response.data.message);
+    });
+    props.handleClose();
+  };
+
+  return (
+    <Modal show={props.show} onHide={props.handleClose} animation={false}>
+      <Modal.Header closeButton>
+        <Modal.Title>Login</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
         <InputGroup className="mb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text>
-                zID
-              </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl
-              type="text"
-              placeholder="z1234567"
-              aria-label="zID"
-              onChange={event => {
-                this.setState({
-                  zID: event.target.value,
-                })
-              }}
-            />
-          </InputGroup>
-          <InputGroup className="mb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text>
-                Password
-              </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl
-              type="password"
-              placeholder="*******"
-              aria-label="password"
-              onChange={event => {
-                this.setState({
-                  password: event.target.value,
-                })
-              }}
-            />
-          </InputGroup>
-          <p>
-            Did you forget your password?
-          </p>
-          <InputGroup className="mb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text>
-                zID
-              </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl
-              type="text"
-              placeholder="z1234567"
-              aria-label="reset zID"
-              onChange={event => {
-                this.setState({
-                  resetZID: event.target.value,
-                })
-              }}
-            />
-            <InputGroup.Prepend>
-              <Button variant="outline-primary" disabled={this.state.resetZID.length !== 8} onClick={this.handleReset}>
-                reset
-              </Button>
-            </InputGroup.Prepend>
-          </InputGroup>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="danger" className="mx-2" onClick={this.props.handleClose}>
-            Close
+          <InputGroup.Text>zid</InputGroup.Text>
+          <FormControl
+            type="text"
+            placeholder="z1234567"
+            aria-label="zid"
+            onChange={(event) => {
+              setZid(event.target.value);
+            }}
+          />
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <InputGroup.Text>Password</InputGroup.Text>
+          <FormControl
+            type="password"
+            placeholder="*******"
+            aria-label="password"
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          />
+        </InputGroup>
+        <p>Did you forget your password?</p>
+        <InputGroup className="mb-3">
+          <InputGroup.Text>zid</InputGroup.Text>
+          <FormControl
+            type="text"
+            placeholder="z1234567"
+            aria-label="reset zid"
+            onChange={(event) => {
+              setResetZid(event.target.value);
+            }}
+          />
+          <Button
+            variant="outline-primary"
+            disabled={resetZid.length !== 8}
+            onClick={handleReset}
+          >
+            Reset
           </Button>
-          <Button variant="success" className="mx-2" onClick={this.handleLogIn} disabled={this.state.zID.length !== 8 || this.state.password.length < 8}>
-            Login
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-}
+        </InputGroup>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger" className="mx-2" onClick={props.handleClose}>
+          Close
+        </Button>
+        <Button
+          variant="success"
+          className="mx-2"
+          onClick={handleLogIn}
+          disabled={zid.length !== 8 || password.length < 8}
+        >
+          Login
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 
 export default LogIn;

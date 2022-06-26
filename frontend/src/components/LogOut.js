@@ -1,43 +1,52 @@
-import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React, { useContext } from "react";
+import { Button, Modal } from "react-bootstrap";
 
-import { logOut } from '../calls';
+import { Context } from "../Context";
+import { callLogOut } from "../calls";
 
-class LogOut extends React.Component {
-  constructor() {
-    super();
-    this.handleLogOut = this.handleLogOut.bind(this);
-  }
+const LogOut = (props) => {
+  const { setUser } = useContext(Context);
 
-  handleLogOut() {
-    logOut();
-    this.props.handleClose();
-  }
+  const handleLogOut = () => {
+    callLogOut()
+      .then(() => {
+        localStorage.removeItem("token");
+        setUser(null);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+    props.handleClose();
+  };
 
-  render() {
-    return (
-      <Modal show={this.props.show} onHide={this.props.handleClose} animation={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            Logout
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            Are you sure you want to logout?
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button variant="danger" className="mx-2" style={{ width: '75px' }} onClick={this.handleLogOut}>
-              Yes
-            </Button>
-            <Button variant="success" className="mx-2" style={{ width: '75px' }} onClick={this.props.handleClose}>
-              No
-            </Button>
-          </div>
-        </Modal.Body>
-      </Modal>
-    );
-  }
-}
+  return (
+    <Modal show={props.show} onHide={props.handleClose} animation={false}>
+      <Modal.Header closeButton>
+        <Modal.Title>Logout</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>Are you sure you want to logout?</p>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="danger"
+            className="mx-2"
+            style={{ width: "75px" }}
+            onClick={handleLogOut}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="success"
+            className="mx-2"
+            style={{ width: "75px" }}
+            onClick={props.handleClose}
+          >
+            No
+          </Button>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+};
 
 export default LogOut;
