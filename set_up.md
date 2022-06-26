@@ -2,13 +2,11 @@
 
 Please read the sections on environment variables in `backend/README.md` and `frontend/README.md`.
 
-
 ## Supporting operating systems
 
 This guide supports MacOS, Debian Linux, and Arch Linux. However, it has only been fully tested on Arch Linux.
 
 If you are using Windows, [please install Linux with the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install).
-
 
 ## Install dependencies
 
@@ -17,7 +15,6 @@ Install Rust by follwing [these instructions](https://www.rust-lang.org/tools/in
 Install Node by following [these instructions](https://nodejs.org/en/download/).
 
 Install PostgreSQL by following [these instructions](https://www.postgresql.org/download/).
-
 
 ## Set Up PostgreSQL
 
@@ -53,7 +50,6 @@ Create a database
 ```
 createdb subcomp
 ```
-
 
 ## Run the backend
 
@@ -107,7 +103,6 @@ cargo build --release
 
 ## Run the frontend
 
-
 Ensure you have added a `frontend/.env` file as described in `frontend/README.md`.
 
 ### Development
@@ -125,7 +120,6 @@ You can subsequently run the backend using:
 yarn start
 ```
 
-
 ### Production
 
 Navigate to `frontend` in your terminal and run:
@@ -135,7 +129,6 @@ yarn install --production
 yarn build --production
 yarn serve -s build
 ```
-
 
 ## Docker
 
@@ -153,8 +146,9 @@ Please read the sections on environment variables in `README.md`, `backend/READM
 
 Please change `localhost` to `database` in `backend/.env`.
 
-
 ```
 sudo docker compose up # This will take a long time.
 sudo docker compose build
 ```
+
+If

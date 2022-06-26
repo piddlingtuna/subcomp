@@ -14,7 +14,6 @@ If you are new to React, take a look [here](https://reactjs.org/tutorial/tutoria
 
 [See React Bootstrap](https://react-bootstrap.github.io/components/alerts)
 
-
 ## Architecture
 
 `src/index.js` imports css, including bootstrap, and renders the App with the React Context. It is unlikely you will need to modify this file.
@@ -52,7 +51,6 @@ type VoteDeadline = string;
 
 `src/components/` contains all the components of the frontend. Add components liberally.
 
-
 ## Environment variables
 
 A `.env` file must exist in this directory. It must contain:
@@ -64,7 +62,6 @@ An example `.env` would look like:
 ```
 REACT_APP_BASE_URL=http://localhost:8000
 ```
-
 
 ## Available Scripts
 

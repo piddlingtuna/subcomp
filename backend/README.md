@@ -6,7 +6,6 @@ The database uses [PostgreSQL](https://www.postgresql.org/). Although fancy feat
 
 Be a good person and run `cargo clippy --fix` every so often.
 
-
 ## Documentation
 
 If you are new to Rust, take a look at the [Rust Book](https://doc.rust-lang.org/book/).
@@ -16,7 +15,6 @@ If you are new to Rust, take a look at the [Rust Book](https://doc.rust-lang.org
 [See Diesel documentation here.](https://diesel.rs/guides/)
 
 [See PostgreSQL 14 documentation here.](https://www.postgresql.org/docs/14/index.html)
-
 
 ## Architecture
 
@@ -34,13 +32,12 @@ If you are new to Rust, take a look at the [Rust Book](https://doc.rust-lang.org
 
 `src/database.rs` implements the pool manager to the database. It is unlikely you will need to modify this file.
 
-
 ## Environment variables
 
 A `.env` file must exist in this directory. It must contain:
 
 - `DATABASE_URL` = A [connection URI](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING) used by Diesel to find the database.
-- `PASSWORD_SALT` = [A random string used as an input when generating password bashes.](https://en.wikipedia.org/wiki/Salt_(cryptography)) Please use a long and complex string.
+- `PASSWORD_SALT` = [A random string used as an input when generating password bashes.](<https://en.wikipedia.org/wiki/Salt_(cryptography)>) Please use a long and complex string.
 - `DOMAIN` = The domain name used to host the frontend. When developing locally, this will be localhost with some port. When deploying, please use [HTTPS](https://en.wikipedia.org/wiki/HTTPS).
 - `SMTP_USERNAME` = An email address using [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) under your control to send verification and password reset emails to user.
 - `SMTP_PASSWORD` = The password to the above email address.

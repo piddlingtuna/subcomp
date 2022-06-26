@@ -8,32 +8,19 @@ extern crate rocket;
 use std::env;
 use dotenv::dotenv;
 use rocket::{catchers, routes};
-use rocket::http::Method;
-use rocket_cors::{AllowedOrigins, Cors, CorsOptions};
 
-pub mod models;
 pub mod api;
+pub mod cors;
 pub mod database;
-pub mod handlers;
+pub mod catchers;
+pub mod models;
 pub mod responses;
 pub mod schema;
-
-pub fn cors() -> Cors {
-    CorsOptions::default()
-    .allowed_origins(AllowedOrigins::all())
-    .allowed_methods(vec![Method::Get, Method::Post]
-    .into_iter()
-    .map(From::from)
-    .collect(),
-    )
-    .to_cors()
-    .expect("Failed to create CORS")
-}
 
 
 /// Constructs a new Rocket instance.
 ///
-/// This function takes care of attaching all routes and handlers of the application.
+/// This function takes care of attaching all routes and catchers of the application.
 pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
     rocket::ignite()
         .manage(database::init_pool(database_url))
@@ -57,14 +44,14 @@ pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
             api::deadlines,
         ])
         .register(catchers![
-            handlers::bad_request_handler,
-            handlers::unauthorized_handler,
-            handlers::forbidden_handler,
-            handlers::not_found_handler,
-            handlers::internal_server_error_handler,
-            handlers::service_unavailable_handler,
+            catchers::bad_request_catcher,
+            catchers::unauthorized_catcher,
+            catchers::forbidden_catcher,
+            catchers::not_found_catcher,
+            catchers::internal_server_error_catcher,
+            catchers::service_unavailable_catcher,
         ])
-        .attach(cors())
+        .attach(cors::cors())
 }
 
 fn main() {
