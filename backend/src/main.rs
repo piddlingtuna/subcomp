@@ -14,7 +14,6 @@ use rocket_cors::{AllowedOrigins, Cors, CorsOptions};
 pub mod models;
 pub mod api;
 pub mod database;
-pub mod files;
 pub mod handlers;
 pub mod responses;
 pub mod schema;
@@ -38,10 +37,6 @@ pub fn cors() -> Cors {
 pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
     rocket::ignite()
         .manage(database::init_pool(database_url))
-        .mount("/", routes![
-            files::index,
-            files::files,
-        ])
         .mount("/api", routes![
             api::projects,
             api::user,
