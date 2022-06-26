@@ -1,16 +1,31 @@
 version: "3.9"
 services:
-  subcomp-backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-      - 8000
-    depends_on:
-      - subcomp-data
-  subcomp-data:
+  subcomp-db:
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "subcomp"
+    image: postgres:latest
     build: ./data
     ports:
       - "5432:5432"
     expose:
       - 5432
-
+  subcomp-backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - subcomp-db
+  subcomp-frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - subcomp-backend
+  subcomp-frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - subcomp-backend

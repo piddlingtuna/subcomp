@@ -203,3 +203,12 @@ THIS IS STILL UNDER CONSTRUCTION
     ```
     cargo run --release
     ```
+
+
+# Docker
+
+Alternatively, you can use docker.
+
+```
+sudo docker compose up
+```
