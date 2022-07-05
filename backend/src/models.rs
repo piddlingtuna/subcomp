@@ -1,23 +1,23 @@
-use argon2rs::argon2i_simple;
-use chrono::NaiveDateTime;
-use diesel::pg::PgConnection;
-use diesel::prelude::*;
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
-use rocket::http::Status;
-use rocket::request::{self, FromRequest, Request};
-use rocket::Outcome;
 use std::env;
+use rocket::request::{self, FromRequest, Request};
+use rocket::http::Status;
+use rocket::Outcome;
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
 use uuid::Uuid;
+use chrono::NaiveDateTime;
+use rand::{Rng, thread_rng};
+use rand::distributions::Alphanumeric;
+use argon2rs::argon2i_simple;
 
 use crate::database::Conn;
+use crate::schema::{projects, users, tokens, verifications, resets, votes};
 use crate::schema::projects::dsl::projects as all_projects;
-use crate::schema::resets::dsl::resets as all_resets;
-use crate::schema::tokens::dsl::tokens as all_tokens;
 use crate::schema::users::dsl::users as all_users;
+use crate::schema::tokens::dsl::tokens as all_tokens;
 use crate::schema::verifications::dsl::verifications as all_verifications;
+use crate::schema::resets::dsl::resets as all_resets;
 use crate::schema::votes::dsl::votes as all_votes;
-use crate::schema::{projects, resets, tokens, users, verifications, votes, Category};
 
 #[derive(Queryable)]
 pub struct Project {
@@ -29,9 +29,7 @@ pub struct Project {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgrad: bool,
-    pub category: Category,
-}
+    pub postgrad: bool,}
 
 #[derive(Insertable)]
 #[table_name = "projects"]
@@ -42,20 +40,11 @@ pub struct NewProject {
     pub repo: String,
     pub firstyear: bool,
     pub postgrad: bool,
-    pub category: Category,
 }
 
 impl Project {
     pub fn get_all(conn: &PgConnection) -> Vec<Project> {
         all_projects
-            .order(projects::id.desc())
-            .load::<Project>(conn)
-            .unwrap_or_else(|_| Vec::new())
-    }
-
-    pub fn get_category(conn: &PgConnection, cat: Category) -> Vec<Project> {
-        all_projects
-            .filter(projects::category.eq(cat))
             .order(projects::id.desc())
             .load::<Project>(conn)
             .unwrap_or_else(|_| Vec::new())
@@ -93,16 +82,7 @@ impl Project {
             .unwrap_or(0)
     }
 
-    pub fn insert(
-        title: &str,
-        summary: &str,
-        link: &str,
-        repo: &str,
-        firstyear: bool,
-        postgrad: bool,
-        category: Category,
-        conn: &PgConnection,
-    ) -> Option<Project> {
+    pub fn insert(title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgrad: bool, conn: &PgConnection) -> Option<Project> {
         let new_project = NewProject {
             title: title.to_string(),
             summary: summary.to_string(),
@@ -110,28 +90,16 @@ impl Project {
             repo: repo.to_string(),
             firstyear,
             postgrad,
-            category,
         };
         match diesel::insert_into(projects::table)
             .values(&new_project)
-            .get_result(conn)
-        {
-            Ok(project) => Some(project),
-            Err(_) => None,
-        }
+            .get_result(conn) {
+                Ok(project) => Some(project),
+                Err(_) => None,
+            }
     }
 
-    pub fn edit(
-        id: &Uuid,
-        title: &str,
-        summary: &str,
-        link: &str,
-        repo: &str,
-        firstyear: bool,
-        postgrad: bool,
-        category: Category,
-        conn: &PgConnection,
-    ) -> Option<Project> {
+    pub fn edit(id: &Uuid, title: &str, summary: &str, link: &str, repo: &str, firstyear: bool, postgrad: bool, conn: &PgConnection) -> Option<Project> {
         match diesel::update(projects::table.find(id))
             .set((
                 projects::title.eq(title),
@@ -140,13 +108,11 @@ impl Project {
                 projects::link.eq(link),
                 projects::firstyear.eq(firstyear),
                 projects::postgrad.eq(postgrad),
-                projects::category.eq(category),
             ))
-            .get_result(conn)
-        {
-            Ok(project) => Some(project),
-            Err(_) => None,
-        }
+            .get_result(conn) {
+                Ok(project) => Some(project),
+                Err(_) => None,
+            }
     }
 
     pub fn delete(id: &Uuid, conn: &PgConnection) -> bool {
@@ -164,7 +130,7 @@ pub struct User {
     pub zid: String,
     pub name: String,
     pub password_hash: Vec<u8>,
-    pub project_id: Option<Uuid>,
+    pub project_id: Option<Uuid>
 }
 
 #[derive(Insertable)]
@@ -181,7 +147,7 @@ impl User {
         let password_salt = env::var("PASSWORD_SALT").expect("PASSWORD_SALT must be set in env");
         argon2i_simple(password, &password_salt).to_vec()
     }
-
+    
     /// Verify that `candidate_password` matches the stored password.
     pub fn verify_password(&self, password: &str) -> bool {
         let password_salt = env::var("PASSWORD_SALT").expect("PASSWORD_SALT must be set in env");
@@ -196,21 +162,22 @@ impl User {
     }
 
     pub fn get_by_id(id: &Uuid, conn: &PgConnection) -> Option<User> {
-        match all_users.find(id).first::<User>(conn) {
-            Ok(user) => Some(user),
-            Err(_) => None,
-        }
+        match all_users
+            .find(id)
+            .first::<User>(conn) {
+                Ok(user) => Some(user),
+                Err(_) => None,
+            }
     }
 
     pub fn zid_doing_project(zid: &str, project_id: &Uuid, conn: &PgConnection) -> bool {
         let id = match all_users
             .filter(users::zid.eq(zid))
             .select(users::project_id)
-            .first::<Option<Uuid>>(conn)
-        {
-            Ok(id) => (id),
-            Err(_) => return false,
-        };
+            .first::<Option<Uuid>>(conn) {
+                Ok(id) => (id),
+                Err(_) => return false,
+            };
 
         id == Some(*project_id)
     }
@@ -219,11 +186,10 @@ impl User {
         let id = match all_users
             .filter(users::zid.eq(zid))
             .select(users::project_id)
-            .first::<Option<Uuid>>(conn)
-        {
-            Ok(id) => id,
-            Err(_) => return false,
-        };
+            .first::<Option<Uuid>>(conn) {
+                Ok(id) => id,
+                Err(_) => return false,
+            };
 
         id == None
     }
@@ -245,18 +211,15 @@ impl User {
     }
 
     pub fn get_by_zid(zid: &str, conn: &PgConnection) -> Option<User> {
-        match all_users.filter(users::zid.eq(zid)).first::<User>(conn) {
-            Ok(user) => Some(user),
-            Err(_) => None,
-        }
+        match all_users
+            .filter(users::zid.eq(zid))
+            .first::<User>(conn) {
+                Ok(user) => Some(user),
+                Err(_) => None,
+            }
     }
 
-    pub fn insert(
-        zid: &str,
-        name: &str,
-        password_hash: &[u8],
-        conn: &PgConnection,
-    ) -> Option<User> {
+    pub fn insert(zid: &str, name: &str, password_hash: &[u8], conn: &PgConnection) -> Option<User> {
         let new_user = NewUser {
             zid: zid.to_string(),
             name: name.to_string(),
@@ -265,11 +228,10 @@ impl User {
 
         match diesel::insert_into(users::table)
             .values(&new_user)
-            .get_result(conn)
-        {
-            Ok(user) => Some(user),
-            Err(_) => None,
-        }
+            .get_result(conn) {
+                Ok(user) => Some(user),
+                Err(_) => None,
+            }
     }
 
     pub fn generate_token(&self, conn: &PgConnection) -> Option<Token> {
@@ -280,16 +242,15 @@ impl User {
 
         let new_token = NewToken {
             token,
-            user_id: self.id,
+            user_id: self.id
         };
 
         match diesel::insert_into(tokens::table)
             .values(&new_token)
-            .get_result(conn)
-        {
-            Ok(token) => Some(token),
-            Err(_) => None,
-        }
+            .get_result(conn) {
+                Ok(token) => Some(token),
+                Err(_) => None,
+            }
     }
 
     pub fn change_name(&self, name: &str, conn: &PgConnection) -> bool {
@@ -312,11 +273,11 @@ impl User {
         match all_users
             .find(self.id)
             .select(users::project_id)
-            .first::<Option<Uuid>>(conn)
-        {
-            Ok(project_id) => project_id,
-            Err(_) => None,
-        }
+            .first::<Option<Uuid>>(conn) {
+                Ok(project_id) => project_id,
+                Err(_) => None,
+            }
+
     }
 
     pub fn get_votes(&self, conn: &PgConnection) -> Vec<Uuid> {
@@ -338,7 +299,7 @@ impl User {
     pub fn vote(&self, project_id: &Uuid, conn: &PgConnection) -> bool {
         let vote = NewVote {
             user_id: self.id,
-            project_id: *project_id,
+            project_id: *project_id
         };
 
         diesel::insert_into(votes::table)
@@ -398,15 +359,16 @@ impl Token {
     pub fn get_by_token(token: &str, conn: &PgConnection) -> Option<Token> {
         match all_tokens
             .filter(tokens::token.eq(token))
-            .first::<Token>(conn)
-        {
-            Ok(token) => Some(token),
-            Err(_) => None,
-        }
+            .first::<Token>(conn) {
+                Ok(token) => Some(token),
+                Err(_) => None,
+            }
     }
 
     pub fn get_user(&self, conn: &PgConnection) -> Option<User> {
-        match all_users.find(self.user_id).first::<User>(conn) {
+        match all_users
+            .find(self.user_id)
+            .first::<User>(conn) {
             Ok(user) => Some(user),
             Err(_) => None,
         }
@@ -459,12 +421,7 @@ pub struct NewVerification {
 }
 
 impl Verification {
-    pub fn insert(
-        zid: &str,
-        name: &str,
-        password: &str,
-        conn: &PgConnection,
-    ) -> Option<Verification> {
+    pub fn insert(zid: &str, name: &str, password: &str, conn: &PgConnection) -> Option<Verification> {
         let token = thread_rng()
             .sample_iter(&Alphanumeric)
             .take(32)
@@ -481,11 +438,10 @@ impl Verification {
 
         match diesel::insert_into(verifications::table)
             .values(&new_verification)
-            .get_result(conn)
-        {
-            Ok(verification) => Some(verification),
-            Err(_error) => None,
-        }
+            .get_result(conn) {
+                Ok(verification) => Some(verification),
+                Err(_error) => None,
+            }
     }
 
     pub fn delete(&self, conn: &PgConnection) -> bool {
@@ -497,8 +453,7 @@ impl Verification {
     pub fn get_by_token(token: &str, conn: &PgConnection) -> Option<Verification> {
         match all_verifications
             .filter(verifications::token.eq(token))
-            .first::<Verification>(conn)
-        {
+            .first::<Verification>(conn) {
             Ok(verification) => Some(verification),
             Err(_) => None,
         }
@@ -532,7 +487,7 @@ impl Reset {
             .sample_iter(&Alphanumeric)
             .take(32)
             .collect::<String>();
-
+        
         let new_reset = NewReset {
             token,
             user_id: user.id,
@@ -540,11 +495,10 @@ impl Reset {
 
         match diesel::insert_into(resets::table)
             .values(&new_reset)
-            .get_result(conn)
-        {
-            Ok(reset) => Some(reset),
-            Err(_) => None,
-        }
+            .get_result(conn) {
+                Ok(reset) => Some(reset),
+                Err(_) => None,
+            }
     }
 
     pub fn delete(&self, conn: &PgConnection) -> bool {
@@ -555,16 +509,17 @@ impl Reset {
 
     pub fn get_by_token(token: &str, conn: &PgConnection) -> Option<Reset> {
         match all_resets
-            .filter(resets::token.eq(token))
-            .first::<Reset>(conn)
-        {
+        .filter(resets::token.eq(token))
+            .first::<Reset>(conn) {
             Ok(reset) => Some(reset),
             Err(_) => None,
         }
     }
 
     pub fn get_user(&self, conn: &PgConnection) -> Option<User> {
-        match all_users.find(self.user_id).first::<User>(conn) {
+        match all_users
+            .find(self.user_id)
+            .first::<User>(conn) {
             Ok(user) => Some(user),
             Err(_) => None,
         }
@@ -593,7 +548,6 @@ impl Vote {
             .filter(votes::project_id.eq(project_id))
             .count()
             .get_result(conn)
-            .unwrap_or(0)
-            > 0
+            .unwrap_or(0) > 0
     }
 }

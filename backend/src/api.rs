@@ -1,69 +1,47 @@
+use std::env;
 use chrono::{DateTime, Duration, Utc};
-use lettre::transport::smtp::authentication::Credentials;
-use lettre::{Message, SmtpTransport, Transport};
-use regex::Regex;
 use rocket_contrib::json;
 use rocket_contrib::json::{Json, JsonValue};
 use serde_derive::Deserialize;
-use std::env;
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::{Message, SmtpTransport, Transport};
 use uuid::Uuid;
+use regex::Regex;
 
 use crate::database::Conn;
 use crate::responses::{bad_request, internal_server_error, ok, unauthorized, APIResponse};
 
-use crate::models::{Project, Reset, Token, User, Verification, Vote};
-use crate::schema::Category;
+use crate::models::{Project, User, Verification, Reset, Token, Vote};
 
 #[get("/projects")]
-pub fn all_projects(conn: Conn) -> APIResponse {
-    let projects: Vec<JsonValue> = Project::get_all(&conn)
+pub fn projects(
+    conn: Conn,
+) -> APIResponse {
+    let projects:Vec<JsonValue> = Project::get_all(&conn)
         .iter()
-        .map(|project| {
+        .map(|project|
             json!({
-                    "id": project.id,
-                    "title": project.title,
-                    "summary": project.summary,
-                    "link": project.link,
-                    "repo": project.repo,
-                    "votes": project.count_votes(&conn),
-                    "zids": project.get_zids(&conn),
-                    "names": project.get_names(&conn),
-                    "category": format!("{:?}", project.category),
-            })
-        })
+                "id": project.id,
+                "title": project.title,
+                "summary": project.summary,
+                "link": project.link,
+                "repo": project.repo,
+                "votes": project.count_votes(&conn),
+                "zids": project.get_zids(&conn),
+                "names": project.get_names(&conn),
+        }))
         .collect();
-
-    ok().data(json!({
-        "projects": projects,
-    }))
-}
-
-#[get("/projects?<category>")]
-pub fn projects(conn: Conn, category: Category) -> APIResponse {
-    let projects: Vec<JsonValue> = Project::get_category(&conn, category)
-        .iter()
-        .map(|project| {
-            json!({
-                    "id": project.id,
-                    "title": project.title,
-                    "summary": project.summary,
-                    "link": project.link,
-                    "repo": project.repo,
-                    "votes": project.count_votes(&conn),
-                    "zids": project.get_zids(&conn),
-                    "names": project.get_names(&conn),
-                    "category": format!("{:?}", project.category),
-            })
-        })
-        .collect();
-
+    
     ok().data(json!({
         "projects": projects,
     }))
 }
 
 #[get("/user")]
-pub fn user(user: User, conn: Conn) -> APIResponse {
+pub fn user(
+    user: User,
+    conn: Conn,
+) -> APIResponse {
     ok().data(json!({
         "user": {
             "zid": user.zid,
@@ -81,8 +59,11 @@ pub struct GenerateVerificationData {
     pub password: String,
 }
 
-#[post("/generate_verification", data = "<data>", format = "application/json")]
-pub fn generate_verification(data: Json<GenerateVerificationData>, conn: Conn) -> APIResponse {
+#[post("/generate_verification", data ="<data>", format = "application/json")]
+pub fn generate_verification(
+    data: Json<GenerateVerificationData>,
+    conn: Conn,
+) -> APIResponse {
     let re = Regex::new(r"^z[0-9]{7}$").unwrap();
     if !re.is_match(&data.zid) {
         return bad_request().message("zID is invalid.");
@@ -118,9 +99,9 @@ pub fn generate_verification(data: Json<GenerateVerificationData>, conn: Conn) -
 
     // Open a remote connection to gmail
     let mailer = SmtpTransport::relay("smtp.gmail.com")
-        .unwrap()
-        .credentials(creds)
-        .build();
+    .unwrap()
+    .credentials(creds)
+    .build();
 
     // Send the email
     match mailer.send(&email) {
@@ -134,8 +115,11 @@ pub struct UseVerificationData {
     pub token: String,
 }
 
-#[post("/use_verification", data = "<data>", format = "application/json")]
-pub fn use_verification(data: Json<UseVerificationData>, conn: Conn) -> APIResponse {
+#[post("/use_verification", data ="<data>", format = "application/json")]
+pub fn use_verification(
+    data: Json<UseVerificationData>,
+    conn: Conn,
+) -> APIResponse {
     let verification = match Verification::get_by_token(&data.token, &conn) {
         Some(verification) => verification,
         None => return bad_request().message("Verification token is invalid."),
@@ -148,12 +132,7 @@ pub fn use_verification(data: Json<UseVerificationData>, conn: Conn) -> APIRespo
         return bad_request().message("Verification token has expired.");
     };
 
-    let user = match User::insert(
-        &verification.zid,
-        &verification.name,
-        &verification.password_hash,
-        &conn,
-    ) {
+    let user = match User::insert(&verification.zid, &verification.name, &verification.password_hash, &conn) {
         Some(user) => user,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
@@ -185,7 +164,10 @@ pub struct LoginData {
 }
 
 #[post("/login", data = "<data>", format = "application/json")]
-pub fn login(data: Json<LoginData>, conn: Conn) -> APIResponse {
+pub fn login(
+    data: Json<LoginData>,
+    conn: Conn,
+) -> APIResponse {
     let user = match User::get_by_zid(&data.zid, &conn) {
         Some(user) => user,
         None => return unauthorized().message("zID or password is incorrect."),
@@ -212,7 +194,10 @@ pub fn login(data: Json<LoginData>, conn: Conn) -> APIResponse {
 }
 
 #[get("/logout")]
-pub fn logout(token: Token, conn: Conn) -> APIResponse {
+pub fn logout(
+    token: Token,
+    conn: Conn,
+) -> APIResponse {
     match token.delete(&conn) {
         true => ok(),
         false => internal_server_error().message("Looks like our code is buggy :("),
@@ -225,7 +210,11 @@ pub struct ChangeFullNameData {
 }
 
 #[post("/change_name", data = "<data>", format = "application/json")]
-pub fn change_name(user: User, data: Json<ChangeFullNameData>, conn: Conn) -> APIResponse {
+pub fn change_name(
+    user: User,
+    data: Json<ChangeFullNameData>,
+    conn: Conn,
+) -> APIResponse {
     match user.change_name(&data.name, &conn) {
         true => ok(),
         false => internal_server_error().message("Looks like our code is buggy :("),
@@ -238,7 +227,11 @@ pub struct ChangePasswordData {
 }
 
 #[post("/change_password", data = "<data>", format = "application/json")]
-pub fn change_password(user: User, data: Json<ChangePasswordData>, conn: Conn) -> APIResponse {
+pub fn change_password(
+    user: User,
+    data: Json<ChangePasswordData>,
+    conn: Conn,
+) -> APIResponse {
     match user.change_password(&data.password, &conn) {
         true => ok(),
         false => internal_server_error().message("Looks like our code is buggy :("),
@@ -251,7 +244,10 @@ pub struct GenerateResetData {
 }
 
 #[post("/generate_reset", data = "<data>", format = "application/json")]
-pub fn generate_reset(data: Json<GenerateResetData>, conn: Conn) -> APIResponse {
+pub fn generate_reset(
+    data: Json<GenerateResetData>,
+    conn: Conn,
+) -> APIResponse {
     let reset = match Reset::insert(&data.zid, &conn) {
         Some(reset) => reset,
         None => return bad_request().message("zID is invalid."),
@@ -274,9 +270,9 @@ pub fn generate_reset(data: Json<GenerateResetData>, conn: Conn) -> APIResponse 
 
     // Open a remote connection to gmail
     let mailer = SmtpTransport::relay("smtp.gmail.com")
-        .unwrap()
-        .credentials(creds)
-        .build();
+    .unwrap()
+    .credentials(creds)
+    .build();
 
     // Send the email
     match mailer.send(&email) {
@@ -292,7 +288,10 @@ pub struct UseResetData {
 }
 
 #[post("/use_reset", data = "<data>", format = "application/json")]
-pub fn use_reset(data: Json<UseResetData>, conn: Conn) -> APIResponse {
+pub fn use_reset(
+    data: Json<UseResetData>,
+    conn: Conn,
+) -> APIResponse {
     let reset = match Reset::get_by_token(&data.token, &conn) {
         Some(reset) => reset,
         None => return bad_request().message("Reset token is invalid."),
@@ -340,7 +339,11 @@ pub struct VoteData {
 }
 
 #[post("/vote", data = "<data>", format = "application/json")]
-pub fn vote(user: User, data: Json<VoteData>, conn: Conn) -> APIResponse {
+pub fn vote(
+    user: User,
+    data: Json<VoteData>,
+    conn: Conn,
+) -> APIResponse {
     let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&vote_end).expect("VOTE_END uses rfc3339 format.");
 
@@ -368,7 +371,11 @@ pub struct UnvoteData {
 }
 
 #[post("/unvote", data = "<data>", format = "application/json")]
-pub fn unvote(user: User, data: Json<UnvoteData>, conn: Conn) -> APIResponse {
+pub fn unvote(
+    user: User,
+    data: Json<UnvoteData>,
+    conn: Conn,
+) -> APIResponse {
     let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&vote_end).expect("VOTE_END uses rfc3339 format.");
 
@@ -392,7 +399,10 @@ pub struct CheckZidData {
 }
 
 #[post("/check_zid", data = "<data>", format = "application/json")]
-pub fn check_zid(data: Json<CheckZidData>, conn: Conn) -> APIResponse {
+pub fn check_zid(
+    data: Json<CheckZidData>,
+    conn: Conn,
+) -> APIResponse {
     let user = match User::get_by_zid(&data.zid, &conn) {
         Some(user) => user,
         None => return bad_request().message("zID is invalid. They must have an account."),
@@ -417,14 +427,9 @@ pub struct SubmitProjectData {
     pub firstyear: bool,
     pub postgrad: bool,
     pub zids: Vec<String>,
-    pub category: Category,
 }
 
-#[post(
-    "/submit_project",
-    data = "<project_data>",
-    format = "application/json"
-)]
+#[post("/submit_project", data = "<project_data>", format = "application/json")]
 pub fn submit_project(
     user: User,
     project_data: Json<SubmitProjectData>,
@@ -438,8 +443,7 @@ pub fn submit_project(
     }
 
     if project_data.zids.len() > 3 {
-        return bad_request()
-            .message("You cannot have more than 3 team members (including yourself).");
+        return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
     let mut deduped_zids = project_data.zids.clone();
@@ -453,13 +457,11 @@ pub fn submit_project(
         return bad_request().message("Your zID is not included in the team.");
     }
 
-    if !project_data
-        .zids
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_can_do_project(user_id, &conn))
-    {
-        return bad_request().message("Team contains invalid zIDs.");
-    }
+        .all(|user_id| User::zid_can_do_project(user_id, &conn)) {
+            return bad_request().message("Team contains invalid zIDs.");
+        }
 
     let project = match Project::insert(
         &project_data.title,
@@ -468,20 +470,17 @@ pub fn submit_project(
         &project_data.repo,
         project_data.firstyear,
         project_data.postgrad,
-        project_data.category,
         &conn,
     ) {
         Some(project) => project,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
-    if !project_data
-        .zids
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn))
-    {
-        return bad_request().message("Team contains invalid zIDs.");
-    }
+        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn)) {
+            return bad_request().message("Team contains invalid zIDs.");
+        }
 
     ok().data(json!({
         "project": {
@@ -506,11 +505,14 @@ pub struct EditProjectData {
     pub firstyear: bool,
     pub postgrad: bool,
     pub zids: Vec<String>,
-    pub category: Category,
 }
 
 #[post("/edit_project", data = "<project_data>", format = "application/json")]
-pub fn edit_project(user: User, project_data: Json<EditProjectData>, conn: Conn) -> APIResponse {
+pub fn edit_project(
+    user: User,
+    project_data: Json<EditProjectData>,
+    conn: Conn,
+) -> APIResponse {
     let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&project_end).expect("PROJECT_END uses rfc3339 format.");
 
@@ -519,8 +521,7 @@ pub fn edit_project(user: User, project_data: Json<EditProjectData>, conn: Conn)
     }
 
     if project_data.zids.len() > 3 {
-        return bad_request()
-            .message("You cannot have more than 3 team members (including yourself).");
+        return bad_request().message("You cannot have more than 3 team members (including yourself).");
     }
 
     let mut deduped_zids = project_data.zids.clone();
@@ -534,23 +535,24 @@ pub fn edit_project(user: User, project_data: Json<EditProjectData>, conn: Conn)
         return bad_request().message("Your zID is not included in the team.");
     }
 
+    
+
     let project_id = match user.project_id {
         Some(project_id) => project_id,
         None => return bad_request().message("You have not submitted a project."),
     };
 
-    if !project_data.zids.iter().all(|zid| {
-        User::zid_doing_project(zid, &project_id, &conn) || User::zid_can_do_project(zid, &conn)
-    }) {
-        return bad_request().message("Team contains invalid zIDs.");
-    }
+    if !project_data.zids
+        .iter()
+        .all(|zid| User::zid_doing_project(zid, &project_id, &conn) || User::zid_can_do_project(zid, &conn)) {
+            return bad_request().message("Team contains invalid zIDs.");
+        }
 
     if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zid| User::zid_not_do_project(zid, &conn))
-    {
-        return bad_request().message("Team contains invalid zIDs.");
-    }
+        .all(|zid| User::zid_not_do_project(zid, &conn)) {
+            return bad_request().message("Team contains invalid zIDs.");
+        }
 
     let project = match Project::edit(
         &project_id,
@@ -560,20 +562,17 @@ pub fn edit_project(user: User, project_data: Json<EditProjectData>, conn: Conn)
         &project_data.repo,
         project_data.firstyear,
         project_data.postgrad,
-        project_data.category,
         &conn,
     ) {
         Some(project) => project,
         None => return internal_server_error().message("Looks like our code is buggy :("),
     };
 
-    if !project_data
-        .zids
+    if !project_data.zids
         .iter()
-        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn))
-    {
-        return bad_request().message("Team contains invalid zIDs.");
-    }
+        .all(|user_id| User::zid_do_project(user_id, &project.id, &conn)) {
+            return bad_request().message("Team contains invalid zIDs.");
+        }
 
     ok().data(json!({
         "project": {
@@ -590,7 +589,10 @@ pub fn edit_project(user: User, project_data: Json<EditProjectData>, conn: Conn)
 }
 
 #[get("/delete_project", format = "application/json")]
-pub fn delete_project(user: User, conn: Conn) -> APIResponse {
+pub fn delete_project(
+    user: User,
+    conn: Conn,
+) -> APIResponse {
     let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in env");
     let end = DateTime::parse_from_rfc3339(&project_end).expect("PROJECT_END uses rfc3339 format.");
 
@@ -605,10 +607,9 @@ pub fn delete_project(user: User, conn: Conn) -> APIResponse {
 
     if !Project::get_zids_from_id(&project_id, &conn)
         .iter()
-        .all(|zid| User::zid_not_do_project(zid, &conn))
-    {
-        return bad_request().message("Team contains invalid zIDs.");
-    }
+        .all(|zid| User::zid_not_do_project(zid, &conn)) {
+            return bad_request().message("Team contains invalid zIDs.");
+        }
 
     match Project::delete(&project_id, &conn) {
         true => ok(),
@@ -617,7 +618,8 @@ pub fn delete_project(user: User, conn: Conn) -> APIResponse {
 }
 
 #[get("/deadlines")]
-pub fn deadlines() -> APIResponse {
+pub fn deadlines(
+) -> APIResponse {
     let project_end = env::var("PROJECT_END").expect("PROJECT_END must be set in env");
     let vote_end = env::var("VOTE_END").expect("VOTE_END must be set in env");
 

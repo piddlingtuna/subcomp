@@ -1,2 +1,0 @@
-ALTER TABLE projects
-ADD category VARCHAR(255) NOT NULL DEFAULT 'Other';

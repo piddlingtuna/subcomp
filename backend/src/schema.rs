@@ -1,19 +1,4 @@
-use diesel_derive_enum::DbEnum;
-use rocket::request::FromFormValue;
-use serde_derive::Deserialize;
-
-#[derive(DbEnum, Debug, Clone, Copy, FromFormValue, Deserialize)]
-#[DbValueStyle = "PascalCase"]
-pub enum Category {
-    Web,
-    Mobile,
-    Other,
-}
-
 table! {
-    use diesel::sql_types::*;
-    use super::CategoryMapping;
-
     projects (id) {
         id -> Uuid,
         created_at -> Timestamp,
@@ -24,7 +9,6 @@ table! {
         repo -> Text,
         firstyear -> Bool,
         postgrad -> Bool,
-        category -> CategoryMapping,
     }
 }
 
@@ -88,4 +72,11 @@ joinable!(users -> projects (project_id));
 joinable!(votes -> projects (project_id));
 joinable!(votes -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(projects, resets, tokens, users, verifications, votes,);
+allow_tables_to_appear_in_same_query!(
+    projects,
+    resets,
+    tokens,
+    users,
+    verifications,
+    votes,
+);
