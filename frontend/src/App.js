@@ -53,10 +53,10 @@ const App = () => {
   
     const getOtherProjects = callGetProjectsByCategory("Other")
       .then((response) => {
-        setWebProjects(response.data.projects.sort((a, b) => a.id > b.id));
+        setOtherProjects(response.data.projects.sort((a, b) => a.id > b.id));
       })
       .catch((error) => {
-        setWebProjects([]);
+        setOtherProjects([]);
       });
 
 
