@@ -5,18 +5,17 @@ extern crate diesel;
 #[macro_use]
 extern crate rocket;
 
-use std::env;
 use dotenv::dotenv;
 use rocket::{catchers, routes};
+use std::env;
 
 pub mod api;
+pub mod catchers;
 pub mod cors;
 pub mod database;
-pub mod catchers;
 pub mod models;
 pub mod responses;
 pub mod schema;
-
 
 /// Constructs a new Rocket instance.
 ///
@@ -24,25 +23,29 @@ pub mod schema;
 pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
     rocket::ignite()
         .manage(database::init_pool(database_url))
-        .mount("/api", routes![
-            api::projects,
-            api::user,
-            api::generate_verification,
-            api::use_verification,
-            api::login,
-            api::logout,
-            api::change_name,
-            api::change_password,
-            api::generate_reset,
-            api::use_reset,
-            api::vote,
-            api::unvote,
-            api::check_zid,
-            api::submit_project,
-            api::edit_project,
-            api::delete_project,
-            api::deadlines,
-        ])
+        .mount(
+            "/api",
+            routes![
+                api::projects,
+                api::all_projects,
+                api::user,
+                api::generate_verification,
+                api::use_verification,
+                api::login,
+                api::logout,
+                api::change_name,
+                api::change_password,
+                api::generate_reset,
+                api::use_reset,
+                api::vote,
+                api::unvote,
+                api::check_zid,
+                api::submit_project,
+                api::edit_project,
+                api::delete_project,
+                api::deadlines,
+            ],
+        )
         .register(catchers![
             catchers::bad_request_catcher,
             catchers::unauthorized_catcher,
@@ -67,6 +70,5 @@ fn main() {
     // VOTE_END
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set in env");
-    rocket_factory(&database_url)
-        .launch();
+    rocket_factory(&database_url).launch();
 }

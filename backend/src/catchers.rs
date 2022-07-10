@@ -1,6 +1,9 @@
 use rocket::catch;
 
-use crate::responses::{bad_request, forbidden, internal_server_error, not_found, service_unavailable, unauthorized, APIResponse};
+use crate::responses::{
+    bad_request, forbidden, internal_server_error, not_found, service_unavailable, unauthorized,
+    APIResponse,
+};
 
 #[catch(400)]
 pub fn bad_request_catcher() -> APIResponse {
