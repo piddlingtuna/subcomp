@@ -21,6 +21,7 @@ const ContextProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [mobileProjects, setMobileProjects] = useState([]);
   const [webProjects, setWebProjects] = useState([]);
+  const [otherProjects, setOtherProjects] = useState([]);
   const [user, setUser] = useState(null);
   const [projectDeadline, setProjectDeadline] = useState(null);
   const [voteDeadline, setVoteDeadline] = useState(null);
@@ -33,6 +34,8 @@ const ContextProvider = ({ children }) => {
     setMobileProjects,
     webProjects,
     setWebProjects,
+    otherProjects,
+    setOtherProjects,
     user,
     setUser,
     projectDeadline,

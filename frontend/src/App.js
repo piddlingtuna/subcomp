@@ -12,12 +12,14 @@ import Reset from "./pages/Reset";
 import NotFound from "./pages/NotFound";
 import WebProjects from "./pages/WebProjects";
 import MobileProjects from "./pages/MobileProjects";
+import OtherProjects from "./pages/OtherProjects";
 
 const App = () => {
   const {
     setProjects,
     setMobileProjects,
     setWebProjects,
+    setOtherProjects,
     setUser,
     setProjectDeadline,
     setVoteDeadline,
@@ -48,6 +50,15 @@ const App = () => {
       .catch((error) => {
         setWebProjects([]);
       });
+  
+    const getOtherProjects = callGetProjectsByCategory("Other")
+      .then((response) => {
+        setWebProjects(response.data.projects.sort((a, b) => a.id > b.id));
+      })
+      .catch((error) => {
+        setWebProjects([]);
+      });
+
 
     const getUser = callGetUser()
       .then((response) => {
@@ -62,10 +73,10 @@ const App = () => {
       setVoteDeadline(response.data.voteDeadline);
     });
 
-    Promise.all([getProjects, getMobileProjects, getWebProjects, getUser, getDeadlines]).then(() => {
+    Promise.all([getProjects, getMobileProjects, getWebProjects, getOtherProjects, getUser, getDeadlines]).then(() => {
       setWaiting(false);
     });
-  }, [setProjects, setMobileProjects, setWebProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
+  }, [setProjects, setMobileProjects, setWebProjects, setOtherProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
 
   return (
     <BrowserRouter>
@@ -73,6 +84,7 @@ const App = () => {
         <Route exact path="/" element={<Projects />} />
         <Route path="/projects/web" element={<WebProjects />}/>
         <Route path="/projects/mobile" element={<MobileProjects />}/>
+        <Route path="/projects/other" element={<OtherProjects />}/>
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/submission" element={<Submission />} />
         <Route path="/profile" element={<Profile />} />
