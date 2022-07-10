@@ -408,7 +408,7 @@ pub fn check_zid(data: Json<CheckZidData>, conn: Conn) -> APIResponse {
     }))
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct SubmitProjectData {
     pub title: String,
     pub summary: String,
@@ -472,7 +472,11 @@ pub fn submit_project(
         &conn,
     ) {
         Some(project) => project,
-        None => return internal_server_error().message("Looks like our code is buggy :("),
+        None => {
+            println!("Failed: {:?}", project_data.category);
+            println!("Json: {:?}", project_data.into_inner());
+            return internal_server_error().message("Looks like our code is buggy :(")
+        }
     };
 
     if !project_data

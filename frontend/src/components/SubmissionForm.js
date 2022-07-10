@@ -60,7 +60,7 @@ const SubmissionForm = () => {
   };
 
   const edit = () => {
-    callEditProject(title, summary, link, repo, firstyear, postgrad, zids)
+    callEditProject(title, summary, link, repo, firstyear, postgrad, zids, category)
       .then((response) => {
         setProjects(
           projects
