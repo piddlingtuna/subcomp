@@ -2,8 +2,9 @@ import React, { useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Context } from "./Context";
-import { callGetProjects, callGetProjectsByCategory, callGetUser, callGetDeadlines } from "./calls";
+import { callGetProjects, callGetWebProjects, callGetUser, callGetDeadlines } from "./calls";
 import Projects from "./pages/Projects";
+import WebProjects from "./pages/WebProjects";
 import Leaderboard from "./pages/Leaderboard";
 import Submission from "./pages/Submission";
 import Profile from "./pages/Profile";
@@ -14,6 +15,7 @@ import NotFound from "./pages/NotFound";
 const App = () => {
   const {
     setProjects,
+    setWebProjects,
     setUser,
     setProjectDeadline,
     setVoteDeadline,
@@ -42,15 +44,16 @@ const App = () => {
       setVoteDeadline(response.data.voteDeadline);
     });
 
-    Promise.all([getProjects, getUser, getDeadlines]).then(() => {
+    Promise.all([getProjects, getWebProjects, getUser, getDeadlines]).then(() => {
       setWaiting(false);
     });
-  }, [setProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
+  }, [setProjects, setWebProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<Projects />} />
+        <Route exact path="/projects?category=Web" element={<WebProjects/>}/>
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/submission" element={<Submission />} />
         <Route path="/profile" element={<Profile />} />

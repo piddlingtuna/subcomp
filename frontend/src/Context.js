@@ -3,6 +3,8 @@ import React, { createContext, useState } from "react";
 export const Context = createContext({
   projects: [],
   setProjects: () => {},
+  webProjects: [],
+  setWebProjects: () => {},
   user: null,
   setUser: () => {},
   projectDeadline: null,
@@ -15,6 +17,7 @@ export const Context = createContext({
 
 const ContextProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
+  const [webProjects, setWebProjects] = useState([]);
   const [user, setUser] = useState(null);
   const [projectDeadline, setProjectDeadline] = useState(null);
   const [voteDeadline, setVoteDeadline] = useState(null);
@@ -23,6 +26,8 @@ const ContextProvider = ({ children }) => {
   const initialContext = {
     projects,
     setProjects,
+    webProjects,
+    setWebProjects,
     user,
     setUser,
     projectDeadline,
