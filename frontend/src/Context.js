@@ -7,6 +7,8 @@ export const Context = createContext({
   setWebProjects: () => {},
   mobileProjects: [],
   setMobileProjects: () => {},
+  otherProjects: [],
+  setOtherProjects: () => {},
   user: null,
   setUser: () => {},
   projectDeadline: null,
