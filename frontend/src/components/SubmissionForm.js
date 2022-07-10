@@ -42,7 +42,7 @@ const SubmissionForm = () => {
   }, [projects, user]);
 
   const submit = () => {
-    callSubmitProject(title, summary, link, repo, firstyear, postgrad, zids)
+    callSubmitProject(title, summary, link, repo, firstyear, postgrad, zids, category)
       .then((response) => {
         setProjects(
           projects.concat(response.data.project).sort((a, b) => a.id > b.id)
@@ -140,7 +140,7 @@ const SubmissionForm = () => {
               name="category"
               type="radio"
               label="Web App"
-              value="web"
+              value="Web"
               onChange={(event) => {
                 setCategory(event.target.value)
               }}
@@ -150,7 +150,7 @@ const SubmissionForm = () => {
               name="category"
               type="radio"
               label="Mobile App"
-              value="mobile"
+              value="Mobile"
               onChange={(event) => {
                 setCategory(event.target.value)
               }}
@@ -160,7 +160,7 @@ const SubmissionForm = () => {
               name="category"
               type="radio"
               label="Other"
-              value="other"
+              value="Other"
               onChange={(event) => {
                 setCategory(event.target.value)
               }}
