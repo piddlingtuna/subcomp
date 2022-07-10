@@ -52,13 +52,13 @@ const Header = () => {
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">
-          <Link to="/projects/mobile" style={{ color: "white" }}>
-            Mobile
+          <Link to="/projects/web" style={{ color: "white" }}>
+            Web
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">
-          <Link to="/projects/web" style={{ color: "white" }}>
-            Web
+          <Link to="/projects/mobile" style={{ color: "white" }}>
+            Mobile
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">

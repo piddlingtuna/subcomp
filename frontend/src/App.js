@@ -17,8 +17,8 @@ import OtherProjects from "./pages/OtherProjects";
 const App = () => {
   const {
     setProjects,
-    setMobileProjects,
     setWebProjects,
+    setMobileProjects,
     setOtherProjects,
     setUser,
     setProjectDeadline,
@@ -35,20 +35,20 @@ const App = () => {
         setProjects([]);
       });
 
-    const getMobileProjects = callGetProjectsByCategory("Mobile")
-      .then((response) => {
-        setMobileProjects(response.data.projects.sort((a, b) => a.id > b.id));
-      })
-      .catch((error) => {
-        setMobileProjects([]);
-      });
-
     const getWebProjects = callGetProjectsByCategory("Web")
       .then((response) => {
         setWebProjects(response.data.projects.sort((a, b) => a.id > b.id));
       })
       .catch((error) => {
         setWebProjects([]);
+      });
+
+    const getMobileProjects = callGetProjectsByCategory("Mobile")
+      .then((response) => {
+        setMobileProjects(response.data.projects.sort((a, b) => a.id > b.id));
+      })
+      .catch((error) => {
+        setMobileProjects([]);
       });
   
     const getOtherProjects = callGetProjectsByCategory("Other")
@@ -73,10 +73,10 @@ const App = () => {
       setVoteDeadline(response.data.voteDeadline);
     });
 
-    Promise.all([getProjects, getMobileProjects, getWebProjects, getOtherProjects, getUser, getDeadlines]).then(() => {
+    Promise.all([getProjects, getWebProjects, getMobileProjects, getOtherProjects, getUser, getDeadlines]).then(() => {
       setWaiting(false);
     });
-  }, [setProjects, setMobileProjects, setWebProjects, setOtherProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
+  }, [setProjects, setWebProjects, setMobileProjects, setOtherProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
 
   return (
     <BrowserRouter>

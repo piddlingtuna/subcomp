@@ -3,10 +3,10 @@ import React, { createContext, useState } from "react";
 export const Context = createContext({
   projects: [],
   setProjects: () => {},
-  mobileProjects: [],
-  setMobileProjects: () => {},
   webProjects: [],
   setWebProjects: () => {},
+  mobileProjects: [],
+  setMobileProjects: () => {},
   user: null,
   setUser: () => {},
   projectDeadline: null,
@@ -19,8 +19,8 @@ export const Context = createContext({
 
 const ContextProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
-  const [mobileProjects, setMobileProjects] = useState([]);
   const [webProjects, setWebProjects] = useState([]);
+  const [mobileProjects, setMobileProjects] = useState([]);
   const [otherProjects, setOtherProjects] = useState([]);
   const [user, setUser] = useState(null);
   const [projectDeadline, setProjectDeadline] = useState(null);
@@ -30,10 +30,10 @@ const ContextProvider = ({ children }) => {
   const initialContext = {
     projects,
     setProjects,
-    mobileProjects,
-    setMobileProjects,
     webProjects,
     setWebProjects,
+    mobileProjects,
+    setMobileProjects,
     otherProjects,
     setOtherProjects,
     user,
