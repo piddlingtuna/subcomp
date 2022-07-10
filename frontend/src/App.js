@@ -2,19 +2,21 @@ import React, { useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Context } from "./Context";
-import { callGetProjects, callGetWebProjects, callGetUser, callGetDeadlines } from "./calls";
+import { callGetProjects, callGetProjectsByCategory, callGetUser, callGetDeadlines } from "./calls";
 import Projects from "./pages/Projects";
-import WebProjects from "./pages/WebProjects";
 import Leaderboard from "./pages/Leaderboard";
 import Submission from "./pages/Submission";
 import Profile from "./pages/Profile";
 import Verification from "./pages/Verification";
 import Reset from "./pages/Reset";
 import NotFound from "./pages/NotFound";
+import WebProjects from "./pages/WebProjects";
+import MobileProjects from "./pages/MobileProjects";
 
 const App = () => {
   const {
     setProjects,
+    setMobileProjects,
     setWebProjects,
     setUser,
     setProjectDeadline,
@@ -31,7 +33,15 @@ const App = () => {
         setProjects([]);
       });
 
-    const getWebProjects = callGetWebProjects()
+    const getMobileProjects = callGetProjectsByCategory("Mobile")
+      .then((response) => {
+        setMobileProjects(response.data.projects.sort((a, b) => a.id > b.id));
+      })
+      .catch((error) => {
+        setMobileProjects([]);
+      });
+
+    const getWebProjects = callGetProjectsByCategory("Web")
       .then((response) => {
         setWebProjects(response.data.projects.sort((a, b) => a.id > b.id));
       })
@@ -52,16 +62,17 @@ const App = () => {
       setVoteDeadline(response.data.voteDeadline);
     });
 
-    Promise.all([getProjects, getWebProjects, getUser, getDeadlines]).then(() => {
+    Promise.all([getProjects, getMobileProjects, getWebProjects, getUser, getDeadlines]).then(() => {
       setWaiting(false);
     });
-  }, [setProjects, setWebProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
+  }, [setProjects, setMobileProjects, setWebProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<Projects />} />
         <Route path="/projects/web" element={<WebProjects />}/>
+        <Route path="/projects/mobile" element={<MobileProjects />}/>
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/submission" element={<Submission />} />
         <Route path="/profile" element={<Profile />} />
