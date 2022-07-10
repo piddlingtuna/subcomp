@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Context } from "./Context";
-import { callGetProjects, callGetUser, callGetDeadlines } from "./calls";
+import { callGetProjects, callGetProjectsByCategory, callGetUser, callGetDeadlines } from "./calls";
 import Projects from "./pages/Projects";
 import Leaderboard from "./pages/Leaderboard";
 import Submission from "./pages/Submission";
