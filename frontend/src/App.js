@@ -31,6 +31,14 @@ const App = () => {
         setProjects([]);
       });
 
+    const getWebProjects = callGetWebProjects()
+      .then((response) => {
+        setWebProjects(response.data.projects.sort((a, b) => a.id > b.id));
+      })
+      .catch((error) => {
+        setWebProjects([]);
+      });
+
     const getUser = callGetUser()
       .then((response) => {
         setUser(response.data.user);
@@ -53,7 +61,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<Projects />} />
-        <Route exact path="/projects?category=Web" element={<WebProjects/>}/>
+        <Route path="/projects/web" element={<WebProjects />}/>
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/submission" element={<Submission />} />
         <Route path="/profile" element={<Profile />} />

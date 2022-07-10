@@ -52,13 +52,13 @@ const Header = () => {
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">
-          <Link to="/leaderboard" style={{ color: "white" }}>
-            Leaderboard
+          <Link to="/projects/web" style={{ color: "white" }}>
+            Web
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">
-          <Link to="/projects?category=Web" style={{ color: "white" }}>
-            Web
+          <Link to="/leaderboard" style={{ color: "white" }}>
+            Leaderboard
           </Link>
         </Navbar.Text>
         {user !== null && (
