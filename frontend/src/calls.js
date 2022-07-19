@@ -18,6 +18,10 @@ const callGetProjects = () => {
   return axios.get("/api/projects/");
 };
 
+const callGetProjectsByCategory = (category) => {
+  return axios.get(`/api/projects?category=${category}`);
+};
+
 const callGetDeadlines = () => {
   return axios.get("/api/deadlines/");
 };
@@ -213,6 +217,7 @@ const callDeleteProject = () => {
 export {
   callGetComic,
   callGetProjects,
+  callGetProjectsByCategory,
   callGetUser,
   callGetDeadlines,
   callGenerateVerification,

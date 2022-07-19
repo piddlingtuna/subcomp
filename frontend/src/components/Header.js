@@ -48,7 +48,22 @@ const Header = () => {
       <Nav className="mr-auto">
         <Navbar.Text className="mx-1">
           <Link to="/" style={{ color: "white" }}>
-            Projects
+            All Projects
+          </Link>
+        </Navbar.Text>
+        <Navbar.Text className="mx-1">
+          <Link to="/projects/web" style={{ color: "white" }}>
+            Web
+          </Link>
+        </Navbar.Text>
+        <Navbar.Text className="mx-1">
+          <Link to="/projects/mobile" style={{ color: "white" }}>
+            Mobile
+          </Link>
+        </Navbar.Text>
+        <Navbar.Text className="mx-1">
+          <Link to="/projects/other" style={{ color: "white" }}>
+            Other
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">
