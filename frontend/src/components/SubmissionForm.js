@@ -7,10 +7,10 @@ import DeleteProject from "./DeleteProject";
 import { callSubmitProject, callEditProject, callCheckZid } from "../calls";
 
 const SubmissionForm = () => {
-  const { projects, setProjects, user, setUser } = useContext(Context);
+  const { projects, setProjects, user, setUser, savedCategory, setSavedCategory } = useContext(Context);
 
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(savedCategory);
   const [summary, setSummary] = useState("");
   const [link, setLink] = useState("");
   const [repo, setRepo] = useState("");
@@ -53,6 +53,7 @@ const SubmissionForm = () => {
           votes: user.votes,
           project_id: response.data.project.id,
         });
+        setSavedCategory(category);
       })
       .catch((error) => {
         alert(error.response.data.message);
@@ -141,6 +142,7 @@ const SubmissionForm = () => {
               type="radio"
               label="Web App"
               value="Web"
+              // checked={savedCategory === "Web"}
               onChange={(event) => {
                 setCategory(event.target.value)
               }}
@@ -151,6 +153,7 @@ const SubmissionForm = () => {
               type="radio"
               label="Mobile App"
               value="Mobile"
+              // checked={savedCategory === "Mobile"}
               onChange={(event) => {
                 setCategory(event.target.value)
               }}
@@ -161,8 +164,10 @@ const SubmissionForm = () => {
               type="radio"
               label="Other"
               value="Other"
+              // checked={savedCategory === "Other"}
               onChange={(event) => {
                 setCategory(event.target.value)
+                console.log(savedCategory);
               }}
             />
         </Form.Group>
