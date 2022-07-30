@@ -2,7 +2,12 @@ import React, { useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Context } from "./Context";
-import { callGetProjects, callGetProjectsByCategory, callGetUser, callGetDeadlines } from "./calls";
+import {
+  callGetProjects,
+  callGetProjectsByCategory,
+  callGetUser,
+  callGetDeadlines,
+} from "./calls";
 import Projects from "./pages/Projects";
 import Leaderboard from "./pages/Leaderboard";
 import Submission from "./pages/Submission";
@@ -50,7 +55,7 @@ const App = () => {
       .catch((error) => {
         setMobileProjects([]);
       });
-  
+
     const getOtherProjects = callGetProjectsByCategory("Other")
       .then((response) => {
         setOtherProjects(response.data.projects.sort((a, b) => a.id > b.id));
@@ -58,7 +63,6 @@ const App = () => {
       .catch((error) => {
         setOtherProjects([]);
       });
-
 
     const getUser = callGetUser()
       .then((response) => {
@@ -73,18 +77,34 @@ const App = () => {
       setVoteDeadline(response.data.voteDeadline);
     });
 
-    Promise.all([getProjects, getWebProjects, getMobileProjects, getOtherProjects, getUser, getDeadlines]).then(() => {
+    Promise.all([
+      getProjects,
+      getWebProjects,
+      getMobileProjects,
+      getOtherProjects,
+      getUser,
+      getDeadlines,
+    ]).then(() => {
       setWaiting(false);
     });
-  }, [setProjects, setWebProjects, setMobileProjects, setOtherProjects, setUser, setProjectDeadline, setVoteDeadline, setWaiting]);
+  }, [
+    setProjects,
+    setWebProjects,
+    setMobileProjects,
+    setOtherProjects,
+    setUser,
+    setProjectDeadline,
+    setVoteDeadline,
+    setWaiting,
+  ]);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<Projects />} />
-        <Route path="/projects/web" element={<WebProjects />}/>
-        <Route path="/projects/mobile" element={<MobileProjects />}/>
-        <Route path="/projects/other" element={<OtherProjects />}/>
+        <Route path="/projects/web" element={<WebProjects />} />
+        <Route path="/projects/mobile" element={<MobileProjects />} />
+        <Route path="/projects/other" element={<OtherProjects />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/submission" element={<Submission />} />
         <Route path="/profile" element={<Profile />} />

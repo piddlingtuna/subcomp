@@ -28,6 +28,7 @@ const SubmissionForm = () => {
       );
       if (project) {
         setTitle(project.title);
+        setCategory(project.category);
         setSummary(project.summary);
         setLink(project.link);
         setRepo(project.repo);
@@ -42,7 +43,16 @@ const SubmissionForm = () => {
   }, [projects, user]);
 
   const submit = () => {
-    callSubmitProject(title, summary, link, repo, firstyear, postgrad, zids, category)
+    callSubmitProject(
+      title,
+      summary,
+      link,
+      repo,
+      firstyear,
+      postgrad,
+      zids,
+      category
+    )
       .then((response) => {
         setProjects(
           projects.concat(response.data.project).sort((a, b) => a.id > b.id)
@@ -60,7 +70,16 @@ const SubmissionForm = () => {
   };
 
   const edit = () => {
-    callEditProject(title, summary, link, repo, firstyear, postgrad, zids, category)
+    callEditProject(
+      title,
+      summary,
+      link,
+      repo,
+      firstyear,
+      postgrad,
+      zids,
+      category
+    )
       .then((response) => {
         setProjects(
           projects
@@ -108,6 +127,7 @@ const SubmissionForm = () => {
 
   const deleteReset = () => {
     setTitle("");
+    setCategory("");
     setSummary("");
     setLink("");
     setRepo("");
@@ -135,36 +155,39 @@ const SubmissionForm = () => {
         </Form.Group>
         <Form.Group controlId="formCategory">
           <Form.Label>Select a Category for submission</Form.Label>
-            <Form.Check
-              className="mt-3"
-              name="category"
-              type="radio"
-              label="Web App"
-              value="Web"
-              onChange={(event) => {
-                setCategory(event.target.value)
-              }}
-            />
-            <Form.Check
-              className="mt-3"
-              name="category"
-              type="radio"
-              label="Mobile App"
-              value="Mobile"
-              onChange={(event) => {
-                setCategory(event.target.value)
-              }}
-            />
-            <Form.Check
-              className="mt-3"
-              name="category"
-              type="radio"
-              label="Other"
-              value="Other"
-              onChange={(event) => {
-                setCategory(event.target.value)
-              }}
-            />
+          <Form.Check
+            className="mt-3"
+            name="category"
+            type="radio"
+            label="Web App"
+            value="Web"
+            checked={category === "Web"}
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          />
+          <Form.Check
+            className="mt-3"
+            name="category"
+            type="radio"
+            label="Mobile App"
+            value="Mobile"
+            checked={category === "Mobile"}
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          />
+          <Form.Check
+            className="mt-3"
+            name="category"
+            type="radio"
+            label="Other"
+            value="Other"
+            checked={category === "Other"}
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          />
         </Form.Group>
         <Form.Group controlId="formSummary">
           <Form.Label>Summary</Form.Label>

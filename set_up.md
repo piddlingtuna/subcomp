@@ -48,7 +48,9 @@ postgres#= \q
 Create a database:
 
 ```
-createdb subcomp
+sudo -u postgres psql
+postgres=# CREATE DATABASE subcomp;
+postgres#= \q
 ```
 
 ## Run the backend

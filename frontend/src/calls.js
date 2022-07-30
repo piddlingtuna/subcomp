@@ -166,7 +166,7 @@ const callSubmitProject = (
       firstyear: firstyear,
       postgrad: postgrad,
       zids: zIDs,
-      category: category
+      category: category,
     },
     {
       headers: {
@@ -196,7 +196,7 @@ const callEditProject = (
       firstyear: firstyear,
       postgrad: postgrad,
       zids: zIDs,
-      category: category
+      category: category,
     },
     {
       headers: {
