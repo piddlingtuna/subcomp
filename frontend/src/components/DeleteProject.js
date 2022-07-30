@@ -16,7 +16,7 @@ const DeleteProject = (props) => {
           zid: user.zid,
           name: user.name,
           votes: user.votes,
-          project_id: null,
+          project_id: "",
         });
       })
       .catch((error) => {

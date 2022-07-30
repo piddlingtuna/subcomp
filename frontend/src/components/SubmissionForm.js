@@ -83,7 +83,7 @@ const SubmissionForm = () => {
       .then((response) => {
         setProjects(
           projects
-            .filter((project) => project.id !== user.project_id)
+            .filter((project) => user.project_id!== null && project.id !== user.project_id)
             .concat(response.data.project)
             .sort((a, b) => a.id > b.id)
         );
