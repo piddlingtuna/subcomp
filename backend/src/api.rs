@@ -22,13 +22,13 @@ pub fn all_projects(conn: Conn) -> APIResponse {
             json!({
                     "id": project.id,
                     "title": project.title,
+                    "category": format!("{:?}", project.category),
                     "summary": project.summary,
                     "link": project.link,
                     "repo": project.repo,
                     "votes": project.count_votes(&conn),
                     "zids": project.get_zids(&conn),
                     "names": project.get_names(&conn),
-                    "category": format!("{:?}", project.category),
             })
         })
         .collect();
@@ -46,13 +46,13 @@ pub fn projects(conn: Conn, category: Category) -> APIResponse {
             json!({
                     "id": project.id,
                     "title": project.title,
+                    "category": format!("{:?}", project.category),
                     "summary": project.summary,
                     "link": project.link,
                     "repo": project.repo,
                     "votes": project.count_votes(&conn),
                     "zids": project.get_zids(&conn),
                     "names": project.get_names(&conn),
-                    "category": format!("{:?}", project.category),
             })
         })
         .collect();
@@ -491,6 +491,7 @@ pub fn submit_project(
         "project": {
             "id": project.id,
             "title": project.title,
+            "category": format!("{:?}", project.category),
             "summary": project.summary,
             "link": project.link,
             "repo": project.repo,
@@ -583,6 +584,7 @@ pub fn edit_project(user: User, project_data: Json<EditProjectData>, conn: Conn)
         "project": {
             "id": project.id,
             "title": project.title,
+            "category": format!("{:?}", project.category),
             "summary": project.summary,
             "link": project.link,
             "repo": project.repo,

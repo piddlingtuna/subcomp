@@ -7,10 +7,10 @@ import DeleteProject from "./DeleteProject";
 import { callSubmitProject, callEditProject, callCheckZid } from "../calls";
 
 const SubmissionForm = () => {
-  const { projects, setProjects, user, setUser, savedCategory, setSavedCategory } = useContext(Context);
+  const { projects, setProjects, user, setUser } = useContext(Context);
 
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(savedCategory);
+  const [category, setCategory] = useState("");
   const [summary, setSummary] = useState("");
   const [link, setLink] = useState("");
   const [repo, setRepo] = useState("");
@@ -28,6 +28,7 @@ const SubmissionForm = () => {
       );
       if (project) {
         setTitle(project.title);
+        setCategory(project.category);
         setSummary(project.summary);
         setLink(project.link);
         setRepo(project.repo);
@@ -42,7 +43,16 @@ const SubmissionForm = () => {
   }, [projects, user]);
 
   const submit = () => {
-    callSubmitProject(title, summary, link, repo, firstyear, postgrad, zids, category)
+    callSubmitProject(
+      title,
+      summary,
+      link,
+      repo,
+      firstyear,
+      postgrad,
+      zids,
+      category
+    )
       .then((response) => {
         setProjects(
           projects.concat(response.data.project).sort((a, b) => a.id > b.id)
@@ -53,7 +63,6 @@ const SubmissionForm = () => {
           votes: user.votes,
           project_id: response.data.project.id,
         });
-        setSavedCategory(category);
       })
       .catch((error) => {
         alert(error.response.data.message);
@@ -61,7 +70,16 @@ const SubmissionForm = () => {
   };
 
   const edit = () => {
-    callEditProject(title, summary, link, repo, firstyear, postgrad, zids, category)
+    callEditProject(
+      title,
+      summary,
+      link,
+      repo,
+      firstyear,
+      postgrad,
+      zids,
+      category
+    )
       .then((response) => {
         setProjects(
           projects
@@ -109,6 +127,7 @@ const SubmissionForm = () => {
 
   const deleteReset = () => {
     setTitle("");
+    setCategory("");
     setSummary("");
     setLink("");
     setRepo("");
@@ -136,40 +155,39 @@ const SubmissionForm = () => {
         </Form.Group>
         <Form.Group controlId="formCategory">
           <Form.Label>Select a Category for submission</Form.Label>
-            <Form.Check
-              className="mt-3"
-              name="category"
-              type="radio"
-              label="Web App"
-              value="Web"
-              // checked={savedCategory === "Web"}
-              onChange={(event) => {
-                setCategory(event.target.value)
-              }}
-            />
-            <Form.Check
-              className="mt-3"
-              name="category"
-              type="radio"
-              label="Mobile App"
-              value="Mobile"
-              // checked={savedCategory === "Mobile"}
-              onChange={(event) => {
-                setCategory(event.target.value)
-              }}
-            />
-            <Form.Check
-              className="mt-3"
-              name="category"
-              type="radio"
-              label="Other"
-              value="Other"
-              // checked={savedCategory === "Other"}
-              onChange={(event) => {
-                setCategory(event.target.value)
-                console.log(savedCategory);
-              }}
-            />
+          <Form.Check
+            className="mt-3"
+            name="category"
+            type="radio"
+            label="Web App"
+            value="Web"
+            checked={category === "Web"}
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          />
+          <Form.Check
+            className="mt-3"
+            name="category"
+            type="radio"
+            label="Mobile App"
+            value="Mobile"
+            checked={category === "Mobile"}
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          />
+          <Form.Check
+            className="mt-3"
+            name="category"
+            type="radio"
+            label="Other"
+            value="Other"
+            checked={category === "Other"}
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          />
         </Form.Group>
         <Form.Group controlId="formSummary">
           <Form.Label>Summary</Form.Label>

@@ -3,8 +3,6 @@ import React, { createContext, useState } from "react";
 export const Context = createContext({
   projects: [],
   setProjects: () => {},
-  savedCategory: String,
-  setSavedCategory: () => {},
   webProjects: [],
   setWebProjects: () => {},
   mobileProjects: [],
@@ -23,7 +21,6 @@ export const Context = createContext({
 
 const ContextProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
-  const [savedCategory, setSavedCategory] = useState("");
   const [webProjects, setWebProjects] = useState([]);
   const [mobileProjects, setMobileProjects] = useState([]);
   const [otherProjects, setOtherProjects] = useState([]);
@@ -35,8 +32,6 @@ const ContextProvider = ({ children }) => {
   const initialContext = {
     projects,
     setProjects,
-    savedCategory,
-    setSavedCategory,
     webProjects,
     setWebProjects,
     mobileProjects,

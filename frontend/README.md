@@ -27,6 +27,7 @@ If you are new to React, take a look [here](https://reactjs.org/tutorial/tutoria
 ```
 interface Project {
     id: string;
+    category: "Web" | "App" | "Other;
     title: string;
     summary: string;
     repo: string;
