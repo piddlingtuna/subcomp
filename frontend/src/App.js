@@ -17,6 +17,7 @@ import Reset from "./pages/Reset";
 import NotFound from "./pages/NotFound";
 import WebProjects from "./pages/WebProjects";
 import MobileProjects from "./pages/MobileProjects";
+import GameProjects from "./pages/GameProjects";
 import OtherProjects from "./pages/OtherProjects";
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
     setProjects,
     setWebProjects,
     setMobileProjects,
+    setGameProjects,
     setOtherProjects,
     setUser,
     setProjectDeadline,
@@ -56,6 +58,14 @@ const App = () => {
         setMobileProjects([]);
       });
 
+    const getGameProjects = callGetProjectsByCategory("Game")
+      .then((response) => {
+        setOtherProjects(response.data.projects.sort((a, b) => a.id > b.id));
+      })
+      .catch((error) => {
+        setOtherProjects([]);
+      });
+
     const getOtherProjects = callGetProjectsByCategory("Other")
       .then((response) => {
         setOtherProjects(response.data.projects.sort((a, b) => a.id > b.id));
@@ -81,6 +91,7 @@ const App = () => {
       getProjects,
       getWebProjects,
       getMobileProjects,
+      getGameProjects,
       getOtherProjects,
       getUser,
       getDeadlines,
@@ -91,6 +102,7 @@ const App = () => {
     setProjects,
     setWebProjects,
     setMobileProjects,
+    setGameProjects,
     setOtherProjects,
     setUser,
     setProjectDeadline,
@@ -104,6 +116,7 @@ const App = () => {
         <Route exact path="/" element={<Projects />} />
         <Route path="/projects/web" element={<WebProjects />} />
         <Route path="/projects/mobile" element={<MobileProjects />} />
+        <Route path="/projects/game" element={<GameProjects />} />
         <Route path="/projects/other" element={<OtherProjects />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/submission" element={<Submission />} />
