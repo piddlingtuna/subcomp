@@ -61,7 +61,6 @@ const App = () => {
     const getGameProjects = callGetProjectsByCategory("Game")
       .then((response) => {
         setGameProjects(response.data.projects.sort((a, b) => a.id > b.id));
-        console.log(response.data.projects)
       })
       .catch((error) => {
         setGameProjects([]);
