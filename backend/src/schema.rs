@@ -8,6 +8,7 @@ pub enum Category {
     Web,
     Mobile,
     Other,
+    Game,
 }
 
 table! {

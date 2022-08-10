@@ -7,6 +7,8 @@ export const Context = createContext({
   setWebProjects: () => {},
   mobileProjects: [],
   setMobileProjects: () => {},
+  gameProjects: [],
+  setGameProjects: () => {},
   otherProjects: [],
   setOtherProjects: () => {},
   user: null,
@@ -23,6 +25,7 @@ const ContextProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [webProjects, setWebProjects] = useState([]);
   const [mobileProjects, setMobileProjects] = useState([]);
+  const [gameProjects, setGameProjects] = useState([]);
   const [otherProjects, setOtherProjects] = useState([]);
   const [user, setUser] = useState(null);
   const [projectDeadline, setProjectDeadline] = useState(null);
@@ -36,6 +39,8 @@ const ContextProvider = ({ children }) => {
     setWebProjects,
     mobileProjects,
     setMobileProjects,
+    gameProjects,
+    setGameProjects,
     otherProjects,
     setOtherProjects,
     user,

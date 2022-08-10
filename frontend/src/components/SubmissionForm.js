@@ -181,6 +181,17 @@ const SubmissionForm = () => {
             className="mt-3"
             name="category"
             type="radio"
+            label="Game"
+            value="Game"
+            checked={category === "Game"}
+            onChange={(event) => {
+              setCategory(event.target.value);
+            }}
+          />
+          <Form.Check
+            className="mt-3"
+            name="category"
+            type="radio"
             label="Other"
             value="Other"
             checked={category === "Other"}
