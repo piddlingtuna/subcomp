@@ -62,6 +62,11 @@ const Header = () => {
           </Link>
         </Navbar.Text>
         <Navbar.Text className="mx-1">
+          <Link to="/projects/game" style={{ color: "white" }}>
+            Game
+          </Link>
+        </Navbar.Text>
+        <Navbar.Text className="mx-1">
           <Link to="/projects/other" style={{ color: "white" }}>
             Other
           </Link>
