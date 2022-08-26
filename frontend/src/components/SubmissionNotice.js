@@ -18,6 +18,8 @@ const SubmissionNotice = () => {
         <Alert className="m-3" variant="warning">
           Ensure you press save if you change anything! Only one submission per
           team is required. Everyone on your team must have an account.
+
+          If you have made an update to your project and these updates aren’t showing, please trying refreshing the page.
         </Alert>
       )}
     </>
