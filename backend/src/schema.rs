@@ -24,7 +24,6 @@ table! {
         link -> Text,
         repo -> Text,
         firstyear -> Bool,
-        postgrad -> Bool,
         category -> CategoryMapping,
     }
 }

@@ -17,7 +17,6 @@ const SubmissionForm = () => {
   const [zids, setZids] = useState([user.zid]);
   const [names, setnames] = useState([user.name]);
   const [firstyear, setFirstyear] = useState(false);
-  const [postgrad, setPostgrad] = useState(false);
   const [addZid, setAddZid] = useState("");
   const [deleteShow, setDeleteShow] = useState(false);
 
@@ -35,7 +34,6 @@ const SubmissionForm = () => {
         setZids(project.zids);
         setnames(project.names);
         setFirstyear(false);
-        setPostgrad(false);
         setAddZid("");
         setDeleteShow(false);
       }
@@ -49,7 +47,6 @@ const SubmissionForm = () => {
       link,
       repo,
       firstyear,
-      postgrad,
       zids,
       category
     )
@@ -76,7 +73,6 @@ const SubmissionForm = () => {
       link,
       repo,
       firstyear,
-      postgrad,
       zids,
       category
     )
@@ -134,7 +130,6 @@ const SubmissionForm = () => {
     setZids([user.zids]);
     setnames([user.name]);
     setFirstyear(false);
-    setPostgrad(false);
     setAddZid("");
     setDeleteShow(false);
   };
@@ -235,7 +230,7 @@ const SubmissionForm = () => {
           />
           <p className="mt-3">
             These questions determine if your project can be considered for the
-            First Year's Prize or the Postgraduate Prize. They will be verified.
+            First Year's Prize. They will be verified.
           </p>
           <Form.Check
             className="mt-3"
@@ -243,14 +238,6 @@ const SubmissionForm = () => {
             label="Are all team members first year students?"
             onChange={(event) => {
               setFirstyear(event.target.value === "on");
-            }}
-          />
-          <Form.Check
-            className="mt-3"
-            type="checkbox"
-            label="Are all team members postgraduate students?"
-            onChange={(event) => {
-              setPostgrad(event.target.value === "on");
             }}
           />
         </Form.Group>

@@ -152,7 +152,6 @@ const callSubmitProject = (
   link,
   repo,
   firstyear,
-  postgrad,
   zIDs,
   category
 ) => {
@@ -164,7 +163,6 @@ const callSubmitProject = (
       link: link,
       repo: repo,
       firstyear: firstyear,
-      postgrad: postgrad,
       zids: zIDs,
       category: category,
     },
@@ -182,7 +180,6 @@ const callEditProject = (
   link,
   repo,
   firstyear,
-  postgrad,
   zIDs,
   category
 ) => {
@@ -194,7 +191,6 @@ const callEditProject = (
       link: link,
       repo: repo,
       firstyear: firstyear,
-      postgrad: postgrad,
       zids: zIDs,
       category: category,
     },
