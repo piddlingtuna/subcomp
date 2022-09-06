@@ -53,6 +53,14 @@ impl Project {
             .unwrap_or_else(|_| Vec::new())
     }
 
+    pub fn get_by_id(id: &Uuid, conn: &PgConnection) -> Option<Project> {
+        all_projects
+            .filter(projects::id.eq(id))
+            .first::<Project>(conn)
+            .optional()
+            .unwrap_or_else(|_| None)
+    }
+
     pub fn get_category(conn: &PgConnection, cat: Category) -> Vec<Project> {
         all_projects
             .filter(projects::category.eq(cat))
@@ -325,6 +333,26 @@ impl User {
             .select(votes::project_id)
             .load::<Uuid>(conn)
             .unwrap_or_else(|_| Vec::new())
+    }
+
+    pub fn voted_for(&self, conn: &PgConnection, category: Category) -> bool {
+        let projects = Project::get_all(conn);
+
+        self.get_votes(conn)
+            .iter()
+            .any(|uuid| {
+                let project = projects.iter().find(|p| p.id.eq(uuid));
+
+                match project {
+                    None => false,
+                    Some(p) => {
+                        let result = p.category.eq(&category);
+                        println!("{} {}", category.to_string(), result);
+
+                        result
+                    }
+                }
+            })
     }
 
     pub fn count_votes(&self, conn: &PgConnection) -> i64 {

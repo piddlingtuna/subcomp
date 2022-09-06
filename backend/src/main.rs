@@ -39,6 +39,7 @@ pub fn rocket_factory(database_url: &str) -> rocket::Rocket {
                 api::use_reset,
                 api::vote,
                 api::unvote,
+                api::has_voted,
                 api::check_zid,
                 api::submit_project,
                 api::edit_project,

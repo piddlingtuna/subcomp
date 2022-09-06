@@ -348,8 +348,14 @@ pub fn vote(user: User, data: Json<VoteData>, conn: Conn) -> APIResponse {
         return bad_request().message("Vote deadline is over.");
     }
 
-    if user.count_votes(&conn) >= 3 {
-        return bad_request().message("You already have 3 votes.");
+    let category = Project::get_by_id(&data.project_id, &conn);
+    let has_voted = match category {
+        None => false,
+        Some(project) => user.voted_for(&conn, project.category)
+    };
+
+    if has_voted {
+        return bad_request().message("You have already voted for a project in this category.");
     }
 
     if Vote::exists(&user.id, &data.project_id, &conn) {
@@ -385,6 +391,14 @@ pub fn unvote(user: User, data: Json<UnvoteData>, conn: Conn) -> APIResponse {
         false => internal_server_error().message("Looks like our code is buggy :("),
     }
 }
+
+#[get("/has_voted?<category>")]
+pub fn has_voted(user: User, conn: Conn, category: Category) -> APIResponse {
+    ok().data(json!({
+        "has_voted": user.voted_for(&conn, category)
+    }))
+}
+
 
 #[derive(Deserialize)]
 pub struct CheckZidData {

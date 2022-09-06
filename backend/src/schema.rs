@@ -1,14 +1,22 @@
+use core::fmt;
+
 use diesel_derive_enum::DbEnum;
 use rocket::request::FromFormValue;
 use serde_derive::Deserialize;
 
-#[derive(DbEnum, Debug, Clone, Copy, FromFormValue, Deserialize)]
+#[derive(DbEnum, Debug, Clone, Copy, FromFormValue, Deserialize, PartialEq)]
 #[DbValueStyle = "PascalCase"]
 pub enum Category {
     Web,
     Mobile,
     Other,
     Game,
+}
+
+impl fmt::Display for Category {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 table! {

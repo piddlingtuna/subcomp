@@ -12,7 +12,7 @@ const WebProjects = () => {
     <>
       <Header />
       <div>
-        <ProjectsNotice />
+        <ProjectsNotice category="web" />
         <div
           className="d-flex align-content-start flex-wrap"
           style={{ display: "flex", justifyContent: "center" }}

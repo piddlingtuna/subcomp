@@ -7,6 +7,7 @@ import {
   callGetProjectsByCategory,
   callGetUser,
   callGetDeadlines,
+  callHasVotedForCategory,
 } from "./calls";
 import Projects from "./pages/Projects";
 import Leaderboard from "./pages/Leaderboard";
@@ -27,6 +28,7 @@ const App = () => {
     setMobileProjects,
     setGameProjects,
     setOtherProjects,
+    setVotes,
     setUser,
     setProjectDeadline,
     setVoteDeadline,
@@ -74,6 +76,21 @@ const App = () => {
         setOtherProjects([]);
       });
 
+    const getHasVoted = Promise.all([
+      callHasVotedForCategory("Web"),
+      callHasVotedForCategory("Mobile"),
+      callHasVotedForCategory("Game"),
+      callHasVotedForCategory("Other")
+    ]).then((values) => {
+      console.log(values);
+      setVotes({
+        web: values[0],
+        mobile: values[1],
+        game: values[2],
+        other: values[3]
+      });
+    });
+
     const getUser = callGetUser()
       .then((response) => {
         setUser(response.data.user);
@@ -93,6 +110,7 @@ const App = () => {
       getMobileProjects,
       getGameProjects,
       getOtherProjects,
+      getHasVoted,
       getUser,
       getDeadlines,
     ]).then(() => {
@@ -104,6 +122,7 @@ const App = () => {
     setMobileProjects,
     setGameProjects,
     setOtherProjects,
+    setVotes,
     setUser,
     setProjectDeadline,
     setVoteDeadline,
