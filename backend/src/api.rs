@@ -429,7 +429,6 @@ pub struct SubmitProjectData {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgrad: bool,
     pub zids: Vec<String>,
     pub category: Category,
 }
@@ -481,7 +480,6 @@ pub fn submit_project(
         &project_data.link,
         &project_data.repo,
         project_data.firstyear,
-        project_data.postgrad,
         project_data.category,
         &conn,
     ) {
@@ -523,7 +521,6 @@ pub struct EditProjectData {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgrad: bool,
     pub zids: Vec<String>,
     pub category: Category,
 }
@@ -578,7 +575,6 @@ pub fn edit_project(user: User, project_data: Json<EditProjectData>, conn: Conn)
         &project_data.link,
         &project_data.repo,
         project_data.firstyear,
-        project_data.postgrad,
         project_data.category,
         &conn,
     ) {

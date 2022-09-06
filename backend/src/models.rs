@@ -29,7 +29,6 @@ pub struct Project {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgrad: bool,
     pub category: Category,
 }
 
@@ -41,7 +40,6 @@ pub struct NewProject {
     pub link: String,
     pub repo: String,
     pub firstyear: bool,
-    pub postgrad: bool,
     pub category: Category,
 }
 
@@ -107,7 +105,6 @@ impl Project {
         link: &str,
         repo: &str,
         firstyear: bool,
-        postgrad: bool,
         category: Category,
         conn: &PgConnection,
     ) -> Option<Project> {
@@ -117,7 +114,6 @@ impl Project {
             link: link.to_string(),
             repo: repo.to_string(),
             firstyear,
-            postgrad,
             category,
         };
         match diesel::insert_into(projects::table)
@@ -136,7 +132,6 @@ impl Project {
         link: &str,
         repo: &str,
         firstyear: bool,
-        postgrad: bool,
         category: Category,
         conn: &PgConnection,
     ) -> Option<Project> {
@@ -147,7 +142,6 @@ impl Project {
                 projects::repo.eq(repo),
                 projects::link.eq(link),
                 projects::firstyear.eq(firstyear),
-                projects::postgrad.eq(postgrad),
                 projects::category.eq(category),
             ))
             .get_result(conn)
