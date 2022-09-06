@@ -5,6 +5,7 @@ import { Context } from "../Context";
 
 const ProjectsNotice = ({ category }) => {
   const { user, votes, projectDeadline, voteDeadline } = useContext(Context);
+  const numVotes = Object.values(votes).filter(value => value).length;
 
   return (
     <>
@@ -16,13 +17,18 @@ const ProjectsNotice = ({ category }) => {
               {projectDeadline}. Voting closes on {voteDeadline}.
             </Alert>
           )}
-          {user !== null && !votes[category] && (
+          {user !== null && category === undefined && (
+            <Alert className="m-3" variant="success">
+              You have {4 - numVotes} votes remaining. Voting closes on {voteDeadline}.
+            </Alert>
+          )}
+          {user !== null && category !== undefined && !votes[category] && (
             <Alert className="m-3" variant="success">
               You have not voted for this category. Voting closes on{" "}
               {voteDeadline}.
             </Alert>
           )}
-          {user !== null && votes[category] && (
+          {user !== null && category !== undefined && votes[category] && (
             <Alert className="m-3" variant="danger">
               You have no more votes remaining for this category.
             </Alert>
