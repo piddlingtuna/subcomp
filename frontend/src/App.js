@@ -82,12 +82,11 @@ const App = () => {
       callHasVotedForCategory("Game"),
       callHasVotedForCategory("Other")
     ]).then((values) => {
-      console.log(values);
       setVotes({
-        web: values[0],
-        mobile: values[1],
-        game: values[2],
-        other: values[3]
+        web: values[0].data.has_voted,
+        mobile: values[1].data.has_voted,
+        game: values[2].data.has_voted,
+        other: values[3].data.has_voted
       });
     });
 

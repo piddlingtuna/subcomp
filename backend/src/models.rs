@@ -339,12 +339,7 @@ impl User {
 
                 match project {
                     None => false,
-                    Some(p) => {
-                        let result = p.category.eq(&category);
-                        println!("{} {}", category.to_string(), result);
-
-                        result
-                    }
+                    Some(p) => p.category.eq(&category)
                 }
             })
     }
